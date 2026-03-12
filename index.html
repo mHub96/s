@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MD Scheduler | Carbon Gold</title>
+    <title>MD Scheduler | Carbon Gold RTL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
     <style>
@@ -20,15 +20,11 @@
         /* LOCK STATE */
         #main-table-area { 
             pointer-events: none; 
-            filter: grayscale(1) blur(4px); 
-            opacity: 0.2; 
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); 
+            filter: grayscale(1) blur(6px); 
+            opacity: 0.15; 
+            transition: all 0.8s ease; 
         }
-        .is-ready #main-table-area { 
-            pointer-events: auto; 
-            filter: grayscale(0) blur(0); 
-            opacity: 1; 
-        }
+        .is-ready #main-table-area { pointer-events: auto; filter: grayscale(0) blur(0); opacity: 1; }
 
         .embossed-card {
             background: var(--bg);
@@ -43,82 +39,87 @@
             overflow-x: auto;
         }
 
-        table { border-collapse: separate; border-spacing: 0; min-width: 1600px; }
+        table { border-collapse: separate; border-spacing: 0; min-width: 1700px; }
         th { 
             position: sticky; top: 0; background: var(--bg); z-index: 20;
             padding: 1.2rem; color: var(--accent); font-weight: 800; font-size: 0.75rem;
             letter-spacing: 0.15em; border-bottom: 1px solid var(--light);
         }
 
-        /* AUTOCOMPLETE CELL STYLING */
-        .ac-container { position: relative; width: 100%; min-width: 220px; }
+        /* RTL AUTOCOMPLETE CELL STYLING */
+        .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
         
         .ghost-text {
-            position: absolute; top: 0; left: 0; padding: 0.7rem;
-            color: rgba(255, 255, 255, 0.15); font-size: 0.9rem;
+            position: absolute; top: 0; right: 0; padding: 0.7rem;
+            color: rgba(255, 255, 255, 0.12); font-size: 0.9rem;
             pointer-events: none; white-space: nowrap; overflow: hidden;
+            text-align: right; width: 100%;
         }
 
         .cell-input {
             position: relative; background: transparent; color: #e2e8f0; width: 100%;
-            padding: 0.7rem; padding-right: 2rem; border-radius: 0.8rem; border: 1px solid transparent;
+            padding: 0.7rem; padding-left: 2.2rem; padding-right: 0.7rem; 
+            border-radius: 0.8rem; border: 1px solid transparent;
             font-size: 0.9rem; z-index: 5; outline: none; transition: background 0.3s;
+            text-align: right; /* Align Arabic text to right */
         }
         .cell-input:focus { background: rgba(251, 191, 36, 0.05); border-color: var(--accent); }
 
+        /* ARROW ON THE LEFT FOR RTL */
         .dropdown-arrow {
-            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-            color: #475569; cursor: pointer; z-index: 10; font-size: 0.8rem;
+            position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+            color: #475569; cursor: pointer; z-index: 10; font-size: 0.7rem;
             transition: color 0.3s;
         }
         .dropdown-arrow:hover { color: var(--accent); }
 
-        /* CUSTOM DROPDOWN LIST */
         .custom-menu {
-            position: absolute; top: 100%; left: 0; width: 100%; max-height: 200px;
+            position: absolute; top: 100%; right: 0; width: 100%; max-height: 220px;
             overflow-y: auto; background: #1e2126; border: 1px solid var(--light);
-            border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 25px var(--shadow);
-            display: none;
+            border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 30px var(--shadow);
+            display: none; text-align: right;
         }
-        .custom-menu div {
-            padding: 0.6rem 1rem; cursor: pointer; color: #94a3b8; font-size: 0.85rem;
-        }
+        .custom-menu div { padding: 0.7rem 1rem; cursor: pointer; color: #94a3b8; font-size: 0.85rem; }
         .custom-menu div:hover { background: var(--light); color: var(--accent); }
 
-        .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 10px; }
+        .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-flex; margin-right: 12px; }
         .led-loading { background: var(--crimson); box-shadow: 0 0 15px var(--crimson); animation: blink 1s infinite; }
         .led-ready { background: var(--emerald); box-shadow: 0 0 15px var(--emerald); }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
-        .date-col { color: #475569; font-family: monospace; font-weight: bold; text-align: center; width: 120px; }
+        .date-col { color: #475569; font-family: monospace; font-weight: bold; text-align: center; width: 130px; direction: ltr; }
         .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 80px; }
+
+        #shield { position: fixed; inset: 0; background: var(--bg); z-index: 100; transition: opacity 0.5s; }
     </style>
 </head>
 <body class="p-4 md:p-8">
+    <div id="shield"></div>
+
     <div id="app-wrapper" class="max-w-full mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
             <div>
-                <h1 class="text-white text-3xl font-extrabold tracking-tight">MD Scheduler 🇮🇶</h1>
-                <div class="mt-3 flex items-center bg-black/30 px-5 py-2 rounded-full inline-flex">
+                <h1 class="text-white text-3xl font-extrabold tracking-tight">Monthly Scheduler 🇮🇶</h1>
+                <div class="mt-4 flex items-center bg-black/40 px-6 py-2 rounded-full inline-flex border border-white/5">
                     <span id="led" class="led-dot led-loading"></span>
-                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-rose-500">Initializing Neural Link...</span>
+                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Syncing Resident List...</span>
                 </div>
             </div>
             <div class="recessed-table-container p-2 flex items-center">
-                <input type="month" id="month-picker" class="bg-transparent text-amber-500 font-bold outline-none p-2 cursor-pointer" onchange="generateTable()">
+                <input type="month" id="month-picker" class="bg-transparent text-amber-500 font-bold outline-none p-3 cursor-pointer" onchange="generateTable()">
             </div>
         </div>
 
         <div id="main-table-area" class="embossed-card p-6">
-            <div class="recessed-table-container max-h-[75vh]">
+            <div class="recessed-table-container max-h-[72vh]">
                 <table id="schedule-table">
                     <thead><tr id="table-headers"></tr></thead>
                     <tbody id="table-body"></tbody>
                 </table>
             </div>
             <div class="mt-8 flex justify-end">
-                <button id="save-btn" onclick="saveAll()" class="bg-[#2a2d34] shadow-lg px-12 py-5 rounded-2xl text-amber-500 font-black uppercase tracking-widest transition-all hover:bg-black active:scale-95">
-                    Push to Database
+                <button id="save-btn" onclick="saveAll()" class="bg-[#2a2d34] shadow-xl px-14 py-6 rounded-3xl text-amber-500 font-black uppercase tracking-[0.2em] transition-all hover:bg-black active:scale-95 border border-white/5">
+                    Push All Updates
                 </button>
             </div>
         </div>
@@ -128,16 +129,16 @@
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
     
     const specialties = [
-        { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
-        { id: "GS", name: "General Surgery" }, { id: "US", name: "Urosurgery" },
-        { id: "ENT", name: "ENT" }, { id: "H", name: "Cardiology" },
-        { id: "D", name: "Death Certs" }, { id: "OP", name: "Anaesthesia (OP)" },
-        { id: "ICU", name: "Anaesthesia (ICU)" }, { id: "R", name: "Radiology" },
-        { id: "ON", name: "Oncology" }, { id: "PS", name: "Plastic Surgery" }
+        { id: "NS", name: "Neurosurgery" }, { id: "GS", name: "General Surgery" },
+        { id: "R", name: "Radiology" }, { id: "US", name: "Urosurgery" },
+        { id: "CT", name: "Cardiothoracic" }, { id: "ENT", name: "ENT" },
+        { id: "OP", name: "Anaesthesia (OP)" }, { id: "ICU", name: "Anaesthesia (ICU)" },
+        { id: "ON", name: "Oncology" }, { id: "PS", name: "Plastic Surgery" },
+        { id: "H", name: "Cardiology" }, { id: "D", name: "Death Certs" }
     ];
 
     let allResidents = [];
-    let nameData = {}; // Organized by specialty
+    let nameData = {}; 
 
     window.onload = async () => {
         const now = new Date();
@@ -148,23 +149,22 @@
             const response = await fetch(`${scriptUrl}?action=getNames`);
             allResidents = await response.json();
             
-            // Map names to specialties for fast lookup
             specialties.forEach(spec => {
                 if (spec.id === "OP" || spec.id === "ICU") nameData[spec.id] = allResidents.filter(r => r[1] === "A").map(r => r[0]);
                 else if (spec.id === "D") nameData[spec.id] = allResidents.map(r => r[0]);
                 else nameData[spec.id] = allResidents.filter(r => r[1] === spec.id).map(r => r[0]);
             });
-
             setReady();
         } catch (e) {
-            document.getElementById('status-text').innerText = "Database Offline";
+            document.getElementById('status-text').innerText = "Sync Failed";
         }
+        setTimeout(() => { document.getElementById('shield').style.opacity = '0'; }, 500);
     };
 
     function setReady() {
         document.getElementById('led').className = "led-dot led-ready";
-        document.getElementById('status-text').innerText = "Ready 🇮🇶";
-        document.getElementById('status-text').className = "text-[0.65rem] font-black uppercase tracking-[0.2em] text-emerald-500";
+        document.getElementById('status-text').innerText = "System Ready 🇮🇶";
+        document.getElementById('status-text').className = "text-[0.65rem] font-black uppercase tracking-[0.25em] text-emerald-500";
         document.getElementById('app-wrapper').classList.add('is-ready');
     }
 
@@ -172,7 +172,6 @@
         const picker = document.getElementById('month-picker').value;
         const [year, month] = picker.split('-').map(Number);
         const daysInMonth = new Date(year, month, 0).getDate();
-        
         const hRow = document.getElementById('table-headers');
         let hHtml = ``;
         specialties.forEach(s => hHtml += `<th>${s.name}</th>`);
@@ -181,51 +180,30 @@
 
         const body = document.getElementById('table-body');
         body.innerHTML = "";
-
         for (let d = 1; d <= daysInMonth; d++) {
             const dateStr = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
             const dayName = new Date(year, month-1, d).toLocaleDateString('en-US', { weekday: 'short' });
             const tr = document.createElement('tr');
             let rHtml = ``;
-
             specialties.forEach(s => {
-                rHtml += `<td>
-                    <div class="ac-container">
-                        <div class="ghost-text" id="ghost-${d}-${s.id}"></div>
-                        <input type="text" class="cell-input" 
-                            id="input-${d}-${s.id}"
-                            oninput="handleAC(this, '${s.id}', '${d}-${s.id}')"
-                            onkeydown="handleKeys(event, this, '${d}-${s.id}')"
-                            onblur="hideMenu('${d}-${s.id}')"
-                            data-date="${dateStr}" data-spec="${s.id}">
-                        <span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span>
-                        <div class="custom-menu" id="menu-${d}-${s.id}"></div>
-                    </div>
-                </td>`;
+                rHtml += `<td><div class="ac-container"><div class="ghost-text" id="ghost-${d}-${s.id}"></div><input type="text" class="cell-input" id="input-${d}-${s.id}" oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" onkeydown="handleKeys(event, this, '${d}-${s.id}')" onblur="hideMenu('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}"><span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span><div class="custom-menu" id="menu-${d}-${s.id}"></div></div></td>`;
             });
-
             rHtml += `<td class="date-col border-l border-slate-800/30">${dateStr}</td><td class="day-col">${dayName}</td>`;
             tr.innerHTML = rHtml;
             body.appendChild(tr);
         }
     }
 
-    // Auto-complete Logic (Ghost Text)
     function handleAC(el, specId, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const val = el.value.toLowerCase();
         ghost.innerText = "";
-
         if (val && nameData[specId]) {
             const match = nameData[specId].find(name => name.toLowerCase().startsWith(val));
-            if (match) {
-                // Keep the casing the user typed, but append the rest
-                ghost.innerText = el.value + match.substring(val.length);
-            }
+            if (match) ghost.innerText = el.value + match.substring(val.length);
         }
     }
 
-    // Tab/Right Arrow Completion
     function handleKeys(e, el, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         if ((e.key === "Tab" || e.key === "ArrowRight") && ghost.innerText !== "") {
@@ -235,50 +213,40 @@
         }
     }
 
-    // Dropdown Logic
     function toggleMenu(uniqueId, specId) {
         const menu = document.getElementById(`menu-${uniqueId}`);
-        const input = document.getElementById(`input-${uniqueId}`);
-        
-        if (menu.style.display === "block") {
-            menu.style.display = "none";
-            return;
-        }
-
+        if (menu.style.display === "block") { menu.style.display = "none"; return; }
         const names = nameData[specId] || [];
         menu.innerHTML = names.map(n => `<div onmousedown="selectName('${uniqueId}', '${n}')">${n}</div>`).join('');
         menu.style.display = "block";
     }
 
     function selectName(uniqueId, name) {
-        const input = document.getElementById(`input-${uniqueId}`);
-        const ghost = document.getElementById(`ghost-${uniqueId}`);
-        input.value = name;
-        ghost.innerText = "";
+        document.getElementById(`input-${uniqueId}`).value = name;
+        document.getElementById(`ghost-${uniqueId}`).innerText = "";
         document.getElementById(`menu-${uniqueId}`).style.display = "none";
     }
 
-    function hideMenu(uniqueId) {
-        setTimeout(() => {
-            document.getElementById(`menu-${uniqueId}`).style.display = "none";
-        }, 200);
-    }
+    function hideMenu(uniqueId) { setTimeout(() => { document.getElementById(`menu-${uniqueId}`).style.display = "none"; }, 200); }
 
     async function saveAll() {
         const btn = document.getElementById('save-btn');
-        const updates = Array.from(document.querySelectorAll('.cell-input'))
-                             .filter(i => i.value.trim() !== "")
-                             .map(i => ({ date: i.dataset.date, specialty: i.dataset.spec, name: i.value }));
-
-        if (updates.length === 0) return;
-        btn.innerText = "UPLOADING...";
+        const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
+        if (inputs.length === 0) return alert("Nothing to update!");
         btn.disabled = true;
-
-        try {
-            await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "bulkUpdateSchedule", payload: updates }) });
-            btn.innerText = "SUCCESS ✅";
-            setTimeout(() => { btn.innerText = "Push to Database"; btn.disabled = false; }, 3000);
-        } catch (e) { btn.innerText = "RETRY"; btn.disabled = false; }
+        let successCount = 0;
+        for (let i = 0; i < inputs.length; i++) {
+            const el = inputs[i];
+            btn.innerText = `UPDATING ${i + 1}/${inputs.length}...`;
+            const payload = { date: el.dataset.date, specialty: el.dataset.spec, name: el.value };
+            try {
+                await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                successCount++;
+            } catch (e) { console.error("Error updating row:", payload); }
+        }
+        btn.innerText = `PUSHED ${successCount} SUCCESSFULLY ✅`;
+        btn.style.color = "#10b981";
+        setTimeout(() => { btn.innerText = "Push All Changes"; btn.style.color = "#fbbf24"; btn.disabled = false; }, 3000);
     }
 </script>
 </body>
