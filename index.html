@@ -18,95 +18,32 @@
             --led-glow: 0 0 25px;
             --emerald-glow: 0 0 15px rgba(16, 185, 129, 0.7);
             --crimson-glow: 0 0 15px rgba(225, 29, 72, 0.7);
-            
-            /* NEW COLORS */
             --zebra: rgba(255, 255, 255, 0.02);
-            --weekend-bg: rgba(16, 185, 129, 0.08); /* Deep Emerald Tint */
+            --weekend-bg: rgba(16, 185, 129, 0.08); 
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
-        
         h1 { text-shadow: var(--glow); color: white; }
-
-        #main-table-area { 
-            pointer-events: none; 
-            filter: grayscale(1) brightness(0.5); 
-            opacity: 0.3; 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
+        #main-table-area { pointer-events: none; filter: grayscale(1) brightness(0.5); opacity: 0.3; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .is-ready #main-table-area { pointer-events: auto; filter: none; opacity: 1; }
-
-        .embossed-card {
-            background: var(--bg);
-            border-radius: 2.5rem;
-            box-shadow: 20px 20px 60px var(--shadow), -10px -10px 40px var(--light);
-        }
-
-        .recessed-table-container {
-            background: var(--bg);
-            border-radius: 1.5rem;
-            box-shadow: inset 8px 8px 16px var(--shadow), inset -4px -4px 12px var(--light);
-            overflow-x: auto;
-        }
-
+        .embossed-card { background: var(--bg); border-radius: 2.5rem; box-shadow: 20px 20px 60px var(--shadow), -10px -10px 40px var(--light); }
+        .recessed-table-container { background: var(--bg); border-radius: 1.5rem; box-shadow: inset 8px 8px 16px var(--shadow), inset -4px -4px 12px var(--light); overflow-x: auto; }
         table { border-collapse: separate; border-spacing: 0; min-width: 1750px; }
-        th { 
-            position: sticky; top: 0; background: var(--bg); z-index: 20;
-            padding: 1.2rem; color: var(--accent); font-weight: 800; font-size: 0.75rem;
-            letter-spacing: 0.15em; border-bottom: 1px solid var(--light);
-            text-shadow: var(--glow);
-        }
-
-        /* ALTERNATING AND WEEKEND STYLING */
+        th { position: sticky; top: 0; background: var(--bg); z-index: 20; padding: 1.2rem; color: var(--accent); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.15em; border-bottom: 1px solid var(--light); text-shadow: var(--glow); }
         tr:nth-child(even) { background-color: var(--zebra); }
         tr.weekend-row { background-color: var(--weekend-bg) !important; }
         tr.weekend-row .day-col { color: var(--emerald); text-shadow: var(--emerald-glow); }
-
         .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
-        
-        .ghost-text {
-            position: absolute; 
-            top: 0; right: 0; left: 0; bottom: 0;
-            padding: 0.7rem 0.7rem 0.7rem 2.5rem;
-            color: rgba(255, 255, 255, 0.15); 
-            font-size: 0.9rem; 
-            font-family: inherit;
-            line-height: 1.25rem;
-            pointer-events: none; 
-            white-space: nowrap; 
-            overflow: hidden;
-            text-align: right; 
-            z-index: 1; 
-        }
-
-        .cell-input {
-            position: relative; 
-            background: transparent; 
-            color: #fff; 
-            width: 100%;
-            padding: 0.7rem 0.7rem 0.7rem 2.5rem;
-            border-radius: 0.8rem; 
-            border: 1px solid transparent;
-            font-size: 0.9rem; 
-            font-family: inherit;
-            line-height: 1.25rem;
-            z-index: 5; 
-            outline: none; 
-            text-align: right;
-            transition: all 0.2s;
-        }
-        
+        .ghost-text { position: absolute; top: 0; right: 0; left: 0; bottom: 0; padding: 0.7rem 0.7rem 0.7rem 2.5rem; color: rgba(255, 255, 255, 0.15); font-size: 0.9rem; font-family: inherit; line-height: 1.25rem; pointer-events: none; white-space: nowrap; overflow: hidden; text-align: right; z-index: 1; }
+        .cell-input { position: relative; background: transparent; color: #fff; width: 100%; padding: 0.7rem 0.7rem 0.7rem 2.5rem; border-radius: 0.8rem; border: 1px solid transparent; font-size: 0.9rem; font-family: inherit; line-height: 1.25rem; z-index: 5; outline: none; text-align: right; transition: all 0.2s; }
         .cell-input:focus { background: rgba(251, 191, 36, 0.05); border-color: var(--accent); box-shadow: var(--glow); }
         .prefilled { color: var(--emerald) !important; text-shadow: var(--emerald-glow); }
         .new-entry { color: var(--crimson) !important; text-shadow: var(--crimson-glow); }
-
         .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-flex; margin-right: 12px; }
         .led-loading { background: var(--crimson); box-shadow: var(--led-glow) var(--crimson); animation: blink 1s infinite; }
         .led-ready { background: var(--emerald); box-shadow: var(--led-glow) var(--emerald); }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-
         .date-col { color: #64748b; font-family: monospace; font-weight: bold; text-align: center; width: 130px; direction: ltr; }
         .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 100px; text-shadow: 0 0 8px rgba(251, 191, 36, 0.4); font-size: 0.85rem; }
-        
         .dropdown-arrow { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.7rem; }
         .custom-menu { position: absolute; top: 100%; right: 0; width: 100%; max-height: 220px; overflow-y: auto; background: #1e2126; border: 1px solid var(--light); border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 30px var(--shadow); display: none; text-align: right; }
         .custom-menu div { padding: 0.7rem 1rem; cursor: pointer; color: #94a3b8; font-size: 0.85rem; }
@@ -147,6 +84,7 @@
 <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
     
+    // Plastic Surgery removed from this array to hide it from the UI
     const specialties = [
         { id: "NS", name: "Neurosurgery" },
         { id: "CT", name: "Cardiothoracic Surgery" },
@@ -158,8 +96,7 @@
         { id: "OP", name: "OT Anaesthesia" },
         { id: "ICU", name: "ICU Anaesthesia" },
         { id: "R", name: "Radiology" },
-        { id: "ON", name: "Oncology" },
-        { id: "PS", name: "Plastic Surgery" }
+        { id: "ON", name: "Oncology" }
     ];
 
     let nameData = {}; 
@@ -241,8 +178,6 @@
             const dateObj = new Date(year, month-1, d);
             const dateStr = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
             const dayName = new Intl.DateTimeFormat('ar-IQ', { weekday: 'long' }).format(dateObj);
-            
-            // CHECK FOR WEEKENDS (Friday is 5, Saturday is 6)
             const isWeekend = (dateObj.getDay() === 5 || dateObj.getDay() === 6);
             
             const tr = document.createElement('tr');
