@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MD Scheduler | Carbon Gold RTL</title>
+    <title>Scheduler</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
     <style>
@@ -17,14 +17,19 @@
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; }
         
-        /* LOCK STATE */
+        /* THE GREY-OUT LOCK */
         #main-table-area { 
             pointer-events: none; 
-            filter: grayscale(1) blur(6px); 
-            opacity: 0.15; 
-            transition: all 0.8s ease; 
+            filter: grayscale(1) brightness(0.5); 
+            opacity: 0.4; 
+            transition: all 0.6s ease; 
         }
-        .is-ready #main-table-area { pointer-events: auto; filter: grayscale(0) blur(0); opacity: 1; }
+        /* THE UNLOCK STATE */
+        .is-ready #main-table-area { 
+            pointer-events: auto; 
+            filter: none; 
+            opacity: 1; 
+        }
 
         .embossed-card {
             background: var(--bg);
@@ -46,41 +51,25 @@
             letter-spacing: 0.15em; border-bottom: 1px solid var(--light);
         }
 
-        /* RTL AUTOCOMPLETE CELL STYLING */
+        /* RTL AUTOCOMPLETE */
         .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
-        
         .ghost-text {
             position: absolute; top: 0; right: 0; padding: 0.7rem;
             color: rgba(255, 255, 255, 0.12); font-size: 0.9rem;
             pointer-events: none; white-space: nowrap; overflow: hidden;
             text-align: right; width: 100%;
         }
-
         .cell-input {
             position: relative; background: transparent; color: #e2e8f0; width: 100%;
             padding: 0.7rem; padding-left: 2.2rem; padding-right: 0.7rem; 
             border-radius: 0.8rem; border: 1px solid transparent;
-            font-size: 0.9rem; z-index: 5; outline: none; transition: background 0.3s;
-            text-align: right; /* Align Arabic text to right */
+            font-size: 0.9rem; z-index: 5; outline: none; text-align: right;
         }
-        .cell-input:focus { background: rgba(251, 191, 36, 0.05); border-color: var(--accent); }
 
-        /* ARROW ON THE LEFT FOR RTL */
         .dropdown-arrow {
             position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
             color: #475569; cursor: pointer; z-index: 10; font-size: 0.7rem;
-            transition: color 0.3s;
         }
-        .dropdown-arrow:hover { color: var(--accent); }
-
-        .custom-menu {
-            position: absolute; top: 100%; right: 0; width: 100%; max-height: 220px;
-            overflow-y: auto; background: #1e2126; border: 1px solid var(--light);
-            border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 30px var(--shadow);
-            display: none; text-align: right;
-        }
-        .custom-menu div { padding: 0.7rem 1rem; cursor: pointer; color: #94a3b8; font-size: 0.85rem; }
-        .custom-menu div:hover { background: var(--light); color: var(--accent); }
 
         .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-flex; margin-right: 12px; }
         .led-loading { background: var(--crimson); box-shadow: 0 0 15px var(--crimson); animation: blink 1s infinite; }
@@ -89,21 +78,18 @@
 
         .date-col { color: #475569; font-family: monospace; font-weight: bold; text-align: center; width: 130px; direction: ltr; }
         .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 80px; }
-
-        #shield { position: fixed; inset: 0; background: var(--bg); z-index: 100; transition: opacity 0.5s; }
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <div id="shield"></div>
-
     <div id="app-wrapper" class="max-w-full mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
             <div>
                 <h1 class="text-white text-3xl font-extrabold tracking-tight">Monthly Scheduler 🇮🇶</h1>
                 <div class="mt-4 flex items-center bg-black/40 px-6 py-2 rounded-full inline-flex border border-white/5">
                     <span id="led" class="led-dot led-loading"></span>
-                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Syncing Resident List...</span>
+                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Loading Resident Data...</span>
                 </div>
+                <button id="manual-unlock" onclick="setReady()" class="hidden ml-4 text-[0.6rem] text-slate-500 underline uppercase tracking-widest">Manual Unlock</button>
             </div>
             <div class="recessed-table-container p-2 flex items-center">
                 <input type="month" id="month-picker" class="bg-transparent text-amber-500 font-bold outline-none p-3 cursor-pointer" onchange="generateTable()">
@@ -119,7 +105,7 @@
             </div>
             <div class="mt-8 flex justify-end">
                 <button id="save-btn" onclick="saveAll()" class="bg-[#2a2d34] shadow-xl px-14 py-6 rounded-3xl text-amber-500 font-black uppercase tracking-[0.2em] transition-all hover:bg-black active:scale-95 border border-white/5">
-                    Push All Updates
+                    Push Updates
                 </button>
             </div>
         </div>
@@ -140,11 +126,25 @@
     let allResidents = [];
     let nameData = {}; 
 
-    window.onload = async () => {
+    window.onload = () => {
         const now = new Date();
         document.getElementById('month-picker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        
+        // STEP 1: Generate table instantly so the page isn't blank
         generateTable();
 
+        // STEP 2: Start fetching data
+        fetchData();
+
+        // STEP 3: Show emergency unlock if it takes too long (5 seconds)
+        setTimeout(() => {
+            if (!document.getElementById('app-wrapper').classList.contains('is-ready')) {
+                document.getElementById('manual-unlock').classList.remove('hidden');
+            }
+        }, 5000);
+    };
+
+    async function fetchData() {
         try {
             const response = await fetch(`${scriptUrl}?action=getNames`);
             allResidents = await response.json();
@@ -156,16 +156,16 @@
             });
             setReady();
         } catch (e) {
-            document.getElementById('status-text').innerText = "Sync Failed";
+            document.getElementById('status-text').innerText = "Sync Failed - Use Manual Mode";
         }
-        setTimeout(() => { document.getElementById('shield').style.opacity = '0'; }, 500);
-    };
+    }
 
     function setReady() {
         document.getElementById('led').className = "led-dot led-ready";
         document.getElementById('status-text').innerText = "System Ready 🇮🇶";
         document.getElementById('status-text').className = "text-[0.65rem] font-black uppercase tracking-[0.25em] text-emerald-500";
         document.getElementById('app-wrapper').classList.add('is-ready');
+        document.getElementById('manual-unlock').classList.add('hidden');
     }
 
     function generateTable() {
@@ -186,7 +186,7 @@
             const tr = document.createElement('tr');
             let rHtml = ``;
             specialties.forEach(s => {
-                rHtml += `<td><div class="ac-container"><div class="ghost-text" id="ghost-${d}-${s.id}"></div><input type="text" class="cell-input" id="input-${d}-${s.id}" oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" onkeydown="handleKeys(event, this, '${d}-${s.id}')" onblur="hideMenu('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}"><span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span><div class="custom-menu" id="menu-${d}-${s.id}"></div></div></td>`;
+                rHtml += `<td><div class="ac-container"><div class="ghost-text" id="ghost-${d}-${s.id}"></div><input type="text" class="cell-input" id="input-${d}-${s.id}" oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" onkeydown="handleKeys(event, this, '${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}"><span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span><div class="custom-menu" id="menu-${d}-${s.id}"></div></div></td>`;
             });
             rHtml += `<td class="date-col border-l border-slate-800/30">${dateStr}</td><td class="day-col">${dayName}</td>`;
             tr.innerHTML = rHtml;
@@ -194,6 +194,7 @@
         }
     }
 
+    // (Autocomplete and Menu functions remain the same as previous versions...)
     function handleAC(el, specId, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const val = el.value.toLowerCase();
@@ -227,8 +228,6 @@
         document.getElementById(`menu-${uniqueId}`).style.display = "none";
     }
 
-    function hideMenu(uniqueId) { setTimeout(() => { document.getElementById(`menu-${uniqueId}`).style.display = "none"; }, 200); }
-
     async function saveAll() {
         const btn = document.getElementById('save-btn');
         const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
@@ -245,8 +244,7 @@
             } catch (e) { console.error("Error updating row:", payload); }
         }
         btn.innerText = `PUSHED ${successCount} SUCCESSFULLY ✅`;
-        btn.style.color = "#10b981";
-        setTimeout(() => { btn.innerText = "Push All Changes"; btn.style.color = "#fbbf24"; btn.disabled = false; }, 3000);
+        setTimeout(() => { btn.innerText = "Push Updates"; btn.disabled = false; }, 3000);
     }
 </script>
 </body>
