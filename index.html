@@ -17,7 +17,7 @@
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
         
-        /* THE GREY-OUT LOCK (Active while names are fetching) */
+        /* THE GREY-OUT LOCK */
         #main-table-area { 
             pointer-events: none; 
             filter: grayscale(1) brightness(0.6); 
@@ -46,7 +46,7 @@
             letter-spacing: 0.15em; border-bottom: 1px solid var(--light);
         }
 
-        /* RTL AUTOCOMPLETE STYLING */
+        /* RTL AUTOCOMPLETE */
         .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
         .ghost-text {
             position: absolute; top: 0; right: 0; padding: 0.7rem;
@@ -117,7 +117,6 @@
     </div>
 
 <script>
-    // YOUR SCRIPT URL
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
     
     const specialties = [
@@ -134,8 +133,7 @@
     window.onload = () => {
         const now = new Date();
         document.getElementById('month-picker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-        
-        generateTable(); // Show greyed table immediately
+        generateTable();
         fetchResidentNames();
     };
 
@@ -152,7 +150,7 @@
             unlockTable();
         } catch (e) {
             document.getElementById('status-text').innerText = "Sync Error - Manual Mode Ready";
-            unlockTable(); // Unlock anyway so you can type manually
+            unlockTable();
         }
     }
 
@@ -189,7 +187,7 @@
         }
     }
 
-    // --- AUTOCOMPLETE & DROPDOWN ENGINE ---
+    // --- AUTOCOMPLETE ENGINE ---
     function handleAC(el, specId, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const val = el.value.toLowerCase();
@@ -225,50 +223,50 @@
 
     function hideMenu(uniqueId) { setTimeout(() => { document.getElementById(`menu-${uniqueId}`).style.display = "none"; }, 200); }
 
-    // --- INTEGRATED REGISTRATION LOGIC ---
+    // --- BULK POSTING LOGIC (Ignores Empty Cells) ---
     async function saveAll() {
         const btn = document.getElementById('save-btn');
         const card = document.getElementById('main-table-area');
-        const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
+        
+        // Filter: ONLY grab inputs that are NOT empty
+        const activeInputs = Array.from(document.querySelectorAll('.cell-input'))
+                                  .filter(input => input.value.trim() !== "");
 
-        if (inputs.length === 0) {
-            btn.innerText = "NO DATA ENTERED!";
+        if (activeInputs.length === 0) {
+            btn.innerText = "NO DATA TO SYNC! 🇮🇶";
             setTimeout(() => { btn.innerText = "UPDATE DATABASE"; }, 2000);
             return;
         }
 
         btn.disabled = true;
-        btn.innerText = "UPLOADING...";
-        card.style.opacity = "0.5"; // Added your loading-active visual cue
+        btn.innerText = `PUSHING ${activeInputs.length} CHANGES...`;
+        card.style.opacity = "0.4";
 
-        let successCount = 0;
-        for (let i = 0; i < inputs.length; i++) {
-            const el = inputs[i];
-            btn.innerText = `PUSHING ${i+1}/${inputs.length}...`;
+        const bulkData = activeInputs.map(el => ({
+            date: el.dataset.date,
+            specialty: el.dataset.spec,
+            name: el.value.trim()
+        }));
 
-            try {
-                // Matches your working registration payload
-                await fetch(scriptUrl, { 
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    body: JSON.stringify({
-                        action: "submitDuty",
-                        date: el.dataset.date,
-                        specialty: el.dataset.spec,
-                        name: el.value
-                    })
-                });
-                successCount++;
-            } catch (e) {
-                console.error("Failed cell:", el.dataset.date, el.dataset.spec);
-            }
+        try {
+            await fetch(scriptUrl, { 
+                method: 'POST', 
+                mode: 'no-cors', 
+                body: JSON.stringify({ payload: bulkData })
+            });
+            
+            btn.innerText = "SUCCESSFULLY PUSHED ✅";
+            btn.style.color = "var(--emerald)";
+            card.style.opacity = "1";
+        } catch (e) { 
+            btn.innerText = "PUSH FAILED ⚠️";
+            btn.style.color = "var(--crimson)";
+            card.style.opacity = "1";
         }
 
-        card.style.opacity = "1";
-        btn.innerText = `SUCCESS (${successCount}/${inputs.length}) ✅`;
-        
         setTimeout(() => {
             btn.innerText = "UPDATE DATABASE";
+            btn.style.color = "var(--accent)";
             btn.disabled = false;
         }, 3000);
     }
