@@ -17,14 +17,28 @@
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; }
         
-        /* Premium Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--light); border-radius: 10px; }
+        /* LOCK STATE: Greyed out and unclickable */
+        #main-table-area { 
+            pointer-events: none; 
+            filter: grayscale(1) blur(2px); 
+            opacity: 0.3; 
+            transition: all 0.8s ease; 
+        }
+        .is-ready #main-table-area { 
+            pointer-events: auto; 
+            filter: grayscale(0) blur(0); 
+            opacity: 1; 
+        }
+
+        /* BLINKER SYSTEM */
+        .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 10px; }
+        .led-loading { background: var(--crimson); box-shadow: 0 0 15px var(--crimson); animation: blink 1s infinite; }
+        .led-ready { background: var(--emerald); box-shadow: 0 0 15px var(--emerald); }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
         .embossed-card {
             background: var(--bg);
-            border-radius: 2rem;
+            border-radius: 2.5rem;
             box-shadow: 20px 20px 60px var(--shadow), -10px -10px 40px var(--light);
         }
 
@@ -35,83 +49,53 @@
             overflow-x: auto;
         }
 
-        /* LOCK STATE */
-        #main-table-area { pointer-events: none; opacity: 0.5; transition: all 0.5s ease; }
-        .is-ready #main-table-area { pointer-events: auto; opacity: 1; }
-
-        /* BLINKER SYSTEM */
-        .led-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            display: inline-block; margin-right: 8px;
-        }
-        .led-loading { background: var(--crimson); box-shadow: 0 0 10px var(--crimson); animation: blink 1s infinite; }
-        .led-ready { background: var(--emerald); box-shadow: 0 0 10px var(--emerald); }
-
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-        table { border-collapse: separate; border-spacing: 0; min-width: 1400px; }
+        table { border-collapse: separate; border-spacing: 0; min-width: 1500px; }
         th { 
             position: sticky; top: 0; background: var(--bg); z-index: 10;
-            padding: 1.2rem; color: var(--accent); font-weight: 800; font-size: 0.7rem;
+            padding: 1.2rem; color: var(--accent); font-weight: 800; font-size: 0.75rem;
             letter-spacing: 0.15em; border-bottom: 1px solid var(--light);
-            white-space: nowrap;
         }
         
-        td { padding: 0.4rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
-
         .cell-input {
-            background: transparent; color: #e2e8f0; width: 100%; min-width: 190px;
-            padding: 0.6rem; border-radius: 0.8rem; border: 1px solid transparent;
-            transition: all 0.3s; font-size: 0.9rem;
+            background: transparent; color: #e2e8f0; width: 100%; min-width: 200px;
+            padding: 0.7rem; border-radius: 0.8rem; border: 1px solid transparent;
+            font-size: 0.9rem;
         }
-        .cell-input:focus {
-            background: rgba(251, 191, 36, 0.08); border-color: var(--accent);
-            outline: none; box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
-        }
+        .cell-input:focus { background: rgba(251, 191, 36, 0.1); border-color: var(--accent); outline: none; }
 
-        .date-col { color: #64748b; font-family: monospace; font-weight: bold; text-align: center; width: 110px; }
+        .date-col { color: #64748b; font-family: monospace; font-weight: bold; text-align: center; width: 120px; }
         .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 80px; }
 
         #shield { position: fixed; inset: 0; background: var(--bg); z-index: 100; transition: opacity 0.5s; }
-        
-        .save-btn {
-            background: var(--bg);
-            box-shadow: 10px 10px 20px var(--shadow), -5px -5px 15px var(--light);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <div id="shield"></div>
 
-    <div id="app-container" class="max-w-full mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-6">
+    <div id="app-wrapper" class="max-w-full mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
             <div>
-                <h1 class="text-white text-3xl font-extrabold tracking-tight">Monthly Scheduler 🇮🇶</h1>
-                
-                <div class="mt-2 flex items-center">
+                <h1 class="text-white text-3xl font-extrabold tracking-tight">MD Scheduler 🇮🇶</h1>
+                <div class="mt-3 flex items-center bg-black/20 px-4 py-2 rounded-full inline-flex">
                     <span id="led" class="led-dot led-loading"></span>
-                    <span id="status-text" class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-rose-500">System Loading...</span>
+                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-rose-500">Fetching "Names" Sheet...</span>
                 </div>
             </div>
             
-            <div class="recessed-table-container p-2 flex items-center gap-4">
-                <input type="month" id="month-picker" 
-                    class="bg-transparent text-amber-500 font-bold outline-none p-2 cursor-pointer"
-                    onchange="generateTable()">
+            <div class="recessed-table-container p-2 flex items-center">
+                <input type="month" id="month-picker" class="bg-transparent text-amber-500 font-bold outline-none p-2 cursor-pointer" onchange="generateTable()">
             </div>
         </div>
 
         <div id="main-table-area" class="embossed-card p-6">
-            <div class="recessed-table-container max-h-[70vh]">
+            <div class="recessed-table-container max-h-[75vh]">
                 <table id="schedule-table">
                     <thead><tr id="table-headers"></tr></thead>
                     <tbody id="table-body"></tbody>
                 </table>
             </div>
-            
             <div class="mt-8 flex justify-end">
-                <button id="save-btn" onclick="saveAll()" class="save-btn px-12 py-5 rounded-2xl text-amber-500 font-black uppercase tracking-widest">
+                <button id="save-btn" onclick="saveAll()" class="bg-[#2a2d34] shadow-lg px-12 py-5 rounded-2xl text-amber-500 font-black uppercase tracking-widest">
                     Push to Database
                 </button>
             </div>
@@ -124,39 +108,41 @@
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
     
     const specialties = [
-        { id: "NS", name: "Neurosurgery" },
-        { id: "CT", name: "Cardiothoracic" },
-        { id: "GS", name: "General Surgery" },
-        { id: "US", name: "Urosurgery" },
-        { id: "ENT", name: "ENT" },
-        { id: "H", name: "Cardiology" },
-        { id: "D", name: "Death Certs" },
-        { id: "OP", name: "Anaesthesia (OP)" },
-        { id: "ICU", name: "Anaesthesia (ICU)" },
-        { id: "R", name: "Radiology" },
-        { id: "ON", name: "Oncology" },
-        { id: "PS", name: "Plastic Surgery" }
+        { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
+        { id: "GS", name: "General Surgery" }, { id: "US", name: "Urosurgery" },
+        { id: "ENT", name: "ENT" }, { id: "H", name: "Cardiology" },
+        { id: "D", name: "Death Certs" }, { id: "OP", name: "Anaesthesia (OP)" },
+        { id: "ICU", name: "Anaesthesia (ICU)" }, { id: "R", name: "Radiology" },
+        { id: "ON", name: "Oncology" }, { id: "PS", name: "Plastic Surgery" }
     ];
 
     let allResidents = [];
 
     window.onload = async () => {
+        // 1. Initial UI Setup
         const now = new Date();
-        const monthVal = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-        document.getElementById('month-picker').value = monthVal;
+        document.getElementById('month-picker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        generateTable(); // Build empty structure first
 
+        // 2. Data Fetching
         try {
-            const res = await fetch(`${scriptUrl}?action=getNames`);
-            allResidents = await res.json();
+            console.log("Starting fetch from:", scriptUrl);
+            const response = await fetch(`${scriptUrl}?action=getNames`);
             
-            // Logic to unlock the table
-            setupDatalists();
-            generateTable();
-            setReady(); // Trigger the green light
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            allResidents = await response.json();
+            console.log("Names Loaded Successfully:", allResidents);
 
+            if (allResidents && allResidents.length > 0) {
+                setupDatalists();
+                setReady(); 
+            } else {
+                document.getElementById('status-text').innerText = "Sheet Empty or Not Found";
+            }
         } catch (e) {
-            document.getElementById('status-text').innerText = "Offline Mode";
-            generateTable(); 
+            console.error("Fetch Error:", e);
+            document.getElementById('status-text').innerText = "Connection Error";
         }
 
         setTimeout(() => {
@@ -166,14 +152,10 @@
     };
 
     function setReady() {
-        const led = document.getElementById('led');
-        const status = document.getElementById('status-text');
-        const app = document.getElementById('app-container');
-
-        led.className = "led-dot led-ready";
-        status.innerText = "Ready 🇮🇶";
-        status.className = "text-[0.6rem] font-black uppercase tracking-[0.2em] text-emerald-500";
-        app.classList.add('is-ready'); // Removes the opacity and lock
+        document.getElementById('led').className = "led-dot led-ready";
+        document.getElementById('status-text').innerText = "Ready 🇮🇶";
+        document.getElementById('status-text').className = "text-[0.65rem] font-black uppercase tracking-[0.2em] text-emerald-500";
+        document.getElementById('app-wrapper').classList.add('is-ready');
     }
 
     function setupDatalists() {
@@ -182,7 +164,10 @@
         specialties.forEach(spec => {
             const dl = document.createElement('datalist');
             dl.id = `list-${spec.id}`;
-            let filtered = (spec.id === "OP" || spec.id === "ICU") ? allResidents.filter(r => r[1] === "A") : (spec.id === "D" ? allResidents : allResidents.filter(r => r[1] === spec.id));
+            let filtered = (spec.id === "OP" || spec.id === "ICU") ? 
+                           allResidents.filter(r => r[1] === "A") : 
+                           (spec.id === "D" ? allResidents : allResidents.filter(r => r[1] === spec.id));
+            
             dl.innerHTML = filtered.map(r => `<option value="${r[0]}">`).join('');
             container.appendChild(dl);
         });
@@ -193,26 +178,23 @@
         const [year, month] = picker.split('-').map(Number);
         const daysInMonth = new Date(year, month, 0).getDate();
         
-        const headerRow = document.getElementById('table-headers');
+        const hRow = document.getElementById('table-headers');
         let hHtml = ``;
         specialties.forEach(s => hHtml += `<th>${s.name}</th>`);
         hHtml += `<th class="date-col border-l border-slate-800">Date</th><th class="day-col">Day</th>`;
-        headerRow.innerHTML = hHtml;
+        hRow.innerHTML = hHtml;
 
         const body = document.getElementById('table-body');
         body.innerHTML = "";
 
         for (let d = 1; d <= daysInMonth; d++) {
-            const dateObj = new Date(year, month - 1, d);
-            const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
             const dateStr = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+            const dayName = new Date(year, month-1, d).toLocaleDateString('en-US', { weekday: 'short' });
             const tr = document.createElement('tr');
             let rHtml = ``;
-
             specialties.forEach(s => {
-                rHtml += `<td><input type="text" class="cell-input" list="list-${s.id}" placeholder="Select Resident..." data-date="${dateStr}" data-spec="${s.id}"></td>`;
+                rHtml += `<td><input type="text" class="cell-input" list="list-${s.id}" placeholder="..." data-date="${dateStr}" data-spec="${s.id}"></td>`;
             });
-
             rHtml += `<td class="date-col border-l border-slate-800/30">${dateStr}</td><td class="day-col">${dayName}</td>`;
             tr.innerHTML = rHtml;
             body.appendChild(tr);
@@ -221,30 +203,16 @@
 
     async function saveAll() {
         const btn = document.getElementById('save-btn');
-        const inputs = document.querySelectorAll('.cell-input');
-        const updates = [];
-
-        inputs.forEach(input => {
-            if (input.value.trim() !== "") {
-                updates.push({
-                    date: input.getAttribute('data-date'),
-                    specialty: input.getAttribute('data-spec'),
-                    name: input.value
-                });
-            }
-        });
+        const updates = Array.from(document.querySelectorAll('.cell-input'))
+                             .filter(i => i.value.trim() !== "")
+                             .map(i => ({ date: i.dataset.date, specialty: i.dataset.spec, name: i.value }));
 
         if (updates.length === 0) return;
-
         btn.innerText = "UPLOADING...";
         btn.disabled = true;
 
         try {
-            await fetch(scriptUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ action: "bulkUpdateSchedule", payload: updates })
-            });
+            await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "bulkUpdateSchedule", payload: updates }) });
             btn.innerText = "SUCCESS ✅";
             setTimeout(() => { btn.innerText = "Push to Database"; btn.disabled = false; }, 3000);
         } catch (e) { btn.innerText = "RETRY"; btn.disabled = false; }
