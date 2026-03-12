@@ -21,22 +21,6 @@
             --zebra: rgba(255, 255, 255, 0.02);
             --weekend-bg: rgba(16, 185, 129, 0.08); 
         }
-
-        /* PRINT OPTIMIZATION 🇮🇶 */
-        @media print {
-            body { background: white !important; color: black !important; padding: 0 !important; }
-            #save-btn, #print-btn, #month-picker, #led, #status-text, .dropdown-arrow, .mt-8 { display: none !important; }
-            .embossed-card { box-shadow: none !important; border: none !important; padding: 0 !important; background: white !important; }
-            .recessed-table-container { box-shadow: none !important; max-height: none !important; overflow: visible !important; }
-            table { min-width: 100% !important; border: 1px solid #ddd !important; table-layout: fixed; }
-            th { background: #f8f9fa !important; color: black !important; text-shadow: none !important; border: 1px solid #ddd !important; font-size: 10px !important; }
-            td { border: 1px solid #eee !important; color: black !important; padding: 4px !important; font-size: 10px !important; }
-            .weekend-row { background-color: #f0fdf4 !important; -webkit-print-color-adjust: exact; }
-            .cell-input { color: black !important; text-align: center !important; padding: 2px !important; }
-            h1 { color: black !important; text-shadow: none !important; text-align: center; margin-bottom: 20px; }
-            @page { size: A4 landscape; margin: 1cm; }
-        }
-
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
         h1 { text-shadow: var(--glow); color: white; }
         #main-table-area { pointer-events: none; filter: grayscale(1) brightness(0.5); opacity: 0.3; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -77,13 +61,8 @@
                     <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Initializing...</span>
                 </div>
             </div>
-            <div class="flex gap-4">
-                <button id="print-btn" onclick="window.print()" class="bg-emerald-600/20 text-emerald-500 border border-emerald-500/30 px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all">
-                    Generate PDF 📄
-                </button>
-                <div class="recessed-table-container p-2 flex items-center bg-black/20">
-                    <input type="month" id="month-picker" class="bg-transparent text-amber-500 font-bold outline-none p-3 cursor-pointer" onchange="generateTable()">
-                </div>
+            <div class="recessed-table-container p-2 flex items-center bg-black/20">
+                <input type="month" id="month-picker" class="bg-transparent text-amber-500 font-bold outline-none p-3 cursor-pointer" onchange="generateTable()">
             </div>
         </div>
 
@@ -105,6 +84,7 @@
 <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
     
+    // Plastic Surgery removed from this array to hide it from the UI
     const specialties = [
         { id: "NS", name: "Neurosurgery" },
         { id: "CT", name: "Cardiothoracic Surgery" },
