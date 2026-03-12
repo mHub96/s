@@ -12,29 +12,23 @@
             --light: #2a2d34;
             --shadow: #0d0e11;
             --accent: #fbbf24;
-            --crimson: #e11d48;
             --emerald: #10b981;
+            --crimson: #e11d48;
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; }
         
-        /* LOCK STATE: Greyed out and unclickable */
+        /* LOCK STATE */
         #main-table-area { 
             pointer-events: none; 
-            filter: grayscale(1) blur(2px); 
-            opacity: 0.3; 
-            transition: all 0.8s ease; 
+            filter: grayscale(1) blur(4px); 
+            opacity: 0.2; 
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         .is-ready #main-table-area { 
             pointer-events: auto; 
             filter: grayscale(0) blur(0); 
             opacity: 1; 
         }
-
-        /* BLINKER SYSTEM */
-        .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 10px; }
-        .led-loading { background: var(--crimson); box-shadow: 0 0 15px var(--crimson); animation: blink 1s infinite; }
-        .led-ready { background: var(--emerald); box-shadow: 0 0 15px var(--emerald); }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
         .embossed-card {
             background: var(--bg);
@@ -49,39 +43,67 @@
             overflow-x: auto;
         }
 
-        table { border-collapse: separate; border-spacing: 0; min-width: 1500px; }
+        table { border-collapse: separate; border-spacing: 0; min-width: 1600px; }
         th { 
-            position: sticky; top: 0; background: var(--bg); z-index: 10;
+            position: sticky; top: 0; background: var(--bg); z-index: 20;
             padding: 1.2rem; color: var(--accent); font-weight: 800; font-size: 0.75rem;
             letter-spacing: 0.15em; border-bottom: 1px solid var(--light);
         }
+
+        /* AUTOCOMPLETE CELL STYLING */
+        .ac-container { position: relative; width: 100%; min-width: 220px; }
         
-        .cell-input {
-            background: transparent; color: #e2e8f0; width: 100%; min-width: 200px;
-            padding: 0.7rem; border-radius: 0.8rem; border: 1px solid transparent;
-            font-size: 0.9rem;
+        .ghost-text {
+            position: absolute; top: 0; left: 0; padding: 0.7rem;
+            color: rgba(255, 255, 255, 0.15); font-size: 0.9rem;
+            pointer-events: none; white-space: nowrap; overflow: hidden;
         }
-        .cell-input:focus { background: rgba(251, 191, 36, 0.1); border-color: var(--accent); outline: none; }
 
-        .date-col { color: #64748b; font-family: monospace; font-weight: bold; text-align: center; width: 120px; }
+        .cell-input {
+            position: relative; background: transparent; color: #e2e8f0; width: 100%;
+            padding: 0.7rem; padding-right: 2rem; border-radius: 0.8rem; border: 1px solid transparent;
+            font-size: 0.9rem; z-index: 5; outline: none; transition: background 0.3s;
+        }
+        .cell-input:focus { background: rgba(251, 191, 36, 0.05); border-color: var(--accent); }
+
+        .dropdown-arrow {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            color: #475569; cursor: pointer; z-index: 10; font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+        .dropdown-arrow:hover { color: var(--accent); }
+
+        /* CUSTOM DROPDOWN LIST */
+        .custom-menu {
+            position: absolute; top: 100%; left: 0; width: 100%; max-height: 200px;
+            overflow-y: auto; background: #1e2126; border: 1px solid var(--light);
+            border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 25px var(--shadow);
+            display: none;
+        }
+        .custom-menu div {
+            padding: 0.6rem 1rem; cursor: pointer; color: #94a3b8; font-size: 0.85rem;
+        }
+        .custom-menu div:hover { background: var(--light); color: var(--accent); }
+
+        .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 10px; }
+        .led-loading { background: var(--crimson); box-shadow: 0 0 15px var(--crimson); animation: blink 1s infinite; }
+        .led-ready { background: var(--emerald); box-shadow: 0 0 15px var(--emerald); }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+        .date-col { color: #475569; font-family: monospace; font-weight: bold; text-align: center; width: 120px; }
         .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 80px; }
-
-        #shield { position: fixed; inset: 0; background: var(--bg); z-index: 100; transition: opacity 0.5s; }
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <div id="shield"></div>
-
     <div id="app-wrapper" class="max-w-full mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
             <div>
                 <h1 class="text-white text-3xl font-extrabold tracking-tight">MD Scheduler 🇮🇶</h1>
-                <div class="mt-3 flex items-center bg-black/20 px-4 py-2 rounded-full inline-flex">
+                <div class="mt-3 flex items-center bg-black/30 px-5 py-2 rounded-full inline-flex">
                     <span id="led" class="led-dot led-loading"></span>
-                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-rose-500">Fetching "Names" Sheet...</span>
+                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-rose-500">Initializing Neural Link...</span>
                 </div>
             </div>
-            
             <div class="recessed-table-container p-2 flex items-center">
                 <input type="month" id="month-picker" class="bg-transparent text-amber-500 font-bold outline-none p-2 cursor-pointer" onchange="generateTable()">
             </div>
@@ -95,14 +117,12 @@
                 </table>
             </div>
             <div class="mt-8 flex justify-end">
-                <button id="save-btn" onclick="saveAll()" class="bg-[#2a2d34] shadow-lg px-12 py-5 rounded-2xl text-amber-500 font-black uppercase tracking-widest">
+                <button id="save-btn" onclick="saveAll()" class="bg-[#2a2d34] shadow-lg px-12 py-5 rounded-2xl text-amber-500 font-black uppercase tracking-widest transition-all hover:bg-black active:scale-95">
                     Push to Database
                 </button>
             </div>
         </div>
     </div>
-
-    <div id="datalist-container"></div>
 
 <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
@@ -117,38 +137,28 @@
     ];
 
     let allResidents = [];
+    let nameData = {}; // Organized by specialty
 
     window.onload = async () => {
-        // 1. Initial UI Setup
         const now = new Date();
         document.getElementById('month-picker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-        generateTable(); // Build empty structure first
+        generateTable();
 
-        // 2. Data Fetching
         try {
-            console.log("Starting fetch from:", scriptUrl);
             const response = await fetch(`${scriptUrl}?action=getNames`);
-            
-            if (!response.ok) throw new Error('Network response was not ok');
-            
             allResidents = await response.json();
-            console.log("Names Loaded Successfully:", allResidents);
+            
+            // Map names to specialties for fast lookup
+            specialties.forEach(spec => {
+                if (spec.id === "OP" || spec.id === "ICU") nameData[spec.id] = allResidents.filter(r => r[1] === "A").map(r => r[0]);
+                else if (spec.id === "D") nameData[spec.id] = allResidents.map(r => r[0]);
+                else nameData[spec.id] = allResidents.filter(r => r[1] === spec.id).map(r => r[0]);
+            });
 
-            if (allResidents && allResidents.length > 0) {
-                setupDatalists();
-                setReady(); 
-            } else {
-                document.getElementById('status-text').innerText = "Sheet Empty or Not Found";
-            }
+            setReady();
         } catch (e) {
-            console.error("Fetch Error:", e);
-            document.getElementById('status-text').innerText = "Connection Error";
+            document.getElementById('status-text').innerText = "Database Offline";
         }
-
-        setTimeout(() => {
-            document.getElementById('shield').style.opacity = '0';
-            setTimeout(() => document.getElementById('shield').remove(), 500);
-        }, 500);
     };
 
     function setReady() {
@@ -156,21 +166,6 @@
         document.getElementById('status-text').innerText = "Ready 🇮🇶";
         document.getElementById('status-text').className = "text-[0.65rem] font-black uppercase tracking-[0.2em] text-emerald-500";
         document.getElementById('app-wrapper').classList.add('is-ready');
-    }
-
-    function setupDatalists() {
-        const container = document.getElementById('datalist-container');
-        container.innerHTML = ""; 
-        specialties.forEach(spec => {
-            const dl = document.createElement('datalist');
-            dl.id = `list-${spec.id}`;
-            let filtered = (spec.id === "OP" || spec.id === "ICU") ? 
-                           allResidents.filter(r => r[1] === "A") : 
-                           (spec.id === "D" ? allResidents : allResidents.filter(r => r[1] === spec.id));
-            
-            dl.innerHTML = filtered.map(r => `<option value="${r[0]}">`).join('');
-            container.appendChild(dl);
-        });
     }
 
     function generateTable() {
@@ -192,13 +187,81 @@
             const dayName = new Date(year, month-1, d).toLocaleDateString('en-US', { weekday: 'short' });
             const tr = document.createElement('tr');
             let rHtml = ``;
+
             specialties.forEach(s => {
-                rHtml += `<td><input type="text" class="cell-input" list="list-${s.id}" placeholder="..." data-date="${dateStr}" data-spec="${s.id}"></td>`;
+                rHtml += `<td>
+                    <div class="ac-container">
+                        <div class="ghost-text" id="ghost-${d}-${s.id}"></div>
+                        <input type="text" class="cell-input" 
+                            id="input-${d}-${s.id}"
+                            oninput="handleAC(this, '${s.id}', '${d}-${s.id}')"
+                            onkeydown="handleKeys(event, this, '${d}-${s.id}')"
+                            onblur="hideMenu('${d}-${s.id}')"
+                            data-date="${dateStr}" data-spec="${s.id}">
+                        <span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span>
+                        <div class="custom-menu" id="menu-${d}-${s.id}"></div>
+                    </div>
+                </td>`;
             });
+
             rHtml += `<td class="date-col border-l border-slate-800/30">${dateStr}</td><td class="day-col">${dayName}</td>`;
             tr.innerHTML = rHtml;
             body.appendChild(tr);
         }
+    }
+
+    // Auto-complete Logic (Ghost Text)
+    function handleAC(el, specId, uniqueId) {
+        const ghost = document.getElementById(`ghost-${uniqueId}`);
+        const val = el.value.toLowerCase();
+        ghost.innerText = "";
+
+        if (val && nameData[specId]) {
+            const match = nameData[specId].find(name => name.toLowerCase().startsWith(val));
+            if (match) {
+                // Keep the casing the user typed, but append the rest
+                ghost.innerText = el.value + match.substring(val.length);
+            }
+        }
+    }
+
+    // Tab/Right Arrow Completion
+    function handleKeys(e, el, uniqueId) {
+        const ghost = document.getElementById(`ghost-${uniqueId}`);
+        if ((e.key === "Tab" || e.key === "ArrowRight") && ghost.innerText !== "") {
+            e.preventDefault();
+            el.value = ghost.innerText;
+            ghost.innerText = "";
+        }
+    }
+
+    // Dropdown Logic
+    function toggleMenu(uniqueId, specId) {
+        const menu = document.getElementById(`menu-${uniqueId}`);
+        const input = document.getElementById(`input-${uniqueId}`);
+        
+        if (menu.style.display === "block") {
+            menu.style.display = "none";
+            return;
+        }
+
+        const names = nameData[specId] || [];
+        menu.innerHTML = names.map(n => `<div onmousedown="selectName('${uniqueId}', '${n}')">${n}</div>`).join('');
+        menu.style.display = "block";
+    }
+
+    function selectName(uniqueId, name) {
+        const input = document.getElementById(`input-${uniqueId}`);
+        const ghost = document.getElementById(`ghost-${uniqueId}`);
+        input.value = name;
+        ghost.innerText = "";
+        document.getElementById(`menu-${uniqueId}`).style.display = "none";
+    }
+
+    function hideMenu(uniqueId) {
+        setTimeout(() => {
+            document.getElementById(`menu-${uniqueId}`).style.display = "none";
+        }, 200);
     }
 
     async function saveAll() {
