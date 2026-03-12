@@ -52,23 +52,47 @@
             text-shadow: var(--glow);
         }
 
+        /* PERFECT ALIGNMENT FOR GHOST TEXT */
         .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
+        
         .ghost-text {
-            position: absolute; top: 0; right: 0; padding: 0.7rem;
-            color: rgba(255, 255, 255, 0.35); font-size: 0.9rem;
-            pointer-events: none; white-space: nowrap; overflow: hidden;
-            text-align: right; width: 100%; font-weight: 600;
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            padding: 0.7rem; /* Matches input padding */
+            padding-left: 2.5rem;
+            padding-right: 0.7rem;
+            color: rgba(255, 255, 255, 0.25); 
+            font-size: 0.9rem; /* Matches input font size */
+            line-height: normal;
+            pointer-events: none; 
+            white-space: nowrap; 
+            overflow: hidden;
+            text-align: right; 
+            width: 100%; 
+            font-weight: 600;
+            z-index: 1; /* Behind the real text */
         }
+
         .cell-input {
-            position: relative; background: transparent; color: #fff; width: 100%;
-            padding: 0.7rem; padding-left: 2.5rem; padding-right: 0.7rem; 
-            border-radius: 0.8rem; border: 1px solid transparent;
-            font-size: 0.9rem; z-index: 5; outline: none; text-align: right;
+            position: relative; 
+            background: transparent; 
+            color: #fff; 
+            width: 100%;
+            padding: 0.7rem; 
+            padding-left: 2.5rem; 
+            padding-right: 0.7rem; 
+            border-radius: 0.8rem; 
+            border: 1px solid transparent;
+            font-size: 0.9rem; 
+            line-height: normal;
+            z-index: 5; /* In front of ghost text */
+            outline: none; 
+            text-align: right;
             transition: all 0.2s;
         }
-        .cell-input:focus { background: rgba(251, 191, 36, 0.1); border-color: var(--accent); box-shadow: var(--glow); }
         
-        /* GLOW CLASSES */
+        .cell-input:focus { background: rgba(251, 191, 36, 0.1); border-color: var(--accent); box-shadow: var(--glow); }
         .prefilled { color: var(--emerald) !important; text-shadow: var(--emerald-glow); }
         .new-entry { color: var(--crimson) !important; text-shadow: var(--crimson-glow); }
 
@@ -153,7 +177,6 @@
         const statusText = document.getElementById('status-text');
         lockTable();
         try {
-            statusText.innerText = "Syncing Resident Names...";
             const respNames = await fetch(`${scriptUrl}?action=getNames`);
             const allResidents = await respNames.json();
             
@@ -174,7 +197,7 @@
         const monthVal = document.getElementById('month-picker').value;
         const statusText = document.getElementById('status-text');
         lockTable();
-        statusText.innerText = `Reading Schedule: ${monthVal}...`;
+        statusText.innerText = `Syncing Database...`;
 
         try {
             const resp = await fetch(`${scriptUrl}?action=getSchedule&month=${monthVal}`);
@@ -193,8 +216,6 @@
             });
             unlockTable();
         } catch (e) { 
-            console.error("Refresh failed", e);
-            statusText.innerText = "Fetch Error ⚠️";
             unlockTable();
         }
     }
@@ -218,7 +239,8 @@
             const tr = document.createElement('tr');
             let rHtml = ``;
             specialties.forEach(s => {
-                rHtml += `<td><div class="ac-container"><div class="ghost-text" id="ghost-${d}-${s.id}"></div><input type="text" class="cell-input" id="input-${d}-${s.id}" oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" onkeydown="handleKeys(event, this, '${d}-${s.id}')" onblur="hideMenu('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}"><span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span><div class="custom-menu" id="menu-${d}-${s.id}"></div></div></td>`;
+                // ADDED handleBlur to clear ghost text on leave
+                rHtml += `<td><div class="ac-container"><div class="ghost-text" id="ghost-${d}-${s.id}"></div><input type="text" class="cell-input" id="input-${d}-${s.id}" oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" onkeydown="handleKeys(event, this, '${d}-${s.id}')" onblur="handleBlur('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}"><span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span><div class="custom-menu" id="menu-${d}-${s.id}"></div></div></td>`;
             });
             rHtml += `<td class="date-col border-l border-slate-800/30">${dateStr}</td><td class="day-col">${dayName}</td>`;
             tr.innerHTML = rHtml;
@@ -233,14 +255,16 @@
         const val = el.value.toLowerCase();
         ghost.innerText = "";
         
-        // Remove existing classes and add new-entry glow
         el.classList.remove('prefilled');
         if(el.value.trim() !== "") el.classList.add('new-entry');
         else el.classList.remove('new-entry');
 
         if (val && nameData[specId]) {
             const match = nameData[specId].find(name => name.toLowerCase().startsWith(val));
-            if (match) ghost.innerText = el.value + match.substring(val.length);
+            // Only show ghost text if the match is longer than the typed value
+            if (match && match.length > val.length) {
+                ghost.innerText = el.value + match.substring(val.length);
+            }
         }
     }
 
@@ -252,6 +276,15 @@
             ghost.innerText = "";
             el.classList.add('new-entry');
         }
+    }
+
+    // New logic to clear ghost text when cell is left
+    function handleBlur(uniqueId) {
+        document.getElementById(`ghost-${uniqueId}`).innerText = "";
+        setTimeout(() => { 
+            const menu = document.getElementById(`menu-${uniqueId}`);
+            if (menu) menu.style.display = "none"; 
+        }, 200);
     }
 
     function toggleMenu(uniqueId, specId) {
@@ -266,12 +299,10 @@
         const input = document.getElementById(`input-${uniqueId}`);
         input.value = name;
         input.classList.remove('prefilled');
-        input.classList.add('new-entry'); // New selection = Red Glow
+        input.classList.add('new-entry');
         document.getElementById(`ghost-${uniqueId}`).innerText = "";
         document.getElementById(`menu-${uniqueId}`).style.display = "none";
     }
-
-    function hideMenu(uniqueId) { setTimeout(() => { document.getElementById(`menu-${uniqueId}`).style.display = "none"; }, 200); }
 
     async function saveAll() {
         const btn = document.getElementById('save-btn');
@@ -298,12 +329,10 @@
             btn.innerText = "CHANGES SYNCED ✅";
             btn.style.color = "var(--emerald)";
             
-            // Convert all red glows to green after successful sync
             document.querySelectorAll('.new-entry').forEach(el => {
                 el.classList.remove('new-entry');
                 el.classList.add('prefilled');
             });
-
         } catch (e) { 
             btn.innerText = "SYNC FAILED ⚠️";
             btn.style.color = "var(--crimson)";
