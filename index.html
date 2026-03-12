@@ -17,12 +17,12 @@
             --glow: 0 0 15px rgba(251, 191, 36, 0.8);
             --led-glow: 0 0 25px;
             --emerald-glow: 0 0 15px rgba(16, 185, 129, 0.7);
+            --crimson-glow: 0 0 15px rgba(225, 29, 72, 0.7);
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
         
         h1 { text-shadow: var(--glow); color: white; }
 
-        /* THE LOCK MECHANISM */
         #main-table-area { 
             pointer-events: none; 
             filter: grayscale(1) brightness(0.5); 
@@ -67,7 +67,10 @@
             transition: all 0.2s;
         }
         .cell-input:focus { background: rgba(251, 191, 36, 0.1); border-color: var(--accent); box-shadow: var(--glow); }
-        .prefilled { color: var(--emerald); text-shadow: var(--emerald-glow); }
+        
+        /* GLOW CLASSES */
+        .prefilled { color: var(--emerald) !important; text-shadow: var(--emerald-glow); }
+        .new-entry { color: var(--crimson) !important; text-shadow: var(--crimson-glow); }
 
         .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-flex; margin-right: 12px; }
         .led-loading { background: var(--crimson); box-shadow: var(--led-glow) var(--crimson); animation: blink 1s infinite; }
@@ -170,7 +173,6 @@
     async function fetchExistingSchedule() {
         const monthVal = document.getElementById('month-picker').value;
         const statusText = document.getElementById('status-text');
-        
         lockTable();
         statusText.innerText = `Reading Schedule: ${monthVal}...`;
 
@@ -226,12 +228,16 @@
         if (Object.keys(nameData).length > 0) fetchExistingSchedule();
     }
 
-    // (Autocomplete, Menu, and Save functions remain exactly the same...)
     function handleAC(el, specId, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const val = el.value.toLowerCase();
         ghost.innerText = "";
+        
+        // Remove existing classes and add new-entry glow
         el.classList.remove('prefilled');
+        if(el.value.trim() !== "") el.classList.add('new-entry');
+        else el.classList.remove('new-entry');
+
         if (val && nameData[specId]) {
             const match = nameData[specId].find(name => name.toLowerCase().startsWith(val));
             if (match) ghost.innerText = el.value + match.substring(val.length);
@@ -241,7 +247,10 @@
     function handleKeys(e, el, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         if ((e.key === "Tab" || e.key === "ArrowRight") && ghost.innerText !== "") {
-            e.preventDefault(); el.value = ghost.innerText; ghost.innerText = "";
+            e.preventDefault(); 
+            el.value = ghost.innerText; 
+            ghost.innerText = "";
+            el.classList.add('new-entry');
         }
     }
 
@@ -257,6 +266,7 @@
         const input = document.getElementById(`input-${uniqueId}`);
         input.value = name;
         input.classList.remove('prefilled');
+        input.classList.add('new-entry'); // New selection = Red Glow
         document.getElementById(`ghost-${uniqueId}`).innerText = "";
         document.getElementById(`menu-${uniqueId}`).style.display = "none";
     }
@@ -265,7 +275,6 @@
 
     async function saveAll() {
         const btn = document.getElementById('save-btn');
-        const card = document.getElementById('main-table-area');
         const activeInputs = Array.from(document.querySelectorAll('.cell-input')).filter(input => input.value.trim() !== "");
 
         if (activeInputs.length === 0) {
@@ -276,7 +285,7 @@
 
         btn.disabled = true;
         btn.innerText = "UPLOADING BULK PAYLOAD...";
-        lockTable(); // Lock while saving
+        lockTable();
 
         const bulkData = activeInputs.map(el => ({
             date: el.dataset.date,
@@ -288,6 +297,13 @@
             await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload: bulkData }) });
             btn.innerText = "CHANGES SYNCED ✅";
             btn.style.color = "var(--emerald)";
+            
+            // Convert all red glows to green after successful sync
+            document.querySelectorAll('.new-entry').forEach(el => {
+                el.classList.remove('new-entry');
+                el.classList.add('prefilled');
+            });
+
         } catch (e) { 
             btn.innerText = "SYNC FAILED ⚠️";
             btn.style.color = "var(--crimson)";
@@ -297,7 +313,7 @@
             btn.innerText = "UPDATE DATABASE";
             btn.style.color = "var(--accent)";
             btn.disabled = false;
-            unlockTable(); // Unlock after saving
+            unlockTable();
         }, 3000);
     }
 </script>
