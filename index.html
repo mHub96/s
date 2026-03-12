@@ -14,13 +14,14 @@
             --accent: #fbbf24;
             --emerald: #10b981;
             --crimson: #e11d48;
-            /* BRIGHTER GLOW DEFS */
-            --glow: 0 0 12px rgba(251, 191, 36, 0.6);
-            --led-glow: 0 0 20px;
+            /* ULTRA BRIGHT GLOWS */
+            --glow: 0 0 15px rgba(251, 191, 36, 0.8);
+            --led-glow: 0 0 25px;
+            --emerald-glow: 0 0 15px rgba(16, 185, 129, 0.7);
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
         
-        h1 { text-shadow: var(--glow); color: white; }
+        h1 { text-shadow: var(--glow); color: white; letter-spacing: -0.02em; }
 
         #main-table-area { 
             pointer-events: none; 
@@ -54,9 +55,9 @@
         .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
         .ghost-text {
             position: absolute; top: 0; right: 0; padding: 0.7rem;
-            color: rgba(255, 255, 255, 0.2); font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.35); font-size: 0.9rem;
             pointer-events: none; white-space: nowrap; overflow: hidden;
-            text-align: right; width: 100%;
+            text-align: right; width: 100%; font-weight: 600;
         }
         .cell-input {
             position: relative; background: transparent; color: #fff; width: 100%;
@@ -66,6 +67,7 @@
             transition: all 0.2s;
         }
         .cell-input:focus { background: rgba(251, 191, 36, 0.1); border-color: var(--accent); box-shadow: var(--glow); }
+        .prefilled { color: var(--emerald); text-shadow: var(--emerald-glow); }
 
         .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-flex; margin-right: 12px; }
         .led-loading { background: var(--crimson); box-shadow: var(--led-glow) var(--crimson); animation: blink 1s infinite; }
@@ -73,7 +75,7 @@
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
         .date-col { color: #64748b; font-family: monospace; font-weight: bold; text-align: center; width: 130px; direction: ltr; }
-        .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 80px; text-shadow: 0 0 5px rgba(251, 191, 36, 0.3); }
+        .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 80px; text-shadow: 0 0 8px rgba(251, 191, 36, 0.4); }
         
         .dropdown-arrow { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.7rem; }
         .custom-menu { position: absolute; top: 100%; right: 0; width: 100%; max-height: 220px; overflow-y: auto; background: #1e2126; border: 1px solid var(--light); border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 30px var(--shadow); display: none; text-align: right; }
@@ -134,21 +136,47 @@
     };
 
     async function initDataSync() {
+        const statusText = document.getElementById('status-text');
         try {
-            // Step 1: Fetch Names
+            statusText.innerText = "Syncing Resident Names...";
             const respNames = await fetch(`${scriptUrl}?action=getNames`);
             const allResidents = await respNames.json();
+            
             specialties.forEach(spec => {
                 if (spec.id === "OP" || spec.id === "ICU") nameData[spec.id] = allResidents.filter(r => r[1] === "A").map(r => r[0]);
                 else if (spec.id === "D") nameData[spec.id] = allResidents.map(r => r[0]);
                 else nameData[spec.id] = allResidents.filter(r => r[1] === spec.id).map(r => r[0]);
             });
 
-            // Step 2: Unlock and status update
+            await fetchExistingSchedule();
             unlockTable();
         } catch (e) {
-            document.getElementById('status-text').innerText = "Sync Error 🇮🇶";
+            statusText.innerText = "Sync Error 🇮🇶";
+            unlockTable(); // Unlock anyway to allow manual entry
         }
+    }
+
+    async function fetchExistingSchedule() {
+        const monthVal = document.getElementById('month-picker').value;
+        const statusText = document.getElementById('status-text');
+        statusText.innerText = "Fetching Sheet Schedule...";
+
+        try {
+            const resp = await fetch(`${scriptUrl}?action=getSchedule&month=${monthVal}`);
+            const schedule = await resp.json();
+
+            schedule.forEach(row => {
+                const day = parseInt(row.date.split('/')[0]);
+                const specCode = row.specCode; 
+                const inputId = `input-${day}-${specCode}`;
+                const inputEl = document.getElementById(inputId);
+                
+                if (inputEl && row.name) {
+                    inputEl.value = row.name;
+                    inputEl.classList.add('prefilled');
+                }
+            });
+        } catch (e) { console.error("Schedule load failed", e); }
     }
 
     function unlockTable() {
@@ -163,6 +191,7 @@
         const [year, month] = picker.split('-').map(Number);
         const daysInMonth = new Date(year, month, 0).getDate();
         const hRow = document.getElementById('table-headers');
+        
         let hHtml = ``;
         specialties.forEach(s => hHtml += `<th>${s.name}</th>`);
         hHtml += `<th class="date-col border-l border-slate-800">Date</th><th class="day-col">Day</th>`;
@@ -182,13 +211,16 @@
             tr.innerHTML = rHtml;
             body.appendChild(tr);
         }
+        
+        // Re-fetch existing names if user changes the month
+        if (Object.keys(nameData).length > 0) fetchExistingSchedule();
     }
 
-    // --- AUTOCOMPLETE LOGIC ---
     function handleAC(el, specId, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const val = el.value.toLowerCase();
         ghost.innerText = "";
+        el.classList.remove('prefilled'); // Remove green glow if user starts editing
         if (val && nameData[specId]) {
             const match = nameData[specId].find(name => name.toLowerCase().startsWith(val));
             if (match) ghost.innerText = el.value + match.substring(val.length);
@@ -211,14 +243,15 @@
     }
 
     function selectName(uniqueId, name) {
-        document.getElementById(`input-${uniqueId}`).value = name;
+        const input = document.getElementById(`input-${uniqueId}`);
+        input.value = name;
+        input.classList.remove('prefilled');
         document.getElementById(`ghost-${uniqueId}`).innerText = "";
         document.getElementById(`menu-${uniqueId}`).style.display = "none";
     }
 
     function hideMenu(uniqueId) { setTimeout(() => { document.getElementById(`menu-${uniqueId}`).style.display = "none"; }, 200); }
 
-    // --- BULK POSTING ---
     async function saveAll() {
         const btn = document.getElementById('save-btn');
         const card = document.getElementById('main-table-area');
