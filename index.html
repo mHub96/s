@@ -14,14 +14,13 @@
             --accent: #fbbf24;
             --emerald: #10b981;
             --crimson: #e11d48;
-            /* ULTRA BRIGHT GLOWS */
             --glow: 0 0 15px rgba(251, 191, 36, 0.8);
             --led-glow: 0 0 25px;
             --emerald-glow: 0 0 15px rgba(16, 185, 129, 0.7);
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
         
-        h1 { text-shadow: var(--glow); color: white; letter-spacing: -0.02em; }
+        h1 { text-shadow: var(--glow); color: white; }
 
         #main-table-area { 
             pointer-events: none; 
@@ -91,7 +90,7 @@
                 <h1 class="text-3xl font-extrabold tracking-tight">Monthly Scheduler 🇮🇶</h1>
                 <div class="mt-4 flex items-center bg-black/40 px-6 py-2 rounded-full inline-flex border border-white/5">
                     <span id="led" class="led-dot led-loading"></span>
-                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Syncing Database...</span>
+                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Initializing...</span>
                 </div>
             </div>
             <div class="recessed-table-container p-2 flex items-center bg-black/20">
@@ -131,8 +130,7 @@
     window.onload = () => {
         const now = new Date();
         document.getElementById('month-picker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-        generateTable();
-        initDataSync();
+        initDataSync(); // Start by fetching names
     };
 
     async function initDataSync() {
@@ -148,18 +146,23 @@
                 else nameData[spec.id] = allResidents.filter(r => r[1] === spec.id).map(r => r[0]);
             });
 
-            await fetchExistingSchedule();
+            generateTable(); // This will now internally trigger fetchExistingSchedule
             unlockTable();
         } catch (e) {
             statusText.innerText = "Sync Error 🇮🇶";
-            unlockTable(); // Unlock anyway to allow manual entry
+            generateTable();
+            unlockTable();
         }
     }
 
     async function fetchExistingSchedule() {
         const monthVal = document.getElementById('month-picker').value;
         const statusText = document.getElementById('status-text');
-        statusText.innerText = "Fetching Sheet Schedule...";
+        const led = document.getElementById('led');
+        
+        // Show loading state while refreshing
+        led.className = "led-dot led-loading";
+        statusText.innerText = `Refreshing ${monthVal}...`;
 
         try {
             const resp = await fetch(`${scriptUrl}?action=getSchedule&month=${monthVal}`);
@@ -176,13 +179,17 @@
                     inputEl.classList.add('prefilled');
                 }
             });
-        } catch (e) { console.error("Schedule load failed", e); }
+            
+            // Re-set to ready
+            led.className = "led-dot led-ready";
+            statusText.innerText = "System Ready 🇮🇶";
+        } catch (e) { 
+            console.error("Refresh failed", e);
+            statusText.innerText = "Refresh Failed ⚠️";
+        }
     }
 
     function unlockTable() {
-        document.getElementById('led').className = "led-dot led-ready";
-        document.getElementById('status-text').innerText = "System Ready 🇮🇶";
-        document.getElementById('status-text').className = "text-[0.65rem] font-black uppercase tracking-[0.25em] text-emerald-500";
         document.getElementById('app-wrapper').classList.add('is-ready');
     }
 
@@ -212,15 +219,16 @@
             body.appendChild(tr);
         }
         
-        // Re-fetch existing names if user changes the month
+        // CRITICAL: Refresh names from sheet every time table is generated/changed
         if (Object.keys(nameData).length > 0) fetchExistingSchedule();
     }
 
+    // Autocomplete and Menu logic remains same...
     function handleAC(el, specId, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const val = el.value.toLowerCase();
         ghost.innerText = "";
-        el.classList.remove('prefilled'); // Remove green glow if user starts editing
+        el.classList.remove('prefilled');
         if (val && nameData[specId]) {
             const match = nameData[specId].find(name => name.toLowerCase().startsWith(val));
             if (match) ghost.innerText = el.value + match.substring(val.length);
