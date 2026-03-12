@@ -14,10 +14,14 @@
             --accent: #fbbf24;
             --emerald: #10b981;
             --crimson: #e11d48;
+            /* BRIGHTER GLOW DEFS */
+            --glow: 0 0 12px rgba(251, 191, 36, 0.6);
+            --led-glow: 0 0 20px;
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
         
-        /* THE GREY-OUT LOCK */
+        h1 { text-shadow: var(--glow); color: white; }
+
         #main-table-area { 
             pointer-events: none; 
             filter: grayscale(1) brightness(0.6); 
@@ -44,45 +48,37 @@
             position: sticky; top: 0; background: var(--bg); z-index: 20;
             padding: 1.2rem; color: var(--accent); font-weight: 800; font-size: 0.75rem;
             letter-spacing: 0.15em; border-bottom: 1px solid var(--light);
+            text-shadow: var(--glow);
         }
 
-        /* RTL AUTOCOMPLETE */
         .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
         .ghost-text {
             position: absolute; top: 0; right: 0; padding: 0.7rem;
-            color: rgba(255, 255, 255, 0.12); font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.2); font-size: 0.9rem;
             pointer-events: none; white-space: nowrap; overflow: hidden;
             text-align: right; width: 100%;
         }
         .cell-input {
-            position: relative; background: transparent; color: #e2e8f0; width: 100%;
+            position: relative; background: transparent; color: #fff; width: 100%;
             padding: 0.7rem; padding-left: 2.5rem; padding-right: 0.7rem; 
             border-radius: 0.8rem; border: 1px solid transparent;
             font-size: 0.9rem; z-index: 5; outline: none; text-align: right;
+            transition: all 0.2s;
         }
-        .cell-input:focus { background: rgba(251, 191, 36, 0.05); border-color: var(--accent); }
-
-        .dropdown-arrow {
-            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-            color: #475569; cursor: pointer; z-index: 10; font-size: 0.7rem;
-        }
-
-        .custom-menu {
-            position: absolute; top: 100%; right: 0; width: 100%; max-height: 220px;
-            overflow-y: auto; background: #1e2126; border: 1px solid var(--light);
-            border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 30px var(--shadow);
-            display: none; text-align: right;
-        }
-        .custom-menu div { padding: 0.7rem 1rem; cursor: pointer; color: #94a3b8; font-size: 0.85rem; }
-        .custom-menu div:hover { background: var(--light); color: var(--accent); }
+        .cell-input:focus { background: rgba(251, 191, 36, 0.1); border-color: var(--accent); box-shadow: var(--glow); }
 
         .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-flex; margin-right: 12px; }
-        .led-loading { background: var(--crimson); box-shadow: 0 0 15px var(--crimson); animation: blink 1s infinite; }
-        .led-ready { background: var(--emerald); box-shadow: 0 0 15px var(--emerald); }
+        .led-loading { background: var(--crimson); box-shadow: var(--led-glow) var(--crimson); animation: blink 1s infinite; }
+        .led-ready { background: var(--emerald); box-shadow: var(--led-glow) var(--emerald); }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
-        .date-col { color: #475569; font-family: monospace; font-weight: bold; text-align: center; width: 130px; direction: ltr; }
-        .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 80px; }
+        .date-col { color: #64748b; font-family: monospace; font-weight: bold; text-align: center; width: 130px; direction: ltr; }
+        .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 80px; text-shadow: 0 0 5px rgba(251, 191, 36, 0.3); }
+        
+        .dropdown-arrow { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.7rem; }
+        .custom-menu { position: absolute; top: 100%; right: 0; width: 100%; max-height: 220px; overflow-y: auto; background: #1e2126; border: 1px solid var(--light); border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 30px var(--shadow); display: none; text-align: right; }
+        .custom-menu div { padding: 0.7rem 1rem; cursor: pointer; color: #94a3b8; font-size: 0.85rem; }
+        .custom-menu div:hover { background: var(--light); color: var(--accent); }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -90,10 +86,10 @@
     <div id="app-wrapper" class="max-w-full mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
             <div>
-                <h1 class="text-white text-3xl font-extrabold tracking-tight">Monthly Scheduler 🇮🇶</h1>
+                <h1 class="text-3xl font-extrabold tracking-tight">Monthly Scheduler 🇮🇶</h1>
                 <div class="mt-4 flex items-center bg-black/40 px-6 py-2 rounded-full inline-flex border border-white/5">
                     <span id="led" class="led-dot led-loading"></span>
-                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Syncing Resident DB...</span>
+                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Syncing Database...</span>
                 </div>
             </div>
             <div class="recessed-table-container p-2 flex items-center bg-black/20">
@@ -134,29 +130,30 @@
         const now = new Date();
         document.getElementById('month-picker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
         generateTable();
-        fetchResidentNames();
+        initDataSync();
     };
 
-    async function fetchResidentNames() {
+    async function initDataSync() {
         try {
-            const response = await fetch(`${scriptUrl}?action=getNames`);
-            const allResidents = await response.json();
-            
+            // Step 1: Fetch Names
+            const respNames = await fetch(`${scriptUrl}?action=getNames`);
+            const allResidents = await respNames.json();
             specialties.forEach(spec => {
                 if (spec.id === "OP" || spec.id === "ICU") nameData[spec.id] = allResidents.filter(r => r[1] === "A").map(r => r[0]);
                 else if (spec.id === "D") nameData[spec.id] = allResidents.map(r => r[0]);
                 else nameData[spec.id] = allResidents.filter(r => r[1] === spec.id).map(r => r[0]);
             });
+
+            // Step 2: Unlock and status update
             unlockTable();
         } catch (e) {
-            document.getElementById('status-text').innerText = "Sync Error - Manual Mode Ready";
-            unlockTable();
+            document.getElementById('status-text').innerText = "Sync Error 🇮🇶";
         }
     }
 
     function unlockTable() {
         document.getElementById('led').className = "led-dot led-ready";
-        document.getElementById('status-text').innerText = "Ready 🇮🇶";
+        document.getElementById('status-text').innerText = "System Ready 🇮🇶";
         document.getElementById('status-text').className = "text-[0.65rem] font-black uppercase tracking-[0.25em] text-emerald-500";
         document.getElementById('app-wrapper').classList.add('is-ready');
     }
@@ -187,7 +184,7 @@
         }
     }
 
-    // --- AUTOCOMPLETE ENGINE ---
+    // --- AUTOCOMPLETE LOGIC ---
     function handleAC(el, specId, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const val = el.value.toLowerCase();
@@ -201,9 +198,7 @@
     function handleKeys(e, el, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         if ((e.key === "Tab" || e.key === "ArrowRight") && ghost.innerText !== "") {
-            e.preventDefault();
-            el.value = ghost.innerText;
-            ghost.innerText = "";
+            e.preventDefault(); el.value = ghost.innerText; ghost.innerText = "";
         }
     }
 
@@ -223,23 +218,20 @@
 
     function hideMenu(uniqueId) { setTimeout(() => { document.getElementById(`menu-${uniqueId}`).style.display = "none"; }, 200); }
 
-    // --- BULK POSTING LOGIC (Ignores Empty Cells) ---
+    // --- BULK POSTING ---
     async function saveAll() {
         const btn = document.getElementById('save-btn');
         const card = document.getElementById('main-table-area');
-        
-        // Filter: ONLY grab inputs that are NOT empty
-        const activeInputs = Array.from(document.querySelectorAll('.cell-input'))
-                                  .filter(input => input.value.trim() !== "");
+        const activeInputs = Array.from(document.querySelectorAll('.cell-input')).filter(input => input.value.trim() !== "");
 
         if (activeInputs.length === 0) {
-            btn.innerText = "NO DATA TO SYNC! 🇮🇶";
+            btn.innerText = "NO CHANGES DETECTED 🇮🇶";
             setTimeout(() => { btn.innerText = "UPDATE DATABASE"; }, 2000);
             return;
         }
 
         btn.disabled = true;
-        btn.innerText = `PUSHING ${activeInputs.length} CHANGES...`;
+        btn.innerText = "UPLOADING BULK PAYLOAD...";
         card.style.opacity = "0.4";
 
         const bulkData = activeInputs.map(el => ({
@@ -249,17 +241,12 @@
         }));
 
         try {
-            await fetch(scriptUrl, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                body: JSON.stringify({ payload: bulkData })
-            });
-            
-            btn.innerText = "SUCCESSFULLY PUSHED ✅";
+            await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload: bulkData }) });
+            btn.innerText = "CHANGES SYNCED ✅";
             btn.style.color = "var(--emerald)";
             card.style.opacity = "1";
         } catch (e) { 
-            btn.innerText = "PUSH FAILED ⚠️";
+            btn.innerText = "SYNC FAILED ⚠️";
             btn.style.color = "var(--crimson)";
             card.style.opacity = "1";
         }
