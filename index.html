@@ -22,11 +22,12 @@
         
         h1 { text-shadow: var(--glow); color: white; }
 
+        /* THE LOCK MECHANISM */
         #main-table-area { 
             pointer-events: none; 
-            filter: grayscale(1) brightness(0.6); 
-            opacity: 0.4; 
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            filter: grayscale(1) brightness(0.5); 
+            opacity: 0.3; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         .is-ready #main-table-area { pointer-events: auto; filter: none; opacity: 1; }
 
@@ -130,11 +131,24 @@
     window.onload = () => {
         const now = new Date();
         document.getElementById('month-picker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-        initDataSync(); // Start by fetching names
+        initDataSync();
     };
+
+    function lockTable() {
+        document.getElementById('app-wrapper').classList.remove('is-ready');
+        document.getElementById('led').className = "led-dot led-loading";
+    }
+
+    function unlockTable() {
+        document.getElementById('app-wrapper').classList.add('is-ready');
+        document.getElementById('led').className = "led-dot led-ready";
+        document.getElementById('status-text').innerText = "System Ready 🇮🇶";
+        document.getElementById('status-text').className = "text-[0.65rem] font-black uppercase tracking-[0.25em] text-emerald-500";
+    }
 
     async function initDataSync() {
         const statusText = document.getElementById('status-text');
+        lockTable();
         try {
             statusText.innerText = "Syncing Resident Names...";
             const respNames = await fetch(`${scriptUrl}?action=getNames`);
@@ -146,23 +160,19 @@
                 else nameData[spec.id] = allResidents.filter(r => r[1] === spec.id).map(r => r[0]);
             });
 
-            generateTable(); // This will now internally trigger fetchExistingSchedule
-            unlockTable();
+            generateTable(); 
         } catch (e) {
             statusText.innerText = "Sync Error 🇮🇶";
             generateTable();
-            unlockTable();
         }
     }
 
     async function fetchExistingSchedule() {
         const monthVal = document.getElementById('month-picker').value;
         const statusText = document.getElementById('status-text');
-        const led = document.getElementById('led');
         
-        // Show loading state while refreshing
-        led.className = "led-dot led-loading";
-        statusText.innerText = `Refreshing ${monthVal}...`;
+        lockTable();
+        statusText.innerText = `Reading Schedule: ${monthVal}...`;
 
         try {
             const resp = await fetch(`${scriptUrl}?action=getSchedule&month=${monthVal}`);
@@ -179,18 +189,12 @@
                     inputEl.classList.add('prefilled');
                 }
             });
-            
-            // Re-set to ready
-            led.className = "led-dot led-ready";
-            statusText.innerText = "System Ready 🇮🇶";
+            unlockTable();
         } catch (e) { 
             console.error("Refresh failed", e);
-            statusText.innerText = "Refresh Failed ⚠️";
+            statusText.innerText = "Fetch Error ⚠️";
+            unlockTable();
         }
-    }
-
-    function unlockTable() {
-        document.getElementById('app-wrapper').classList.add('is-ready');
     }
 
     function generateTable() {
@@ -219,11 +223,10 @@
             body.appendChild(tr);
         }
         
-        // CRITICAL: Refresh names from sheet every time table is generated/changed
         if (Object.keys(nameData).length > 0) fetchExistingSchedule();
     }
 
-    // Autocomplete and Menu logic remains same...
+    // (Autocomplete, Menu, and Save functions remain exactly the same...)
     function handleAC(el, specId, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const val = el.value.toLowerCase();
@@ -273,7 +276,7 @@
 
         btn.disabled = true;
         btn.innerText = "UPLOADING BULK PAYLOAD...";
-        card.style.opacity = "0.4";
+        lockTable(); // Lock while saving
 
         const bulkData = activeInputs.map(el => ({
             date: el.dataset.date,
@@ -285,17 +288,16 @@
             await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload: bulkData }) });
             btn.innerText = "CHANGES SYNCED ✅";
             btn.style.color = "var(--emerald)";
-            card.style.opacity = "1";
         } catch (e) { 
             btn.innerText = "SYNC FAILED ⚠️";
             btn.style.color = "var(--crimson)";
-            card.style.opacity = "1";
         }
 
         setTimeout(() => {
             btn.innerText = "UPDATE DATABASE";
             btn.style.color = "var(--accent)";
             btn.disabled = false;
+            unlockTable(); // Unlock after saving
         }, 3000);
     }
 </script>
