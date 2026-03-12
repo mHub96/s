@@ -18,6 +18,10 @@
             --led-glow: 0 0 25px;
             --emerald-glow: 0 0 15px rgba(16, 185, 129, 0.7);
             --crimson-glow: 0 0 15px rgba(225, 29, 72, 0.7);
+            
+            /* NEW COLORS */
+            --zebra: rgba(255, 255, 255, 0.02);
+            --weekend-bg: rgba(16, 185, 129, 0.08); /* Deep Emerald Tint */
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
         
@@ -51,6 +55,11 @@
             letter-spacing: 0.15em; border-bottom: 1px solid var(--light);
             text-shadow: var(--glow);
         }
+
+        /* ALTERNATING AND WEEKEND STYLING */
+        tr:nth-child(even) { background-color: var(--zebra); }
+        tr.weekend-row { background-color: var(--weekend-bg) !important; }
+        tr.weekend-row .day-col { color: var(--emerald); text-shadow: var(--emerald-glow); }
 
         .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
         
@@ -138,7 +147,6 @@
 <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
     
-    // REORDERED SPECIALTIES
     const specialties = [
         { id: "NS", name: "Neurosurgery" },
         { id: "CT", name: "Cardiothoracic Surgery" },
@@ -158,11 +166,9 @@
 
     window.onload = () => {
         const now = new Date();
-        // SELECT NEXT MONTH AUTOMATICALLY
         const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
         const y = nextMonth.getFullYear();
         const m = String(nextMonth.getMonth() + 1).padStart(2, '0');
-        
         document.getElementById('month-picker').value = `${y}-${m}`;
         initDataSync();
     };
@@ -185,7 +191,6 @@
         try {
             const respNames = await fetch(`${scriptUrl}?action=getNames`);
             const allResidents = await respNames.json();
-            
             specialties.forEach(spec => {
                 if (spec.id === "OP" || spec.id === "ICU") nameData[spec.id] = allResidents.filter(r => r[1] === "A").map(r => r[0]);
                 else if (spec.id === "D") nameData[spec.id] = allResidents.map(r => r[0]);
@@ -200,20 +205,15 @@
 
     async function fetchExistingSchedule() {
         const monthVal = document.getElementById('month-picker').value;
-        const statusText = document.getElementById('status-text');
         lockTable();
-        statusText.innerText = `Syncing Database...`;
-
         try {
             const resp = await fetch(`${scriptUrl}?action=getSchedule&month=${monthVal}`);
             const schedule = await resp.json();
-
             schedule.forEach(row => {
                 const day = parseInt(row.date.split('/')[0]);
                 const specCode = row.specCode; 
                 const inputId = `input-${day}-${specCode}`;
                 const inputEl = document.getElementById(inputId);
-                
                 if (inputEl && row.name) {
                     inputEl.value = row.name;
                     inputEl.classList.add('prefilled');
@@ -240,11 +240,14 @@
         for (let d = 1; d <= daysInMonth; d++) {
             const dateObj = new Date(year, month-1, d);
             const dateStr = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
-            
-            // ARABIC DAY NAME 🇮🇶
             const dayName = new Intl.DateTimeFormat('ar-IQ', { weekday: 'long' }).format(dateObj);
             
+            // CHECK FOR WEEKENDS (Friday is 5, Saturday is 6)
+            const isWeekend = (dateObj.getDay() === 5 || dateObj.getDay() === 6);
+            
             const tr = document.createElement('tr');
+            if (isWeekend) tr.classList.add('weekend-row');
+            
             let rHtml = ``;
             specialties.forEach(s => {
                 rHtml += `<td><div class="ac-container"><div class="ghost-text" id="ghost-${d}-${s.id}"></div><input type="text" class="cell-input" id="input-${d}-${s.id}" autocomplete="off" oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" onkeydown="handleKeys(event, this, '${d}-${s.id}')" onblur="handleBlur('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}"><span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span><div class="custom-menu" id="menu-${d}-${s.id}"></div></div></td>`;
@@ -315,23 +318,19 @@
     async function saveAll() {
         const btn = document.getElementById('save-btn');
         const activeInputs = Array.from(document.querySelectorAll('.cell-input')).filter(input => input.value.trim() !== "");
-
         if (activeInputs.length === 0) {
             btn.innerText = "NO CHANGES DETECTED 🇮🇶";
             setTimeout(() => { btn.innerText = "UPDATE DATABASE"; }, 2000);
             return;
         }
-
         btn.disabled = true;
         btn.innerText = "UPLOADING BULK PAYLOAD...";
         lockTable();
-
         const bulkData = activeInputs.map(el => ({
             date: el.dataset.date,
             specialty: el.dataset.spec,
             name: el.value.trim()
         }));
-
         try {
             await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload: bulkData }) });
             btn.innerText = "CHANGES SYNCED ✅";
@@ -344,7 +343,6 @@
             btn.innerText = "SYNC FAILED ⚠️";
             btn.style.color = "var(--crimson)";
         }
-
         setTimeout(() => {
             btn.innerText = "UPDATE DATABASE";
             btn.style.color = "var(--accent)";
