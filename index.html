@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MD Scheduler | Carbon Gold 🇮🇶</title>
+    <title>SHECDULER 🇮🇶</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
     <style>
@@ -52,26 +52,22 @@
             text-shadow: var(--glow);
         }
 
-        /* PERFECT ALIGNMENT FOR GHOST TEXT */
         .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
         
+        /* THE UNDERMASKING FIX */
         .ghost-text {
             position: absolute; 
-            top: 0; 
-            right: 0; 
-            padding: 0.7rem; /* Matches input padding */
-            padding-left: 2.5rem;
-            padding-right: 0.7rem;
-            color: rgba(255, 255, 255, 0.25); 
-            font-size: 0.9rem; /* Matches input font size */
-            line-height: normal;
+            top: 0; right: 0; left: 0; bottom: 0;
+            padding: 0.7rem 0.7rem 0.7rem 2.5rem; /* Exact match to input */
+            color: rgba(255, 255, 255, 0.15); 
+            font-size: 0.9rem; 
+            font-family: inherit;
+            line-height: 1.25rem; /* Fixed line height for sync */
             pointer-events: none; 
             white-space: nowrap; 
             overflow: hidden;
             text-align: right; 
-            width: 100%; 
-            font-weight: 600;
-            z-index: 1; /* Behind the real text */
+            z-index: 1; 
         }
 
         .cell-input {
@@ -79,20 +75,19 @@
             background: transparent; 
             color: #fff; 
             width: 100%;
-            padding: 0.7rem; 
-            padding-left: 2.5rem; 
-            padding-right: 0.7rem; 
+            padding: 0.7rem 0.7rem 0.7rem 2.5rem;
             border-radius: 0.8rem; 
             border: 1px solid transparent;
             font-size: 0.9rem; 
-            line-height: normal;
-            z-index: 5; /* In front of ghost text */
+            font-family: inherit;
+            line-height: 1.25rem;
+            z-index: 5; 
             outline: none; 
             text-align: right;
             transition: all 0.2s;
         }
         
-        .cell-input:focus { background: rgba(251, 191, 36, 0.1); border-color: var(--accent); box-shadow: var(--glow); }
+        .cell-input:focus { background: rgba(251, 191, 36, 0.05); border-color: var(--accent); box-shadow: var(--glow); }
         .prefilled { color: var(--emerald) !important; text-shadow: var(--emerald-glow); }
         .new-entry { color: var(--crimson) !important; text-shadow: var(--crimson-glow); }
 
@@ -115,7 +110,7 @@
     <div id="app-wrapper" class="max-w-full mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
             <div>
-                <h1 class="text-3xl font-extrabold tracking-tight">Monthly Scheduler 🇮🇶</h1>
+                <h1 class="text-3xl font-extrabold tracking-tight">DUTY SCHEDULER 🇮🇶</h1>
                 <div class="mt-4 flex items-center bg-black/40 px-6 py-2 rounded-full inline-flex border border-white/5">
                     <span id="led" class="led-dot led-loading"></span>
                     <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Initializing...</span>
@@ -144,13 +139,20 @@
 <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
     
+    // NEW ORDERED SPECIALTIES
     const specialties = [
-        { id: "NS", name: "Neurosurgery" }, { id: "GS", name: "General Surgery" },
-        { id: "R", name: "Radiology" }, { id: "US", name: "Urosurgery" },
-        { id: "CT", name: "Cardiothoracic" }, { id: "ENT", name: "ENT" },
-        { id: "OP", name: "Anaesthesia (OP)" }, { id: "ICU", name: "Anaesthesia (ICU)" },
-        { id: "ON", name: "Oncology" }, { id: "PS", name: "Plastic Surgery" },
-        { id: "H", name: "Cardiology" }, { id: "D", name: "Death Certs" }
+        { id: "NS", name: "Neurosurgery" },
+        { id: "CT", name: "Cardiothoracic Surgery" },
+        { id: "GS", name: "General Surgery" },
+        { id: "US", name: "Urosurgery" },
+        { id: "ENT", name: "ENT" },
+        { id: "H", name: "Cardiology" },
+        { id: "D", name: "Death Certificates" },
+        { id: "OP", name: "OT Anaesthesia" },
+        { id: "ICU", name: "ICU Anaesthesia" },
+        { id: "R", name: "Radiology" },
+        { id: "ON", name: "Oncology" },
+        { id: "PS", name: "Plastic Surgery" }
     ];
 
     let nameData = {}; 
@@ -185,7 +187,6 @@
                 else if (spec.id === "D") nameData[spec.id] = allResidents.map(r => r[0]);
                 else nameData[spec.id] = allResidents.filter(r => r[1] === spec.id).map(r => r[0]);
             });
-
             generateTable(); 
         } catch (e) {
             statusText.innerText = "Sync Error 🇮🇶";
@@ -215,9 +216,7 @@
                 }
             });
             unlockTable();
-        } catch (e) { 
-            unlockTable();
-        }
+        } catch (e) { unlockTable(); }
     }
 
     function generateTable() {
@@ -239,14 +238,12 @@
             const tr = document.createElement('tr');
             let rHtml = ``;
             specialties.forEach(s => {
-                // ADDED handleBlur to clear ghost text on leave
-                rHtml += `<td><div class="ac-container"><div class="ghost-text" id="ghost-${d}-${s.id}"></div><input type="text" class="cell-input" id="input-${d}-${s.id}" oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" onkeydown="handleKeys(event, this, '${d}-${s.id}')" onblur="handleBlur('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}"><span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span><div class="custom-menu" id="menu-${d}-${s.id}"></div></div></td>`;
+                rHtml += `<td><div class="ac-container"><div class="ghost-text" id="ghost-${d}-${s.id}"></div><input type="text" class="cell-input" id="input-${d}-${s.id}" autocomplete="off" oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" onkeydown="handleKeys(event, this, '${d}-${s.id}')" onblur="handleBlur('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}"><span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span><div class="custom-menu" id="menu-${d}-${s.id}"></div></div></td>`;
             });
             rHtml += `<td class="date-col border-l border-slate-800/30">${dateStr}</td><td class="day-col">${dayName}</td>`;
             tr.innerHTML = rHtml;
             body.appendChild(tr);
         }
-        
         if (Object.keys(nameData).length > 0) fetchExistingSchedule();
     }
 
@@ -261,7 +258,6 @@
 
         if (val && nameData[specId]) {
             const match = nameData[specId].find(name => name.toLowerCase().startsWith(val));
-            // Only show ghost text if the match is longer than the typed value
             if (match && match.length > val.length) {
                 ghost.innerText = el.value + match.substring(val.length);
             }
@@ -274,13 +270,21 @@
             e.preventDefault(); 
             el.value = ghost.innerText; 
             ghost.innerText = "";
-            el.classList.add('new-entry');
         }
     }
 
-    // New logic to clear ghost text when cell is left
+    // UPDATED: AUTO-FILL ON LEAVE
     function handleBlur(uniqueId) {
-        document.getElementById(`ghost-${uniqueId}`).innerText = "";
+        const ghost = document.getElementById(`ghost-${uniqueId}`);
+        const input = document.getElementById(`input-${uniqueId}`);
+        
+        // If there's a suggestion, adopt it before the ghost vanishes
+        if (ghost.innerText.trim() !== "") {
+            input.value = ghost.innerText;
+            input.classList.add('new-entry');
+        }
+        
+        ghost.innerText = "";
         setTimeout(() => { 
             const menu = document.getElementById(`menu-${uniqueId}`);
             if (menu) menu.style.display = "none"; 
@@ -328,7 +332,6 @@
             await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload: bulkData }) });
             btn.innerText = "CHANGES SYNCED ✅";
             btn.style.color = "var(--emerald)";
-            
             document.querySelectorAll('.new-entry').forEach(el => {
                 el.classList.remove('new-entry');
                 el.classList.add('prefilled');
