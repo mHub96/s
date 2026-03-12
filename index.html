@@ -84,7 +84,6 @@
 <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
     
-    // Plastic Surgery removed from this array to hide it from the UI
     const specialties = [
         { id: "NS", name: "Neurosurgery" },
         { id: "CT", name: "Cardiothoracic Surgery" },
@@ -109,6 +108,15 @@
         document.getElementById('month-picker').value = `${y}-${m}`;
         initDataSync();
     };
+
+    // Global Click Listener: Closes any open dropdown when clicking outside
+    window.addEventListener('mousedown', function(e) {
+        if (!e.target.closest('.ac-container')) {
+            document.querySelectorAll('.custom-menu').forEach(menu => {
+                menu.style.display = 'none';
+            });
+        }
+    });
 
     function lockTable() {
         document.getElementById('app-wrapper').classList.remove('is-ready');
@@ -222,23 +230,34 @@
     function handleBlur(uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const input = document.getElementById(`input-${uniqueId}`);
+        
         if (ghost.innerText.trim() !== "") {
             input.value = ghost.innerText;
             input.classList.add('new-entry');
         }
         ghost.innerText = "";
+        
+        // Timeout allows onmousedown of selectName to trigger before menu hides
         setTimeout(() => { 
             const menu = document.getElementById(`menu-${uniqueId}`);
             if (menu) menu.style.display = "none"; 
-        }, 200);
+        }, 150);
     }
 
     function toggleMenu(uniqueId, specId) {
         const menu = document.getElementById(`menu-${uniqueId}`);
-        if (menu.style.display === "block") { menu.style.display = "none"; return; }
-        const names = nameData[specId] || [];
-        menu.innerHTML = names.map(n => `<div onmousedown="selectName('${uniqueId}', '${n}')">${n}</div>`).join('');
-        menu.style.display = "block";
+        const isAlreadyOpen = menu.style.display === "block";
+        
+        // Hide all other open menus
+        document.querySelectorAll('.custom-menu').forEach(m => m.style.display = "none");
+
+        if (isAlreadyOpen) {
+            menu.style.display = "none";
+        } else {
+            const names = nameData[specId] || [];
+            menu.innerHTML = names.map(n => `<div onmousedown="selectName('${uniqueId}', '${n}')">${n}</div>`).join('');
+            menu.style.display = "block";
+        }
     }
 
     function selectName(uniqueId, name) {
