@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHECDULER 🇮🇶</title>
+    <title>MD Scheduler | Carbon Gold 🇮🇶</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
     <style>
@@ -44,7 +44,7 @@
             overflow-x: auto;
         }
 
-        table { border-collapse: separate; border-spacing: 0; min-width: 1700px; }
+        table { border-collapse: separate; border-spacing: 0; min-width: 1750px; }
         th { 
             position: sticky; top: 0; background: var(--bg); z-index: 20;
             padding: 1.2rem; color: var(--accent); font-weight: 800; font-size: 0.75rem;
@@ -54,15 +54,14 @@
 
         .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
         
-        /* THE UNDERMASKING FIX */
         .ghost-text {
             position: absolute; 
             top: 0; right: 0; left: 0; bottom: 0;
-            padding: 0.7rem 0.7rem 0.7rem 2.5rem; /* Exact match to input */
+            padding: 0.7rem 0.7rem 0.7rem 2.5rem;
             color: rgba(255, 255, 255, 0.15); 
             font-size: 0.9rem; 
             font-family: inherit;
-            line-height: 1.25rem; /* Fixed line height for sync */
+            line-height: 1.25rem;
             pointer-events: none; 
             white-space: nowrap; 
             overflow: hidden;
@@ -97,7 +96,7 @@
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
         .date-col { color: #64748b; font-family: monospace; font-weight: bold; text-align: center; width: 130px; direction: ltr; }
-        .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 80px; text-shadow: 0 0 8px rgba(251, 191, 36, 0.4); }
+        .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 100px; text-shadow: 0 0 8px rgba(251, 191, 36, 0.4); font-size: 0.85rem; }
         
         .dropdown-arrow { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.7rem; }
         .custom-menu { position: absolute; top: 100%; right: 0; width: 100%; max-height: 220px; overflow-y: auto; background: #1e2126; border: 1px solid var(--light); border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 30px var(--shadow); display: none; text-align: right; }
@@ -110,7 +109,7 @@
     <div id="app-wrapper" class="max-w-full mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
             <div>
-                <h1 class="text-3xl font-extrabold tracking-tight">DUTY SCHEDULER 🇮🇶</h1>
+                <h1 class="text-3xl font-extrabold tracking-tight">Monthly Scheduler 🇮🇶</h1>
                 <div class="mt-4 flex items-center bg-black/40 px-6 py-2 rounded-full inline-flex border border-white/5">
                     <span id="led" class="led-dot led-loading"></span>
                     <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Initializing...</span>
@@ -139,7 +138,7 @@
 <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
     
-    // NEW ORDERED SPECIALTIES
+    // REORDERED SPECIALTIES
     const specialties = [
         { id: "NS", name: "Neurosurgery" },
         { id: "CT", name: "Cardiothoracic Surgery" },
@@ -159,7 +158,12 @@
 
     window.onload = () => {
         const now = new Date();
-        document.getElementById('month-picker').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        // SELECT NEXT MONTH AUTOMATICALLY
+        const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        const y = nextMonth.getFullYear();
+        const m = String(nextMonth.getMonth() + 1).padStart(2, '0');
+        
+        document.getElementById('month-picker').value = `${y}-${m}`;
         initDataSync();
     };
 
@@ -232,9 +236,14 @@
 
         const body = document.getElementById('table-body');
         body.innerHTML = "";
+        
         for (let d = 1; d <= daysInMonth; d++) {
+            const dateObj = new Date(year, month-1, d);
             const dateStr = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
-            const dayName = new Date(year, month-1, d).toLocaleDateString('en-US', { weekday: 'short' });
+            
+            // ARABIC DAY NAME 🇮🇶
+            const dayName = new Intl.DateTimeFormat('ar-IQ', { weekday: 'long' }).format(dateObj);
+            
             const tr = document.createElement('tr');
             let rHtml = ``;
             specialties.forEach(s => {
@@ -251,7 +260,6 @@
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const val = el.value.toLowerCase();
         ghost.innerText = "";
-        
         el.classList.remove('prefilled');
         if(el.value.trim() !== "") el.classList.add('new-entry');
         else el.classList.remove('new-entry');
@@ -273,17 +281,13 @@
         }
     }
 
-    // UPDATED: AUTO-FILL ON LEAVE
     function handleBlur(uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const input = document.getElementById(`input-${uniqueId}`);
-        
-        // If there's a suggestion, adopt it before the ghost vanishes
         if (ghost.innerText.trim() !== "") {
             input.value = ghost.innerText;
             input.classList.add('new-entry');
         }
-        
         ghost.innerText = "";
         setTimeout(() => { 
             const menu = document.getElementById(`menu-${uniqueId}`);
