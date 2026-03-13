@@ -23,8 +23,8 @@
         h1 { text-shadow: var(--glow); color: white; }
 
         /* Table Dimensions - 75% Scale */
-        table { border-collapse: separate; border-spacing: 0; min-width: 1750px; }
-        .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl;overflow: visible; }
+        table { border-collapse: separate; border-spacing: 0; min-width: 1350px; }
+        .ac-container { position: relative; width: 100%; min-width: 170px; direction: rtl;overflow: visible; }
         
         /* Column Color Palette */
         tr td:nth-child(1), thead th:nth-child(1) { --col-color: #fbbf24; } /* NS - Amber */
@@ -53,7 +53,7 @@
         tr.weekend-row .cell-input { color: #fff; }
         
         /* Inputs & Interactive Elements */
-        .cell-input { position: relative; background: transparent; color: #fff; width: 100%; padding: 0.6rem 2rem 0.6rem 2rem; border-radius: 0.8rem; border: 1px solid transparent; font-size: 0.85rem; outline: none; text-align: right; transition: all 0.2s; z-index: 5;box-sizing: border-box; }
+        .cell-input { position: relative; background: transparent; color: #fff; width: 100%; padding: 0.6rem 1.5rem 0.6rem 2rem; border-radius: 0.8rem; border: 1px solid transparent; font-size: 0.85rem; outline: none; text-align: right; transition: all 0.2s; z-index: 5;box-sizing: border-box; }
         .cell-input:focus { background: rgba(255, 255, 255, 0.03); border-color: var(--col-color); box-shadow: 0 0 8px var(--col-color); }
         
         .prefilled { color: var(--col-color) !important; filter: brightness(0.8); text-shadow: 0 0 2px var(--col-color); font-weight: 600; }
@@ -76,7 +76,7 @@
         .custom-menu div { padding: 0.6rem 0.8rem; cursor: pointer; color: #94a3b8; font-size: 0.8rem; }
         .custom-menu div:hover { background: var(--light); color: var(--col-color); }
         .dropdown-arrow { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.65rem; }
-        .ghost-text { position: absolute; top: 0; right: 0; left: 0; bottom: 0; padding: 0.6rem 2rem 0.6rem 2rem; color: rgba(255, 255, 255, 0.1); font-size: 0.85rem; pointer-events: none; white-space: nowrap; overflow: hidden; text-align: right; z-index: 1; }
+        .ghost-text { position: absolute; top: 0; right: 0; left: 0; bottom: 0; padding: 0.6rem 2rem 0.6rem 1.5rem; color: rgba(255, 255, 255, 0.1); font-size: 0.85rem; pointer-events: none; white-space: nowrap; overflow: hidden; text-align: right; z-index: 1; }
     </style>
 </head>
 <body class="p-4 md:p-8">
