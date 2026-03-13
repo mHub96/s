@@ -47,17 +47,33 @@
         td { border-right: 1px solid rgba(255,255,255,0.02); }
 
         /* Weekend Override */
-        tr.weekend-row { 
-        background-color: rgba(255, 255, 255, 0.05) !important; /* Subtle white tint for background */
-        }    
-        /* tr.weekend-row td { --col-color: var(--emerald) !important; } ----Specialty colors are preserved because the preceeding line remains commented out */
-        tr.weekend-row .day-col { 
-        color: #ffffff; 
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Clean white glow */
-        }
-        tr.weekend-row .cell-input { 
-        color: #fff; 
-        }
+tr.weekend-row { 
+    /* Pungent, bright white background */
+    background-color: rgba(255, 255, 255, 0.9) !important; 
+}
+
+/* Forces all names/glows in this row to become black */
+tr.weekend-row td { 
+    --col-color: #000000 !important; 
+} 
+
+tr.weekend-row .day-col { 
+    color: #000000; 
+    text-shadow: none; /* Removed glow for a clean "ink" look */
+    font-weight: 900;
+}
+
+tr.weekend-row .cell-input { 
+    color: #000000 !important; 
+    text-shadow: none !important;
+}
+
+/* Ensures prefilled names also turn black on weekends */
+tr.weekend-row .prefilled {
+    color: #000000 !important;
+    text-shadow: none !important;
+    filter: brightness(0);
+}
 
         /* Inputs & Interactive Elements */
         .cell-input { position: relative; background: transparent; color: #fff; width: 100%; padding: 0.6rem 0.6rem 0.6rem 2rem; border-radius: 0.8rem; border: 1px solid transparent; font-size: 0.85rem; outline: none; text-align: right; transition: all 0.2s; z-index: 5; }
