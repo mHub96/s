@@ -47,16 +47,23 @@
         td { border-right: 1px solid rgba(255,255,255,0.02); }
 
         /* Weekend Override */
-        tr.weekend-row { background-color: var(--weekend-bg) !important; }
-        /* tr.weekend-row td { --col-color: var(--emerald) !important; } */ /* THIS CHANGES THE COLOR OF THE NAME INSIDE THE WEEKENDS */
-        tr.weekend-row .day-col { color: var(--emerald); text-shadow: 0 0 15px var(--emerald); }
-        tr.weekend-row .cell-input { color: #fff; }
+        tr.weekend-row { 
+        background-color: rgba(255, 255, 255, 0.05) !important; /* Subtle white tint for background */
+        }    
+        /* tr.weekend-row td { --col-color: var(--emerald) !important; } ----Specialty colors are preserved because the preceeding line remains commented out */
+        tr.weekend-row .day-col { 
+        color: #ffffff; 
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Clean white glow */
+        }
+        tr.weekend-row .cell-input { 
+        color: #fff; 
+        }
 
         /* Inputs & Interactive Elements */
         .cell-input { position: relative; background: transparent; color: #fff; width: 100%; padding: 0.6rem 0.6rem 0.6rem 2rem; border-radius: 0.8rem; border: 1px solid transparent; font-size: 0.85rem; outline: none; text-align: right; transition: all 0.2s; z-index: 5; }
         .cell-input:focus { background: rgba(255, 255, 255, 0.03); border-color: var(--col-color); box-shadow: 0 0 12px var(--col-color); }
         
-        .prefilled { color: var(--col-color) !important; filter: brightness(1.0); text-shadow: 0 0 8px var(--col-color); font-weight: 600; }
+        .prefilled { color: var(--col-color) !important; filter: brightness(0.5); text-shadow: 0 0 8px var(--col-color); font-weight: 600; }
         .new-entry { color: var(--crimson) !important; text-shadow: 0 0 10px var(--crimson); }
 
         /* UI Shell */
