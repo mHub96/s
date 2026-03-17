@@ -86,24 +86,25 @@
             right: 0;
             left: 0;
             bottom: 0;
+            /* Exact match to .cell-input padding/font */
             padding: 0.6rem 0.8rem;
             font-size: 0.85rem;
             line-height: 1.25rem;
             font-family: 'Plus Jakarta Sans', sans-serif;
             text-align: right;
-            color: rgba(255, 255, 255, 0.4); /* Brighter Shadow */
+            color: rgba(255, 255, 255, 0.4); 
             pointer-events: none;
-            white-space: nowrap;
+            /* This is the secret for alignment: */
+            white-space: pre; 
             overflow: hidden;
             z-index: 1;
-            display: flex;
-            flex-direction: row-reverse; /* Aligns with RTL typing */
+            direction: rtl; /* Force RTL for Iraqi names */
         }
 
-        /* This makes the part you already typed invisible in the ghost layer */
         .ghost-offset {
             color: transparent;
-            white-space: pre;
+            /* Ensures the transparent text takes up exact pixel width */
+            visibility: visible; 
         }
 
         /* Adjust the arrow position to not overlap the text */
