@@ -52,9 +52,61 @@
         /*tr.weekend-row .day-col { color: var(--emerald); text-shadow: 0 0 15px var(--emerald); } */
         tr.weekend-row .cell-input { color: #fff; }
         
-        /* Inputs & Interactive Elements */
-        .cell-input { position: relative; background: transparent; color: #fff; width: 100%; padding: 0.6rem 0.6rem 0.6rem 0.6rem; border-radius: 0.8rem; border: 1px solid transparent; font-size: 0.85rem; outline: none; text-align: right; transition: all 0.2s; z-index: 5;box-sizing: border-box; }
-        .cell-input:focus { background: rgba(255, 255, 255, 0.03); border-color: var(--col-color); box-shadow: 0 0 8px var(--col-color); }
+/* Unified Alignment Logic */
+        .cell-input, .ghost-text {
+            width: 100%;
+            padding: 0.6rem 0.8rem; /* Increased horizontal padding for the arrow space */
+            font-size: 0.85rem;
+            line-height: 1.25rem; /* Explicit line height for vertical alignment */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-align: right;
+            box-sizing: border-box;
+            border: 1px solid transparent; /* Keeps spacing identical */
+        }
+
+        .cell-input {
+            position: relative;
+            background: transparent;
+            color: #fff;
+            border-radius: 0.8rem;
+            outline: none;
+            transition: all 0.2s;
+            z-index: 5;
+        }
+
+        .cell-input:focus {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: var(--col-color);
+            box-shadow: 0 0 8px var(--col-color);
+        }
+
+        .ghost-text {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            /* Brighter color for better visibility */
+            color: rgba(255, 255, 255, 0.4); 
+            pointer-events: none;
+            white-space: nowrap;
+            overflow: hidden;
+            z-index: 1;
+            /* Match the input text shadow for consistency */
+            text-shadow: none; 
+        }
+
+        /* Adjust the arrow position to not overlap the text */
+        .dropdown-arrow {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #475569;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 0.65rem;
+        }
         
         .prefilled { color: var(--col-color) !important; filter: brightness(0.8); text-shadow: 0 0 2px var(--col-color); font-weight: 600; }
         .new-entry { color: var(--crimson) !important; text-shadow: 0 0 10px var(--crimson); }
@@ -76,7 +128,6 @@
         .custom-menu div { padding: 0.6rem 0.8rem; cursor: pointer; color: #94a3b8; font-size: 0.8rem; }
         .custom-menu div:hover { background: var(--light); color: var(--col-color); }
         .dropdown-arrow { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.65rem; }
-        .ghost-text { position: absolute; top: 0; right: 0; left: 0; bottom: 0; padding: 0.6rem 0.6rem 0.6rem 0.6rem; color: rgba(255, 255, 255, 0.1); font-size: 0.85rem; pointer-events: none; white-space: nowrap; overflow: hidden; text-align: right; z-index: 1; }
     </style>
 </head>
 <body class="p-4 md:p-8">
