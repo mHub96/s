@@ -80,20 +80,30 @@
             box-shadow: 0 0 8px var(--col-color);
         }
 
-        .ghost-text {
+.ghost-text {
             position: absolute;
             top: 0;
             right: 0;
             left: 0;
             bottom: 0;
-            /* Brighter color for better visibility */
-            color: rgba(255, 255, 255, 0.4); 
+            padding: 0.6rem 0.8rem;
+            font-size: 0.85rem;
+            line-height: 1.25rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-align: right;
+            color: rgba(255, 255, 255, 0.4); /* Brighter Shadow */
             pointer-events: none;
             white-space: nowrap;
             overflow: hidden;
             z-index: 1;
-            /* Match the input text shadow for consistency */
-            text-shadow: none; 
+            display: flex;
+            flex-direction: row-reverse; /* Aligns with RTL typing */
+        }
+
+        /* This makes the part you already typed invisible in the ghost layer */
+        .ghost-offset {
+            color: transparent;
+            white-space: pre;
         }
 
         /* Adjust the arrow position to not overlap the text */
