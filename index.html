@@ -292,18 +292,33 @@
         if (Object.keys(nameData).length > 0) fetchExistingSchedule();
     }
 
-    function handleAC(el, specId, uniqueId) {
+function handleAC(el, specId, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
-        const val = el.value.toLowerCase();
-        ghost.innerText = "";
+        const val = el.value; // Keep original casing for display
+        const valLower = val.toLowerCase();
+        
+        ghost.innerHTML = ""; // Clear
         el.classList.remove('prefilled');
-        if(el.value.trim() !== "") el.classList.add('new-entry');
-        else el.classList.remove('new-entry');
+        
+        if(val.trim() !== "") {
+            el.classList.add('new-entry');
+        } else {
+            el.classList.remove('new-entry');
+            return;
+        }
 
         if (val && nameData[specId]) {
-            const match = nameData[specId].find(name => name.toLowerCase().startsWith(val));
+            // Find a match
+            const match = nameData[specId].find(name => 
+                name.toLowerCase().startsWith(valLower)
+            );
+
             if (match && match.length > val.length) {
-                ghost.innerText = el.value + match.substring(val.length);
+                // The Magic: 
+                // We put the part you typed in a transparent span, 
+                // and the rest of the name as the visible shadow.
+                const remaining = match.substring(val.length);
+                ghost.innerHTML = `<span class="ghost-offset">${val}</span>${remaining}`;
             }
         }
     }
