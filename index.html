@@ -139,6 +139,32 @@
         .custom-menu div { padding: 0.6rem 0.8rem; cursor: pointer; color: #94a3b8; font-size: 0.8rem; }
         .custom-menu div:hover { background: var(--light); color: var(--col-color); }
         .dropdown-arrow { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.65rem; }
+
+        /* Sticky Column Logic */
+        .date-col, .day-col {
+            position: sticky;
+            right: 0; /* Stick to the right for RTL */
+            background-color: var(--bg) !important; /* Must have a solid background */
+            z-index: 10;
+            border-left: 1px solid var(--light);
+        }
+
+        .day-col {
+            right: 110px; /* Offset by the width of the date column (110px) */
+            border-left: none;
+        }
+
+        /* Ensure headers also stick when scrolling horizontally */
+        thead th.date-col, thead th.day-col {
+            z-index: 30; /* Higher than row cells and top header */
+        }
+
+        /* Weekend row override for sticky columns */
+        tr.weekend-row .date-col, 
+        tr.weekend-row .day-col {
+            background-color: #1a2e28 !important; /* Match your emerald weekend-bg */
+        }
+        
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -293,33 +319,32 @@
         if (Object.keys(nameData).length > 0) fetchExistingSchedule();
     }
 
-function handleAC(el, specId, uniqueId) {
+function handleKeys(e, el, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
-        const val = el.value; // Keep original casing for display
-        const valLower = val.toLowerCase();
         
-        ghost.innerHTML = ""; // Clear
-        el.classList.remove('prefilled');
-        
-        if(val.trim() !== "") {
-            el.classList.add('new-entry');
-        } else {
-            el.classList.remove('new-entry');
-            return;
+        // 1. Accept suggestion with Tab, ArrowRight, or Enter
+        if ((e.key === "Tab" || e.key === "ArrowRight" || e.key === "Enter") && ghost.innerText !== "") {
+            // Only prevent default for Tab/Enter so we can control focus
+            if (e.key !== "ArrowRight") e.preventDefault(); 
+            
+            el.value = ghost.innerText; 
+            ghost.innerText = "";
         }
 
-        if (val && nameData[specId]) {
-            // Find a match
-            const match = nameData[specId].find(name => 
-                name.toLowerCase().startsWith(valLower)
-            );
+        // 2. Shift to next lower cell on Enter
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const parts = uniqueId.split('-'); // [day, specId]
+            const nextDay = parseInt(parts[0]) + 1;
+            const specId = parts[1];
+            const nextInputId = `input-${nextDay}-${specId}`;
+            const nextEl = document.getElementById(nextInputId);
 
-            if (match && match.length > val.length) {
-                // The Magic: 
-                // We put the part you typed in a transparent span, 
-                // and the rest of the name as the visible shadow.
-                const remaining = match.substring(val.length);
-                ghost.innerHTML = `<span class="ghost-offset">${val}</span>${remaining}`;
+            if (nextEl) {
+                nextEl.focus();
+            } else {
+                // If at the end of the month, maybe blur to finish
+                el.blur();
             }
         }
     }
