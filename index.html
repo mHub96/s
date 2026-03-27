@@ -140,33 +140,36 @@
         .custom-menu div:hover { background: var(--light); color: var(--col-color); }
         .dropdown-arrow { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.65rem; }
 
-        /* Sticky Column Logic - Corrected for Iraqi RTL 🇮🇶 */
+        /* Sticky Column Logic - Final Fix for Iraqi RTL 🇮🇶 */
         .day-col {
             position: sticky;
             right: 0; 
             background-color: var(--bg) !important;
-            z-index: 10;
+            z-index: 21; /* Slightly higher than standard headers */
             width: 90px;
             min-width: 90px;
+            max-width: 90px;
             text-align: center;
         }
         .date-col {
             position: sticky;
-            right: 90px; /* Moves left to make room for the Day column */
+            right: 90px; /* Exact width of the Day column */
             background-color: var(--bg) !important;
-            z-index: 10;
+            z-index: 21;
             width: 110px;
             min-width: 110px;
+            max-width: 110px;
             border-left: 1px solid rgba(255,255,255,0.1);
         }
-        /* Weekend colors for sticky columns */
+        /* Prevent transparency issues during scroll */
+        thead th.day-col, thead th.date-col {
+            z-index: 40; /* Keep headers above body cells */
+            background-color: var(--bg) !important;
+        }
+        /* Weekend row override - ensuring sticky columns stay opaque */
         tr.weekend-row .day-col, 
         tr.weekend-row .date-col {
             background-color: #1a2e28 !important; 
-        }
-        /* Ensure headers stay above body cells */
-        thead th.day-col, thead th.date-col {
-            z-index: 30;
         }
         
     </style>
@@ -297,7 +300,7 @@
         
         let hHtml = ``;
         specialties.forEach(s => hHtml += `<th>${s.name}</th>`);
-        // Swap: Day first, then Date
+        // The first one here will be at the far right
         hHtml += `<th class="day-col">Day</th><th class="date-col">Date</th>`;
         hRow.innerHTML = hHtml;
 
@@ -313,11 +316,11 @@
             const tr = document.createElement('tr');
             if (isWeekend) tr.classList.add('weekend-row');
             
-            let rHtml = ``;
+           let rHtml = ``;
             specialties.forEach(s => {
                 rHtml += `<td><div class="ac-container"><div class="ghost-text" id="ghost-${d}-${s.id}"></div><input type="text" class="cell-input" id="input-${d}-${s.id}" autocomplete="off" oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" onkeydown="handleKeys(event, this, '${d}-${s.id}')" onblur="handleBlur('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}"><span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span><div class="custom-menu" id="menu-${d}-${s.id}"></div></div></td>`;
             });
-            // Swap: Day column first (far right), then Date column
+            // This order is critical for the "right" offsets in CSS to work
             rHtml += `<td class="day-col">${dayName}</td><td class="date-col">${dateStr}</td>`;
             tr.innerHTML = rHtml;
             body.appendChild(tr);
