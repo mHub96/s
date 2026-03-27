@@ -319,6 +319,33 @@
         if (Object.keys(nameData).length > 0) fetchExistingSchedule();
     }
 
+    function handleAC(el, specId, uniqueId) {
+        const ghost = document.getElementById(`ghost-${uniqueId}`);
+        const val = el.value; // Keep original casing for display
+        const valLower = val.toLowerCase();
+        ghost.innerHTML = ""; // Clear
+        el.classList.remove('prefilled');
+        if(val.trim() !== "") {
+            el.classList.add('new-entry');
+        } else {
+            el.classList.remove('new-entry');
+            return;
+        }
+        if (val && nameData[specId]) {
+            // Find a match
+            const match = nameData[specId].find(name => 
+                name.toLowerCase().startsWith(valLower)
+            );
+            if (match && match.length > val.length) {
+                // The Magic: 
+                // We put the part you typed in a transparent span, 
+                // and the rest of the name as the visible shadow.
+                const remaining = match.substring(val.length);
+                ghost.innerHTML = `<span class="ghost-offset">${val}</span>${remaining}`;
+            }
+        }
+    }
+
 function handleKeys(e, el, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         
@@ -346,15 +373,6 @@ function handleKeys(e, el, uniqueId) {
                 // If at the end of the month, maybe blur to finish
                 el.blur();
             }
-        }
-    }
-
-    function handleKeys(e, el, uniqueId) {
-        const ghost = document.getElementById(`ghost-${uniqueId}`);
-        if ((e.key === "Tab" || e.key === "ArrowRight") && ghost.innerText !== "") {
-            e.preventDefault(); 
-            el.value = ghost.innerText; 
-            ghost.innerText = "";
         }
     }
 
