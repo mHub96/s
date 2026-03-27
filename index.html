@@ -252,27 +252,45 @@
         }
     }
 
-    function handleKeys(e, el, uniqueId) {
-        const ghost = document.getElementById(`ghost-${uniqueId}`);
-        const fullMatch = ghost.getAttribute('data-full-match');
-        
-        if ((e.key === "Tab" || e.key === "ArrowRight" || e.key === "Enter") && fullMatch) {
-            if (el.value !== fullMatch) {
-                if (e.key !== "ArrowRight") e.preventDefault();
-                el.value = fullMatch;
-                ghost.innerText = "";
-                ghost.removeAttribute('data-full-match');
-                return;
-            }
-        }
-        if (e.key === "Enter") {
-            e.preventDefault();
-            const parts = uniqueId.split('-');
-            const nextEl = document.getElementById(`input-${parseInt(parts[0]) + 1}-${parts[1]}`);
-            if (nextEl) nextEl.focus(); else el.blur();
+   function handleKeys(e, el, uniqueId) {
+    const ghost = document.getElementById(`ghost-${uniqueId}`);
+    const fullMatch = ghost.getAttribute('data-full-match');
+    
+    // Accept suggestion with Tab or ArrowRight
+    if ((e.key === "Tab" || e.key === "ArrowRight") && fullMatch) {
+        if (el.value !== fullMatch) {
+            if (e.key !== "ArrowRight") e.preventDefault();
+            el.value = fullMatch;
+            ghost.innerText = "";
+            ghost.removeAttribute('data-full-match');
+            return;
         }
     }
 
+    // Combined Enter Logic: Apply suggestion AND Move Down 🇮🇶
+    if (e.key === "Enter") {
+        e.preventDefault();
+
+        // 1. If there's a suggestion, apply it first
+        if (fullMatch) {
+            el.value = fullMatch;
+            ghost.innerText = "";
+            ghost.removeAttribute('data-full-match');
+        }
+
+        // 2. Immediately shift focus to the next day
+        const parts = uniqueId.split('-'); // [day, specId]
+        const nextDay = parseInt(parts[0]) + 1;
+        const specId = parts[1];
+        const nextEl = document.getElementById(`input-${nextDay}-${specId}`);
+
+        if (nextEl) {
+            nextEl.focus();
+        } else {
+            el.blur(); // End of the month
+        }
+    }
+}
     function handleBlur(uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const input = document.getElementById(`input-${uniqueId}`);
