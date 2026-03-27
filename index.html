@@ -332,44 +332,62 @@ tr.innerHTML = rHtml;
     }
 
     function handleAC(el, specId, uniqueId) {
-        const ghost = document.getElementById(`ghost-${uniqueId}`);
-        const val = el.value; // Keep original casing for display
-        const valLower = val.toLowerCase();
-        ghost.innerHTML = ""; // Clear
-        el.classList.remove('prefilled');
-        if(val.trim() !== "") {
-            el.classList.add('new-entry');
-        } else {
-            el.classList.remove('new-entry');
-            return;
-        }
-        if (val && nameData[specId]) {
-            // Find a match
-            const match = nameData[specId].find(name => 
-                name.toLowerCase().startsWith(valLower)
-            );
-            if (match && match.length > val.length) {
-                // The Magic: 
-                // We put the part you typed in a transparent span, 
-                // and the rest of the name as the visible shadow.
+    const ghost = document.getElementById(`ghost-${uniqueId}`);
+    const val = el.value; 
+    const valLower = val.toLowerCase().trim();
+    
+    ghost.innerHTML = ""; 
+    el.classList.remove('prefilled');
+    
+    if (val.trim() !== "") {
+        el.classList.add('new-entry');
+    } else {
+        el.classList.remove('new-entry');
+        return;
+    }
+
+    if (val && nameData[specId]) {
+        // This Regex looks for "د. " at the start and ignores it for the search
+        const cleanInput = valLower.replace(/^د\.\s*/, "");
+
+        const match = nameData[specId].find(name => {
+            const nameLower = name.toLowerCase();
+            const cleanName = nameLower.replace(/^د\.\s*/, "");
+            
+            // Matches if the user types "د. Ali" OR just "Ali"
+            return nameLower.startsWith(valLower) || cleanName.startsWith(cleanInput);
+        });
+
+        if (match && match.length > val.length) {
+            // Calculate how much of the match to show in the ghost text
+            // If user typed "Ali" and match is "د. Ali Mahdi", we show "Mahdi" 
+            // but we need to be careful with the offset.
+            
+            if (match.toLowerCase().startsWith(valLower)) {
                 const remaining = match.substring(val.length);
                 ghost.innerHTML = `<span class="ghost-offset">${val}</span>${remaining}`;
+            } else {
+                // If they didn't type "د. ", we don't show a ghost 
+                // because the prefix length mismatch breaks the visual alignment.
+                // However, the "Enter" key will still fill it (see below).
+                ghost.innerText = match; 
+                ghost.style.color = "transparent"; // Keep it hidden but available for handleKeys
             }
         }
     }
+}
 
 function handleKeys(e, el, uniqueId) {
-        const ghost = document.getElementById(`ghost-${uniqueId}`);
+    const ghost = document.getElementById(`ghost-${uniqueId}`);
+    
+    // Accept suggestion with Tab, ArrowRight, or Enter
+    if ((e.key === "Tab" || e.key === "ArrowRight" || e.key === "Enter") && ghost.innerText !== "") {
+        if (e.key !== "ArrowRight") e.preventDefault(); 
         
-        // 1. Accept suggestion with Tab, ArrowRight, or Enter
-        if ((e.key === "Tab" || e.key === "ArrowRight" || e.key === "Enter") && ghost.innerText !== "") {
-            // Only prevent default for Tab/Enter so we can control focus
-            if (e.key !== "ArrowRight") e.preventDefault(); 
-            
-            el.value = ghost.innerText; 
-            ghost.innerText = "";
-        }
-
+        el.value = ghost.innerText; // Grabs the full "د. Name"
+        ghost.innerText = "";
+        el.classList.add('new-entry');
+    }
         // 2. Shift to next lower cell on Enter
         if (e.key === "Enter") {
             e.preventDefault();
