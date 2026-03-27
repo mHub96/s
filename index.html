@@ -57,8 +57,19 @@
             border-left: 1px solid rgba(255,255,255,0.1);
             color: #64748b; font-family: 'JetBrains Mono', monospace; text-align: center;
         }
-        thead th.day-col, thead th.date-col { z-index: 40 !important; top: 0; }
-
+        
+        /* Fixed sticky header sizing 🇮🇶 */
+        thead th.day-col, 
+        thead th.date-col { 
+            z-index: 40 !important; 
+            top: 0; 
+            font-size: 0.75rem !important; /* Forces both to match */
+            line-height: 1rem !important;
+            font-weight: 800 !important;
+            text-transform: uppercase;
+            vertical-align: middle;
+        }
+        
         /* Weekend Rows */
         tr.weekend-row { background-color: var(--weekend-bg) !important; }
         tr.weekend-row td { --col-color: var(--emerald) !important; }
