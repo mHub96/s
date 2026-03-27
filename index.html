@@ -17,19 +17,17 @@
             --glow: 0 0 15px rgba(251, 191, 36, 0.8);
             --zebra: rgba(255, 255, 255, 0.02);
             --weekend-bg: rgba(16, 185, 129, 0.12); 
-            /* Precise Column Widths */
             --day-width: 85px;
             --date-width: 105px;
         }
 
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
-        h1 { text-shadow: var(--glow); color: white; }
-
-        /* Table Dimensions */
+        
+        /* Table Structure */
         table { border-collapse: separate; border-spacing: 0; min-width: 1500px; }
         .ac-container { position: relative; width: 100%; min-width: 200px; direction: rtl; overflow: visible; }
         
-        /* Column Colors */
+        /* Dynamic Column Colors */
         tr td:nth-child(1), thead th:nth-child(1) { --col-color: #fbbf24; }
         tr td:nth-child(2), thead th:nth-child(2) { --col-color: #60a5fa; }
         tr td:nth-child(3), thead th:nth-child(3) { --col-color: #a78bfa; }
@@ -44,9 +42,8 @@
 
         th { position: sticky; top: 0; background: var(--bg); z-index: 20; padding: 1rem; color: var(--col-color); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.1em; border-bottom: 1px solid var(--light); text-shadow: 0 0 10px var(--col-color); }
         tr:nth-child(even) { background-color: var(--zebra); }
-        td { border-right: 1px solid rgba(255,255,255,0.02); }
 
-        /* Sticky Columns Final Fix 🇮🇶 */
+        /* Sticky Columns Logic 🇮🇶 */
         .day-col {
             position: sticky !important; right: 0 !important;
             width: var(--day-width) !important; min-width: var(--day-width) !important;
@@ -62,11 +59,12 @@
         }
         thead th.day-col, thead th.date-col { z-index: 40 !important; top: 0; }
 
-        /* Weekend & Input Styling */
+        /* Weekend Rows */
         tr.weekend-row { background-color: var(--weekend-bg) !important; }
         tr.weekend-row td { --col-color: var(--emerald) !important; }
         tr.weekend-row td.day-col, tr.weekend-row td.date-col { background-color: #1a2e28 !important; }
 
+        /* Input & Ghost Text Alignment */
         .cell-input, .ghost-text {
             width: 100%; padding: 0.8rem; font-size: 0.85rem; line-height: 1.6rem;
             font-family: 'IBM Plex Sans Arabic', sans-serif; text-align: right; box-sizing: border-box;
@@ -81,6 +79,7 @@
         .prefilled { color: var(--col-color) !important; filter: brightness(0.8); text-shadow: 0 0 2px var(--col-color); font-weight: 600; }
         .new-entry { color: var(--crimson) !important; text-shadow: 0 0 10px var(--crimson); }
 
+        /* UI Shell */
         .embossed-card { background: var(--bg); border-radius: 2.5rem; box-shadow: 20px 20px 60px var(--shadow), -10px -10px 40px var(--light); }
         .recessed-table-container { background: var(--bg); border-radius: 1.5rem; box-shadow: inset 8px 8px 16px var(--shadow), inset -4px -4px 12px var(--light); overflow-x: auto; }
         
@@ -99,7 +98,7 @@
     <div id="app-wrapper" class="max-w-full mx-auto opacity-30 pointer-events-none transition-opacity duration-500">
         <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
             <div>
-                <h1 class="text-3xl font-extrabold tracking-tight">IRAQI Teaching Hospital Monthly Scheduler 🇮🇶</h1>
+                <h1 class="text-3xl font-extrabold tracking-tight text-white" style="text-shadow: var(--glow)">IRAQI Teaching Hospital Monthly Scheduler 🇮🇶</h1>
                 <div class="mt-4 flex items-center bg-black/40 px-6 py-2 rounded-full inline-flex border border-white/5">
                     <span id="led" class="led-dot led-loading"></span>
                     <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Initializing...</span>
@@ -163,11 +162,9 @@
         const [year, month] = picker.split('-').map(Number);
         const daysInMonth = new Date(year, month, 0).getDate();
         
-        // Headers
         let hHtml = specialties.map(s => `<th>${s.name}</th>`).join('') + `<th class="date-col">Date</th><th class="day-col">Day</th>`;
         document.getElementById('table-headers').innerHTML = hHtml;
 
-        // Body
         const body = document.getElementById('table-body');
         body.innerHTML = "";
         for (let d = 1; d <= daysInMonth; d++) {
@@ -217,35 +214,54 @@
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const val = el.value;
         const valLower = val.toLowerCase().trim();
-        ghost.innerText = "";
+        const prefix = "د. ";
+        
+        ghost.innerText = ""; 
+        ghost.removeAttribute('data-full-match');
         el.classList.remove('prefilled');
 
-        if (val.trim() !== "") {
-            el.classList.add('new-entry');
-            if (nameData[specId]) {
-                const cleanInput = valLower.replace(/^د\.\s*/, "");
-                const match = nameData[specId].find(n => n.toLowerCase().startsWith(valLower) || n.toLowerCase().replace(/^د\.\s*/, "").startsWith(cleanInput));
-                
-                if (match) {
-                    if (match.toLowerCase().startsWith(valLower)) {
-                        ghost.innerHTML = `<span class="ghost-offset">${val}</span>${match.substring(val.length)}`;
-                        ghost.style.color = "rgba(255, 255, 255, 0.4)";
-                    } else {
-                        ghost.innerText = match;
-                        ghost.style.color = "transparent";
-                    }
+        if (val.trim() === "") {
+            el.classList.remove('new-entry');
+            return;
+        }
+
+        el.classList.add('new-entry');
+
+        if (nameData[specId]) {
+            const userHasPrefix = val.startsWith("د.") || val.startsWith(prefix);
+            const cleanInput = valLower.replace(/^د\.\s*/, "");
+
+            const match = nameData[specId].find(name => {
+                const nameLower = name.toLowerCase();
+                const cleanName = nameLower.replace(/^د\.\s*/, "");
+                return nameLower.startsWith(valLower) || cleanName.startsWith(cleanInput);
+            });
+
+            if (match) {
+                ghost.setAttribute('data-full-match', match);
+                let ghostDisplay = userHasPrefix ? match : match.replace(/^د\.\s*/, "");
+
+                if (ghostDisplay.toLowerCase().startsWith(valLower)) {
+                    ghost.innerHTML = `<span class="ghost-offset">${val}</span>${ghostDisplay.substring(val.length)}`;
+                    ghost.style.color = "rgba(255, 255, 255, 0.4)";
+                } else {
+                    ghost.innerText = ghostDisplay;
+                    ghost.style.color = "rgba(255, 255, 255, 0.15)";
                 }
             }
-        } else { el.classList.remove('new-entry'); }
+        }
     }
 
     function handleKeys(e, el, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
-        if ((e.key === "Tab" || e.key === "ArrowRight" || e.key === "Enter") && ghost.innerText !== "") {
-            if (el.value.toLowerCase() !== ghost.innerText.toLowerCase()) {
+        const fullMatch = ghost.getAttribute('data-full-match');
+        
+        if ((e.key === "Tab" || e.key === "ArrowRight" || e.key === "Enter") && fullMatch) {
+            if (el.value !== fullMatch) {
                 if (e.key !== "ArrowRight") e.preventDefault();
-                el.value = ghost.innerText;
+                el.value = fullMatch;
                 ghost.innerText = "";
+                ghost.removeAttribute('data-full-match');
                 return;
             }
         }
@@ -260,15 +276,18 @@
     function handleBlur(uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const input = document.getElementById(`input-${uniqueId}`);
-        if (ghost.innerText.trim() !== "" && input.value.trim() !== "") {
-            input.value = ghost.innerText;
+        const fullMatch = ghost.getAttribute('data-full-match');
+        
+        if (fullMatch && input.value.trim() !== "") {
+            input.value = fullMatch;
             input.classList.add('new-entry');
         }
         setTimeout(() => {
             ghost.innerText = "";
+            ghost.removeAttribute('data-full-match');
             const menu = document.getElementById(`menu-${uniqueId}`);
             if (menu) menu.style.display = "none";
-        }, 200);
+        }, 220);
     }
 
     function toggleMenu(uniqueId, specId) {
@@ -285,15 +304,19 @@
         const input = document.getElementById(`input-${uniqueId}`);
         input.value = name;
         input.classList.add('new-entry');
-        document.getElementById(`ghost-${uniqueId}`).innerText = "";
+        const ghost = document.getElementById(`ghost-${uniqueId}`);
+        ghost.innerText = "";
+        ghost.removeAttribute('data-full-match');
     }
 
     function unlockTable() {
-        document.getElementById('app-wrapper').style.opacity = "1";
-        document.getElementById('app-wrapper').style.pointerEvents = "auto";
+        const wrapper = document.getElementById('app-wrapper');
+        wrapper.style.opacity = "1";
+        wrapper.style.pointerEvents = "auto";
         document.getElementById('led').className = "led-dot led-ready";
-        document.getElementById('status-text').innerText = "System Ready 🇮🇶";
-        document.getElementById('status-text').className = "text-[0.65rem] font-black text-emerald-500 uppercase tracking-widest";
+        const status = document.getElementById('status-text');
+        status.innerText = "System Ready 🇮🇶";
+        status.className = "text-[0.65rem] font-black text-emerald-500 uppercase tracking-widest";
     }
 
     async function saveAll() {
