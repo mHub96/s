@@ -2,366 +2,304 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SCHEDULER 🇮🇶</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #1a1c20;
-            --light: #2a2d34;
-            --shadow: #0d0e11;
-            --accent: #fbbf24;
-            --emerald: #10b981;
-            --crimson: #e11d48;
-            --glow: 0 0 15px rgba(251, 191, 36, 0.8);
-            --zebra: rgba(255, 255, 255, 0.02);
-            --weekend-bg: rgba(16, 185, 129, 0.12); 
-            --day-width: 85px;
-            --date-width: 105px;
+            --bg: #0b0e11;
+            --card: #16191d;
+            --column-width: 290px;
+            --font-size: 0.9rem;
+            --line-height: 1.5;
+            --padding-y: 0.6rem;
+            --padding-x: 0.75rem;
+            --nav-h: 70px;
         }
 
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
-        
-        /* Table Structure */
-        table { border-collapse: separate; border-spacing: 0; min-width: 1500px; }
-        .ac-container { position: relative; width: 100%; min-width: 200px; direction: rtl; overflow: visible; }
-        
-        /* Dynamic Column Colors */
-        tr td:nth-child(1), thead th:nth-child(1) { --col-color: #fbbf24; }
-        tr td:nth-child(2), thead th:nth-child(2) { --col-color: #60a5fa; }
-        tr td:nth-child(3), thead th:nth-child(3) { --col-color: #a78bfa; }
-        tr td:nth-child(4), thead th:nth-child(4) { --col-color: #f472b6; }
-        tr td:nth-child(5), thead th:nth-child(5) { --col-color: #fb7185; }
-        tr td:nth-child(6), thead th:nth-child(6) { --col-color: #38bdf8; }
-        tr td:nth-child(7), thead th:nth-child(7) { --col-color: #c084fc; }
-        tr td:nth-child(8), thead th:nth-child(8) { --col-color: #2dd4bf; }
-        tr td:nth-child(9), thead th:nth-child(9) { --col-color: #94a3b8; }
-        tr td:nth-child(10), thead th:nth-child(10) { --col-color: #fb923c; }
-        tr td:nth-child(11), thead th:nth-child(11) { --col-color: #818cf8; }
+        /* Specialty Hues 🇮🇶 */
+        .track-NS { --spec-color: #fbbf24; } .track-CT { --spec-color: #f87171; } 
+        .track-GS { --spec-color: #34d399; } .track-US { --spec-color: #60a5fa; } 
+        .track-ENT { --spec-color: #a78bfa; } .track-H { --spec-color: #fb7185; } 
+        .track-D { --spec-color: #94a3b8; } .track-OP { --spec-color: #fb923c; } 
+        .track-ICU { --spec-color: #2dd4bf; } .track-R { --spec-color: #818cf8; } 
+        .track-ON { --spec-color: #f472b6; } 
 
-        th { position: sticky; top: 0; background: var(--bg); z-index: 20; padding: 1rem; color: var(--col-color); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.1em; border-bottom: 1px solid var(--light); text-shadow: 0 0 10px var(--col-color); }
-        tr:nth-child(even) { background-color: var(--zebra); }
-
-        /* Sticky Columns Logic 🇮🇶 */
-        .day-col {
-            position: sticky !important; right: 0 !important;
-            width: var(--day-width) !important; min-width: var(--day-width) !important;
-            background-color: var(--bg) !important; z-index: 30 !important;
-            text-align: center; color: var(--accent); font-weight: 800; font-size: 0.8rem;
-        }
-        .date-col {
-            position: sticky !important; right: var(--day-width) !important;
-            width: var(--date-width) !important; min-width: var(--date-width) !important;
-            background-color: var(--bg) !important; z-index: 30 !important;
-            border-left: 1px solid rgba(255,255,255,0.1);
-            color: #64748b; font-family: 'JetBrains Mono', monospace; text-align: center;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
         
-        /* Fixed sticky header sizing 🇮🇶 */
-        thead th.day-col, 
-        thead th.date-col { 
-            z-index: 40 !important; 
-            top: 0; 
-            font-size: 0.75rem !important; /* Forces both to match */
-            line-height: 1rem !important;
-            font-weight: 800 !important;
-            text-transform: uppercase;
-            vertical-align: middle;
+        /* The "Visible Floor" Container 🇮🇶 */
+        .board-container {
+            flex-grow: 1;
+            display: flex; 
+            gap: 1.5rem; 
+            padding: 1.5rem 1.5rem 3rem 1.5rem; /* Extra bottom padding for visibility */
+            overflow-x: auto;
+            align-items: flex-start;
+            box-sizing: border-box;
+            height: calc(100vh - var(--nav-h));
         }
-        
-        /* Weekend Rows */
-        tr.weekend-row { background-color: var(--weekend-bg) !important; }
-        tr.weekend-row td { --col-color: var(--emerald) !important; }
-        tr.weekend-row td.day-col, tr.weekend-row td.date-col { background-color: #1a2e28 !important; }
 
-        /* Input & Ghost Text Alignment */
+        .specialty-track {
+            flex: 0 0 var(--column-width); 
+            background: var(--card); 
+            border-radius: 1.8rem;
+            display: flex; 
+            flex-direction: column; 
+            /* THE FIX: Force the track to end before the container bottom 🇮🇶 */
+            max-height: 92%; 
+            border: 1px solid rgba(255,255,255,0.04);
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.8), 
+                        0 0 15px -5px var(--spec-color);
+            overflow: hidden;
+        }
+
+        .track-header {
+            padding: 1.2rem; 
+            text-align: center;
+            flex-shrink: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent);
+            border-bottom: 3px solid var(--spec-color);
+        }
+
+        .track-header h2 { color: var(--spec-color); font-weight: 900; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; }
+
+        .days-list { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 0.75rem; 
+            padding-bottom: 2rem; /* Buffer for the last items */
+            scrollbar-width: none; 
+        }
+        .days-list::-webkit-scrollbar { display: none; }
+
+        .day-box {
+            position: relative; background: rgba(255,255,255,0.02); margin-bottom: 0.5rem;
+            border-radius: 0.9rem; padding: 0.4rem; border: 1px solid transparent;
+        }
+        .day-box:focus-within { border-color: var(--spec-color); background: rgba(255,255,255,0.04); }
+        .day-box.weekend { background: rgba(255,255,255,0.05); border-left: 3px solid var(--spec-color); }
+
+        .day-label {
+            display: flex; justify-content: space-between; font-size: 0.6rem;
+            font-weight: 800; margin-bottom: 0.2rem; color: #4b5563; padding: 0 0.5rem;
+        }
+
+        .input-wrapper { position: relative; width: 100%; direction: rtl; }
+
         .cell-input, .ghost-text {
-            width: 100%; padding: 0.8rem; font-size: 0.85rem; line-height: 1.6rem;
-            font-family: 'IBM Plex Sans Arabic', sans-serif; text-align: right; box-sizing: border-box;
+            width: 100%; font-family: 'IBM Plex Sans Arabic', sans-serif;
+            font-size: var(--font-size); line-height: var(--line-height);
+            padding: var(--padding-y) var(--padding-x); text-align: right;
+            box-sizing: border-box; white-space: pre; overflow: hidden;
         }
-        .cell-input { position: relative; background: transparent; color: #fff; border-radius: 0.8rem; outline: none; transition: all 0.2s; z-index: 5; border: 1px solid transparent; }
-        .cell-input:focus { background: rgba(255, 255, 255, 0.03); border-color: var(--col-color); box-shadow: 0 0 8px var(--col-color); }
-        
-        .ghost-text { position: absolute; top: 0; right: 0; left: 0; bottom: 0; color: rgba(255, 255, 255, 0.4); pointer-events: none; white-space: pre; overflow: hidden; z-index: 1; direction: rtl; }
-        .ghost-offset { color: transparent; visibility: visible; }
 
-        .dropdown-arrow { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.65rem; }
-        .prefilled { color: var(--col-color) !important; filter: brightness(0.8); text-shadow: 0 0 2px var(--col-color); font-weight: 600; }
-        .new-entry { color: var(--crimson) !important; text-shadow: 0 0 10px var(--crimson); }
+        .cell-input { background: transparent; border: none; outline: none; color: #fff; position: relative; z-index: 10; }
+        .ghost-text { position: absolute; top: 0; right: 0; color: rgba(255,255,255,0.15); z-index: 5; pointer-events: none; }
+        .ghost-offset { color: transparent; }
 
-        /* UI Shell */
-        .embossed-card { background: var(--bg); border-radius: 2.5rem; box-shadow: 20px 20px 60px var(--shadow), -10px -10px 40px var(--light); }
-        .recessed-table-container { background: var(--bg); border-radius: 1.5rem; box-shadow: inset 8px 8px 16px var(--shadow), inset -4px -4px 12px var(--light); overflow-x: auto; }
-        
-        .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-flex; margin-right: 12px; }
-        .led-loading { background: var(--crimson); animation: blink 1s infinite; }
-        .led-ready { background: var(--emerald); box-shadow: 0 0 15px var(--emerald); }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        .dropdown-arrow { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.5rem; color: #334155; cursor: pointer; z-index: 25; padding: 6px; }
 
-        .custom-menu { position: absolute; top: 100%; right: 0; width: 100%; max-height: 220px; overflow-y: auto; background: #1e2126; border: 1px solid var(--light); border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 30px var(--shadow); display: none; text-align: right; }
-        .custom-menu div { padding: 0.6rem 0.8rem; cursor: pointer; color: #94a3b8; font-size: 0.8rem; }
-        .custom-menu div:hover { background: var(--light); color: var(--col-color); }
+        .prefilled { color: var(--spec-color) !important; font-weight: 600; }
+        .new-entry { color: #fff !important; font-weight: 700; }
+
+        .custom-menu {
+            position: absolute; top: 100%; right: 0; width: 100%; max-height: 180px;
+            overflow-y: auto; background: #1c1f26; border: 1px solid var(--spec-color);
+            border-radius: 0.6rem; z-index: 1000; display: none;
+        }
+        .custom-menu div { padding: 0.8rem; font-size: 0.8rem; text-align: right; cursor: pointer; color: #94a3b8; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .custom-menu div:hover { background: var(--spec-color); color: #000; }
+
+        /* Navigation Bar 🇮🇶 */
+        .nav-bar { height: var(--nav-h); padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #111418; border-bottom: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body>
 
-    <div id="app-wrapper" class="max-w-full mx-auto opacity-30 pointer-events-none transition-opacity duration-500">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
-            <div>
-                <h1 class="text-3xl font-extrabold tracking-tight text-white" style="text-shadow: var(--glow)">IRAQI Teaching Hospital Monthly Scheduler 🇮🇶</h1>
-                <div class="mt-4 flex items-center bg-black/40 px-6 py-2 rounded-full inline-flex border border-white/5">
-                    <span id="led" class="led-dot led-loading"></span>
-                    <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Initializing...</span>
-                </div>
-            </div>
-            <div class="recessed-table-container p-2 flex items-center bg-black/20">
-                <input type="month" id="month-picker" class="bg-transparent text-amber-500 font-bold outline-none p-3 cursor-pointer" onchange="generateTable()">
+    <div id="app-wrapper" class="opacity-30 pointer-events-none transition-opacity duration-500">
+        <div class="nav-bar">
+            <h1 class="text-lg font-black text-white uppercase tracking-tighter">Iraqi Teaching Hosp. Schedules</h1>
+            <div class="flex gap-4 items-center">
+                <input type="month" id="month-picker" class="bg-black text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-white/10 text-xs" onchange="generateBoard()">
+                <button onclick="saveAll()" id="sync-btn" class="bg-white text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase active:scale-95 transition-transform">Sync Schedule</button>
             </div>
         </div>
-
-        <div id="main-table-area" class="embossed-card p-6">
-            <div class="recessed-table-container max-h-[72vh]">
-                <table id="schedule-table">
-                    <thead><tr id="table-headers"></tr></thead>
-                    <tbody id="table-body"></tbody>
-                </table>
-            </div>
-            <div class="mt-8 flex justify-end">
-                <button id="save-btn" onclick="saveAll()" class="bg-[#2a2d34] shadow-xl px-14 py-6 rounded-3xl text-amber-500 font-black uppercase tracking-[0.2em] transition-all hover:bg-black active:scale-95 border border-white/5">
-                    UPDATE DATABASE
-                </button>
-            </div>
-        </div>
+        
+        <div class="board-container" id="board"></div>
     </div>
 
 <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
     const specialties = [
-        { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic Surgery" },
-        { id: "GS", name: "General Surgery" }, { id: "US", name: "Urosurgery" },
-        { id: "ENT", name: "ENT" }, { id: "H", name: "Cardiology" },
-        { id: "D", name: "Death Certificates" }, { id: "OP", name: "OT Anaesthesia" },
-        { id: "ICU", name: "ICU Anaesthesia" }, { id: "R", name: "Radiology" },
+        { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
+        { id: "GS", name: "General Surg" }, { id: "US", name: "Urosurgery" },
+        { id: "ENT", name: "ENT Dept" }, { id: "H", name: "Cardiology" },
+        { id: "D", name: "Death Certs" }, { id: "OP", name: "OT Anaesth" },
+        { id: "ICU", name: "ICU Anaesth" }, { id: "R", name: "Radiology" },
         { id: "ON", name: "Oncology" }
     ];
 
-    let nameData = {}; 
+    let nameData = {};
 
     window.onload = () => {
         const now = new Date();
         const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
         document.getElementById('month-picker').value = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}`;
-        initDataSync();
+        initSync();
     };
 
-    async function initDataSync() {
+    async function initSync() {
         try {
-            const respNames = await fetch(`${scriptUrl}?action=getNames`);
-            const allResidents = await respNames.json();
-            specialties.forEach(spec => {
-                if (spec.id === "OP" || spec.id === "ICU") nameData[spec.id] = allResidents.filter(r => r[1] === "A").map(r => r[0]);
-                else if (spec.id === "D") nameData[spec.id] = allResidents.map(r => r[0]);
-                else nameData[spec.id] = allResidents.filter(r => r[1] === spec.id).map(r => r[0]);
+            const r = await fetch(`${scriptUrl}?action=getNames`);
+            const all = await r.json();
+            specialties.forEach(s => {
+                if (s.id === "OP" || s.id === "ICU") nameData[s.id] = all.filter(x => x[1] === "A").map(x => x[0]);
+                else if (s.id === "D") nameData[s.id] = all.map(x => x[0]);
+                else nameData[s.id] = all.filter(x => x[1] === s.id).map(x => x[0]);
             });
-            generateTable(); 
-        } catch (e) { unlockTable(); }
+            generateBoard();
+        } catch(e) { unlock(); }
     }
 
-    function generateTable() {
+    function generateBoard() {
         const picker = document.getElementById('month-picker').value;
         const [year, month] = picker.split('-').map(Number);
         const daysInMonth = new Date(year, month, 0).getDate();
-        
-        let hHtml = specialties.map(s => `<th>${s.name}</th>`).join('') + `<th class="date-col">Date</th><th class="day-col">Day</th>`;
-        document.getElementById('table-headers').innerHTML = hHtml;
+        const board = document.getElementById('board');
+        board.innerHTML = "";
 
-        const body = document.getElementById('table-body');
-        body.innerHTML = "";
-        for (let d = 1; d <= daysInMonth; d++) {
-            const dateObj = new Date(year, month-1, d);
-            const dateStr = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
-            const dayName = new Intl.DateTimeFormat('ar-IQ', { weekday: 'long' }).format(dateObj);
-            const isWeekend = (dateObj.getDay() === 5 || dateObj.getDay() === 6);
+        specialties.forEach(spec => {
+            const track = document.createElement('div');
+            track.className = `specialty-track track-${spec.id}`;
+            let html = `<div class="track-header"><h2>${spec.name}</h2></div><div class="days-list">`;
             
-            const tr = document.createElement('tr');
-            if (isWeekend) tr.classList.add('weekend-row');
-            
-            let rHtml = specialties.map(s => `
-                <td><div class="ac-container">
-                    <div class="ghost-text" id="ghost-${d}-${s.id}"></div>
-                    <input type="text" class="cell-input" id="input-${d}-${s.id}" autocomplete="off" 
-                        oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" 
-                        onkeydown="handleKeys(event, this, '${d}-${s.id}')" 
-                        onblur="handleBlur('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}">
-                    <span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span>
-                    <div class="custom-menu" id="menu-${d}-${s.id}"></div>
-                </div></td>`).join('');
-            
-            rHtml += `<td class="date-col">${dateStr}</td><td class="day-col">${dayName}</td>`;
-            tr.innerHTML = rHtml;
-            body.appendChild(tr);
-        }
-        fetchExistingSchedule();
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateObj = new Date(year, month-1, d);
+                const dayName = new Intl.DateTimeFormat('ar-IQ', { weekday: 'short' }).format(dateObj);
+                const dateFull = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+                const uid = `${d}-${spec.id}`;
+
+                html += `
+                    <div class="day-box ${dateObj.getDay() === 5 || dateObj.getDay() === 6 ? 'weekend' : ''}">
+                        <div class="day-label"><span>${dateFull.substring(0,5)}</span><span>${dayName}</span></div>
+                        <div class="input-wrapper">
+                            <div class="ghost-text" id="ghost-${uid}"></div>
+                            <input type="text" class="cell-input" id="input-${uid}" 
+                                oninput="handleAC(this, '${spec.id}', '${uid}')"
+                                onkeydown="handleKeys(event, this, '${uid}')"
+                                onblur="handleBlur('${uid}')"
+                                data-date="${dateFull}" data-spec="${spec.id}" autocomplete="off">
+                            <span class="dropdown-arrow" onclick="toggleMenu(event, '${uid}', '${spec.id}')">▼</span>
+                            <div class="custom-menu" id="menu-${uid}"></div>
+                        </div>
+                    </div>`;
+            }
+            html += `</div>`;
+            track.innerHTML = html;
+            board.appendChild(track);
+        });
+        fetchSchedule();
     }
 
-    async function fetchExistingSchedule() {
-        const monthVal = document.getElementById('month-picker').value;
-        try {
-            const resp = await fetch(`${scriptUrl}?action=getSchedule&month=${monthVal}`);
-            const schedule = await resp.json();
-            schedule.forEach(row => {
-                const day = parseInt(row.date.split('/')[0]);
-                const inputEl = document.getElementById(`input-${day}-${row.specCode}`);
-                if (inputEl && row.name) {
-                    inputEl.value = row.name;
-                    inputEl.classList.add('prefilled');
-                }
-            });
-        } finally { unlockTable(); }
-    }
-
-    function handleAC(el, specId, uniqueId) {
-        const ghost = document.getElementById(`ghost-${uniqueId}`);
+    function handleAC(el, sid, uid) {
+        const ghost = document.getElementById(`ghost-${uid}`);
         const val = el.value;
-        const valLower = val.toLowerCase().trim();
-        const prefix = "د. ";
-        
-        ghost.innerText = ""; 
-        ghost.removeAttribute('data-full-match');
+        ghost.innerText = ""; ghost.removeAttribute('data-full');
         el.classList.remove('prefilled');
-
-        if (val.trim() === "") {
-            el.classList.remove('new-entry');
-            return;
-        }
-
+        if (!val.trim()) { el.classList.remove('new-entry'); return; }
         el.classList.add('new-entry');
 
-        if (nameData[specId]) {
-            const userHasPrefix = val.startsWith("د.") || val.startsWith(prefix);
-            const cleanInput = valLower.replace(/^د\.\s*/, "");
-
-            const match = nameData[specId].find(name => {
-                const nameLower = name.toLowerCase();
-                const cleanName = nameLower.replace(/^د\.\s*/, "");
-                return nameLower.startsWith(valLower) || cleanName.startsWith(cleanInput);
+        if (nameData[sid]) {
+            const cleanInput = val.toLowerCase().replace(/^د\.\s*/, "");
+            const match = nameData[sid].find(n => {
+                const nLower = n.toLowerCase();
+                return nLower.startsWith(val.toLowerCase()) || nLower.replace(/^د\.\s*/, "").startsWith(cleanInput);
             });
-
             if (match) {
-                ghost.setAttribute('data-full-match', match);
-                let ghostDisplay = userHasPrefix ? match : match.replace(/^د\.\s*/, "");
-
-                if (ghostDisplay.toLowerCase().startsWith(valLower)) {
-                    ghost.innerHTML = `<span class="ghost-offset">${val}</span>${ghostDisplay.substring(val.length)}`;
-                    ghost.style.color = "rgba(255, 255, 255, 0.4)";
-                } else {
-                    ghost.innerText = ghostDisplay;
-                    ghost.style.color = "rgba(255, 255, 255, 0.15)";
-                }
+                ghost.setAttribute('data-full', match);
+                let display = val.startsWith("د.") ? match : match.replace(/^د\.\s*/, "");
+                if (display.toLowerCase().startsWith(val.toLowerCase())) {
+                    ghost.innerHTML = `<span class="ghost-offset">${val}</span>${display.substring(val.length)}`;
+                } else ghost.innerText = display;
             }
         }
     }
 
-   function handleKeys(e, el, uniqueId) {
-    const ghost = document.getElementById(`ghost-${uniqueId}`);
-    const fullMatch = ghost.getAttribute('data-full-match');
-    
-    // Accept suggestion with Tab or ArrowRight
-    if ((e.key === "Tab" || e.key === "ArrowRight") && fullMatch) {
-        if (el.value !== fullMatch) {
-            if (e.key !== "ArrowRight") e.preventDefault();
-            el.value = fullMatch;
-            ghost.innerText = "";
-            ghost.removeAttribute('data-full-match');
-            return;
-        }
-    }
-
-    // Combined Enter Logic: Apply suggestion AND Move Down 🇮🇶
-    if (e.key === "Enter") {
-        e.preventDefault();
-
-        // 1. If there's a suggestion, apply it first
-        if (fullMatch) {
-            el.value = fullMatch;
-            ghost.innerText = "";
-            ghost.removeAttribute('data-full-match');
-        }
-
-        // 2. Immediately shift focus to the next day
-        const parts = uniqueId.split('-'); // [day, specId]
-        const nextDay = parseInt(parts[0]) + 1;
-        const specId = parts[1];
-        const nextEl = document.getElementById(`input-${nextDay}-${specId}`);
-
-        if (nextEl) {
-            nextEl.focus();
-        } else {
-            el.blur(); // End of the month
-        }
-    }
-}
-    function handleBlur(uniqueId) {
-        const ghost = document.getElementById(`ghost-${uniqueId}`);
-        const input = document.getElementById(`input-${uniqueId}`);
-        const fullMatch = ghost.getAttribute('data-full-match');
-        
-        if (fullMatch && input.value.trim() !== "") {
-            input.value = fullMatch;
-            input.classList.add('new-entry');
-        }
-        setTimeout(() => {
-            ghost.innerText = "";
-            ghost.removeAttribute('data-full-match');
-            const menu = document.getElementById(`menu-${uniqueId}`);
-            if (menu) menu.style.display = "none";
-        }, 220);
-    }
-
-    function toggleMenu(uniqueId, specId) {
-        const menu = document.getElementById(`menu-${uniqueId}`);
-        const open = menu.style.display === "block";
-        document.querySelectorAll('.custom-menu').forEach(m => m.style.display = "none");
+    function toggleMenu(e, uid, sid) {
+        e.stopPropagation();
+        const m = document.getElementById(`menu-${uid}`);
+        const open = m.style.display === "block";
+        document.querySelectorAll('.custom-menu').forEach(x => x.style.display = 'none');
         if (!open) {
-            menu.innerHTML = (nameData[specId] || []).map(n => `<div onmousedown="selectName('${uniqueId}', '${n}')">${n}</div>`).join('');
-            menu.style.display = "block";
+            m.innerHTML = (nameData[sid] || []).map(n => `<div onmousedown="selectName('${uid}', '${n}')">${n}</div>`).join('');
+            m.style.display = "block";
         }
     }
 
-    function selectName(uniqueId, name) {
-        const input = document.getElementById(`input-${uniqueId}`);
-        input.value = name;
-        input.classList.add('new-entry');
-        const ghost = document.getElementById(`ghost-${uniqueId}`);
-        ghost.innerText = "";
-        ghost.removeAttribute('data-full-match');
+    function selectName(uid, name) {
+        const i = document.getElementById(`input-${uid}`);
+        i.value = name; i.classList.add('new-entry');
+        document.getElementById(`ghost-${uid}`).innerText = "";
+        document.getElementById(`menu-${uid}`).style.display = 'none';
     }
 
-    function unlockTable() {
-        const wrapper = document.getElementById('app-wrapper');
-        wrapper.style.opacity = "1";
-        wrapper.style.pointerEvents = "auto";
-        document.getElementById('led').className = "led-dot led-ready";
-        const status = document.getElementById('status-text');
-        status.innerText = "System Ready 🇮🇶";
-        status.className = "text-[0.65rem] font-black text-emerald-500 uppercase tracking-widest";
+    function handleKeys(e, el, uid) {
+        const ghost = document.getElementById(`ghost-${uid}`);
+        const full = ghost.getAttribute('data-full');
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (full) { el.value = full; el.classList.add('new-entry'); ghost.innerText = ""; }
+            const [d, sid] = uid.split('-');
+            const nextEl = document.getElementById(`input-${parseInt(d) + 1}-${sid}`);
+            if (nextEl) { nextEl.focus(); nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            else el.blur();
+        }
+    }
+
+    function handleBlur(uid) {
+        setTimeout(() => {
+            const m = document.getElementById(`menu-${uid}`);
+            const g = document.getElementById(`ghost-${uid}`);
+            const input = document.getElementById(`input-${uid}`);
+            if (m) m.style.display = 'none';
+            if (g && g.getAttribute('data-full') && input.value !== "") {
+                input.value = g.getAttribute('data-full');
+                input.classList.add('new-entry');
+            }
+            if (g) g.innerText = "";
+        }, 250);
+    }
+
+    async function fetchSchedule() {
+        const m = document.getElementById('month-picker').value;
+        try {
+            const r = await fetch(`${scriptUrl}?action=getSchedule&month=${m}`);
+            const data = await r.json();
+            data.forEach(row => {
+                const d = parseInt(row.date.split('/')[0]);
+                const el = document.getElementById(`input-${d}-${row.specCode}`);
+                if (el && row.name) { el.value = row.name; el.classList.add('prefilled'); }
+            });
+        } finally { unlock(); }
+    }
+
+    function unlock() {
+        document.getElementById('app-wrapper').style.opacity = "1";
+        document.getElementById('app-wrapper').style.pointerEvents = "auto";
     }
 
     async function saveAll() {
-        const btn = document.getElementById('save-btn');
-        const activeInputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
-        if (!activeInputs.length) return;
-
-        btn.disabled = true; btn.innerText = "UPLOADING...";
-        const bulkData = activeInputs.map(el => ({ date: el.dataset.date, specialty: el.dataset.spec, name: el.value.trim() }));
-        
+        const btn = document.getElementById('sync-btn');
+        const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(x => x.value.trim() !== "");
+        const payload = inputs.map(x => ({ date: x.dataset.date, specialty: x.dataset.spec, name: x.value.trim() }));
+        btn.innerText = "Processing...";
         try {
-            await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload: bulkData }) });
-            btn.innerText = "SYNCED ✅";
-            activeInputs.forEach(i => { i.classList.remove('new-entry'); i.classList.add('prefilled'); });
-        } catch (e) { btn.innerText = "FAILED ⚠️"; }
-        setTimeout(() => { btn.disabled = false; btn.innerText = "UPDATE DATABASE"; }, 2000);
+            await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload }) });
+            btn.innerText = "Synced ✅";
+            inputs.forEach(x => { x.classList.remove('new-entry'); x.classList.add('prefilled'); });
+        } catch(e) { btn.innerText = "Error ⚠️"; }
+        setTimeout(() => btn.innerText = "Sync Schedule", 2000);
     }
 </script>
 </body>
