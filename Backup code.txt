@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SCHEDULER 🇮🇶</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #1a1c20;
@@ -15,47 +15,101 @@
             --emerald: #10b981;
             --crimson: #e11d48;
             --glow: 0 0 15px rgba(251, 191, 36, 0.8);
-            --led-glow: 0 0 25px;
-            --emerald-glow: 0 0 15px rgba(16, 185, 129, 0.7);
-            --crimson-glow: 0 0 15px rgba(225, 29, 72, 0.7);
             --zebra: rgba(255, 255, 255, 0.02);
-            --weekend-bg: rgba(16, 185, 129, 0.08); 
+            --weekend-bg: rgba(16, 185, 129, 0.12); 
+            --day-width: 85px;
+            --date-width: 105px;
         }
+
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow-x: hidden; }
-        h1 { text-shadow: var(--glow); color: white; }
-        #main-table-area { pointer-events: none; filter: grayscale(1) brightness(0.5); opacity: 0.3; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .is-ready #main-table-area { pointer-events: auto; filter: none; opacity: 1; }
+        
+        /* Table Structure */
+        table { border-collapse: separate; border-spacing: 0; min-width: 1500px; }
+        .ac-container { position: relative; width: 100%; min-width: 200px; direction: rtl; overflow: visible; }
+        
+        /* Dynamic Column Colors */
+        tr td:nth-child(1), thead th:nth-child(1) { --col-color: #fbbf24; }
+        tr td:nth-child(2), thead th:nth-child(2) { --col-color: #60a5fa; }
+        tr td:nth-child(3), thead th:nth-child(3) { --col-color: #a78bfa; }
+        tr td:nth-child(4), thead th:nth-child(4) { --col-color: #f472b6; }
+        tr td:nth-child(5), thead th:nth-child(5) { --col-color: #fb7185; }
+        tr td:nth-child(6), thead th:nth-child(6) { --col-color: #38bdf8; }
+        tr td:nth-child(7), thead th:nth-child(7) { --col-color: #c084fc; }
+        tr td:nth-child(8), thead th:nth-child(8) { --col-color: #2dd4bf; }
+        tr td:nth-child(9), thead th:nth-child(9) { --col-color: #94a3b8; }
+        tr td:nth-child(10), thead th:nth-child(10) { --col-color: #fb923c; }
+        tr td:nth-child(11), thead th:nth-child(11) { --col-color: #818cf8; }
+
+        th { position: sticky; top: 0; background: var(--bg); z-index: 20; padding: 1rem; color: var(--col-color); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.1em; border-bottom: 1px solid var(--light); text-shadow: 0 0 10px var(--col-color); }
+        tr:nth-child(even) { background-color: var(--zebra); }
+
+        /* Sticky Columns Logic 🇮🇶 */
+        .day-col {
+            position: sticky !important; right: 0 !important;
+            width: var(--day-width) !important; min-width: var(--day-width) !important;
+            background-color: var(--bg) !important; z-index: 30 !important;
+            text-align: center; color: var(--accent); font-weight: 800; font-size: 0.8rem;
+        }
+        .date-col {
+            position: sticky !important; right: var(--day-width) !important;
+            width: var(--date-width) !important; min-width: var(--date-width) !important;
+            background-color: var(--bg) !important; z-index: 30 !important;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            color: #64748b; font-family: 'JetBrains Mono', monospace; text-align: center;
+        }
+        
+        /* Fixed sticky header sizing 🇮🇶 */
+        thead th.day-col, 
+        thead th.date-col { 
+            z-index: 40 !important; 
+            top: 0; 
+            font-size: 0.75rem !important; /* Forces both to match */
+            line-height: 1rem !important;
+            font-weight: 800 !important;
+            text-transform: uppercase;
+            vertical-align: middle;
+        }
+        
+        /* Weekend Rows */
+        tr.weekend-row { background-color: var(--weekend-bg) !important; }
+        tr.weekend-row td { --col-color: var(--emerald) !important; }
+        tr.weekend-row td.day-col, tr.weekend-row td.date-col { background-color: #1a2e28 !important; }
+
+        /* Input & Ghost Text Alignment */
+        .cell-input, .ghost-text {
+            width: 100%; padding: 0.8rem; font-size: 0.85rem; line-height: 1.6rem;
+            font-family: 'IBM Plex Sans Arabic', sans-serif; text-align: right; box-sizing: border-box;
+        }
+        .cell-input { position: relative; background: transparent; color: #fff; border-radius: 0.8rem; outline: none; transition: all 0.2s; z-index: 5; border: 1px solid transparent; }
+        .cell-input:focus { background: rgba(255, 255, 255, 0.03); border-color: var(--col-color); box-shadow: 0 0 8px var(--col-color); }
+        
+        .ghost-text { position: absolute; top: 0; right: 0; left: 0; bottom: 0; color: rgba(255, 255, 255, 0.4); pointer-events: none; white-space: pre; overflow: hidden; z-index: 1; direction: rtl; }
+        .ghost-offset { color: transparent; visibility: visible; }
+
+        .dropdown-arrow { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.65rem; }
+        .prefilled { color: var(--col-color) !important; filter: brightness(0.8); text-shadow: 0 0 2px var(--col-color); font-weight: 600; }
+        .new-entry { color: var(--crimson) !important; text-shadow: 0 0 10px var(--crimson); }
+
+        /* UI Shell */
         .embossed-card { background: var(--bg); border-radius: 2.5rem; box-shadow: 20px 20px 60px var(--shadow), -10px -10px 40px var(--light); }
         .recessed-table-container { background: var(--bg); border-radius: 1.5rem; box-shadow: inset 8px 8px 16px var(--shadow), inset -4px -4px 12px var(--light); overflow-x: auto; }
-        table { border-collapse: separate; border-spacing: 0; min-width: 1750px; }
-        th { position: sticky; top: 0; background: var(--bg); z-index: 20; padding: 1.2rem; color: var(--accent); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.15em; border-bottom: 1px solid var(--light); text-shadow: var(--glow); }
-        tr:nth-child(even) { background-color: var(--zebra); }
-        tr.weekend-row { background-color: var(--weekend-bg) !important; }
-        tr.weekend-row .day-col { color: var(--emerald); text-shadow: var(--emerald-glow); }
-        .ac-container { position: relative; width: 100%; min-width: 230px; direction: rtl; }
-        .ghost-text { position: absolute; top: 0; right: 0; left: 0; bottom: 0; padding: 0.7rem 0.7rem 0.7rem 2.5rem; color: rgba(255, 255, 255, 0.15); font-size: 0.9rem; font-family: inherit; line-height: 1.25rem; pointer-events: none; white-space: nowrap; overflow: hidden; text-align: right; z-index: 1; }
-        .cell-input { position: relative; background: transparent; color: #fff; width: 100%; padding: 0.7rem 0.7rem 0.7rem 2.5rem; border-radius: 0.8rem; border: 1px solid transparent; font-size: 0.9rem; font-family: inherit; line-height: 1.25rem; z-index: 5; outline: none; text-align: right; transition: all 0.2s; }
-        .cell-input:focus { background: rgba(251, 191, 36, 0.05); border-color: var(--accent); box-shadow: var(--glow); }
-        .prefilled { color: var(--emerald) !important; text-shadow: var(--emerald-glow); }
-        .new-entry { color: var(--crimson) !important; text-shadow: var(--crimson-glow); }
+        
         .led-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-flex; margin-right: 12px; }
-        .led-loading { background: var(--crimson); box-shadow: var(--led-glow) var(--crimson); animation: blink 1s infinite; }
-        .led-ready { background: var(--emerald); box-shadow: var(--led-glow) var(--emerald); }
+        .led-loading { background: var(--crimson); animation: blink 1s infinite; }
+        .led-ready { background: var(--emerald); box-shadow: 0 0 15px var(--emerald); }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-        .date-col { color: #64748b; font-family: monospace; font-weight: bold; text-align: center; width: 130px; direction: ltr; }
-        .day-col { color: var(--accent); font-weight: 800; text-align: center; width: 100px; text-shadow: 0 0 8px rgba(251, 191, 36, 0.4); font-size: 0.85rem; }
-        .dropdown-arrow { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #475569; cursor: pointer; z-index: 10; font-size: 0.7rem; }
+
         .custom-menu { position: absolute; top: 100%; right: 0; width: 100%; max-height: 220px; overflow-y: auto; background: #1e2126; border: 1px solid var(--light); border-radius: 0.8rem; z-index: 100; box-shadow: 0 10px 30px var(--shadow); display: none; text-align: right; }
-        .custom-menu div { padding: 0.7rem 1rem; cursor: pointer; color: #94a3b8; font-size: 0.85rem; }
-        .custom-menu div:hover { background: var(--light); color: var(--accent); }
+        .custom-menu div { padding: 0.6rem 0.8rem; cursor: pointer; color: #94a3b8; font-size: 0.8rem; }
+        .custom-menu div:hover { background: var(--light); color: var(--col-color); }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <div id="app-wrapper" class="max-w-full mx-auto">
+    <div id="app-wrapper" class="max-w-full mx-auto opacity-30 pointer-events-none transition-opacity duration-500">
         <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
             <div>
-                <h1 class="text-3xl font-extrabold tracking-tight">IRAQI Teaching Hospital Monthly Scheduler 🇮🇶</h1>
+                <h1 class="text-3xl font-extrabold tracking-tight text-white" style="text-shadow: var(--glow)">IRAQI Teaching Hospital Monthly Scheduler 🇮🇶</h1>
                 <div class="mt-4 flex items-center bg-black/40 px-6 py-2 rounded-full inline-flex border border-white/5">
                     <span id="led" class="led-dot led-loading"></span>
                     <span id="status-text" class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-rose-500">Initializing...</span>
@@ -83,18 +137,12 @@
 
 <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
-    
     const specialties = [
-        { id: "NS", name: "Neurosurgery" },
-        { id: "CT", name: "Cardiothoracic Surgery" },
-        { id: "GS", name: "General Surgery" },
-        { id: "US", name: "Urosurgery" },
-        { id: "ENT", name: "ENT" },
-        { id: "H", name: "Cardiology" },
-        { id: "D", name: "Death Certificates" },
-        { id: "OP", name: "OT Anaesthesia" },
-        { id: "ICU", name: "ICU Anaesthesia" },
-        { id: "R", name: "Radiology" },
+        { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic Surgery" },
+        { id: "GS", name: "General Surgery" }, { id: "US", name: "Urosurgery" },
+        { id: "ENT", name: "ENT" }, { id: "H", name: "Cardiology" },
+        { id: "D", name: "Death Certificates" }, { id: "OP", name: "OT Anaesthesia" },
+        { id: "ICU", name: "ICU Anaesthesia" }, { id: "R", name: "Radiology" },
         { id: "ON", name: "Oncology" }
     ];
 
@@ -103,36 +151,11 @@
     window.onload = () => {
         const now = new Date();
         const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-        const y = nextMonth.getFullYear();
-        const m = String(nextMonth.getMonth() + 1).padStart(2, '0');
-        document.getElementById('month-picker').value = `${y}-${m}`;
+        document.getElementById('month-picker').value = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}`;
         initDataSync();
     };
 
-    // Global Click Listener: Closes any open dropdown when clicking outside
-    window.addEventListener('mousedown', function(e) {
-        if (!e.target.closest('.ac-container')) {
-            document.querySelectorAll('.custom-menu').forEach(menu => {
-                menu.style.display = 'none';
-            });
-        }
-    });
-
-    function lockTable() {
-        document.getElementById('app-wrapper').classList.remove('is-ready');
-        document.getElementById('led').className = "led-dot led-loading";
-    }
-
-    function unlockTable() {
-        document.getElementById('app-wrapper').classList.add('is-ready');
-        document.getElementById('led').className = "led-dot led-ready";
-        document.getElementById('status-text').innerText = "System Ready 🇮🇶";
-        document.getElementById('status-text').className = "text-[0.65rem] font-black uppercase tracking-[0.25em] text-emerald-500";
-    }
-
     async function initDataSync() {
-        const statusText = document.getElementById('status-text');
-        lockTable();
         try {
             const respNames = await fetch(`${scriptUrl}?action=getNames`);
             const allResidents = await respNames.json();
@@ -142,29 +165,6 @@
                 else nameData[spec.id] = allResidents.filter(r => r[1] === spec.id).map(r => r[0]);
             });
             generateTable(); 
-        } catch (e) {
-            statusText.innerText = "Sync Error 🇮🇶";
-            generateTable();
-        }
-    }
-
-    async function fetchExistingSchedule() {
-        const monthVal = document.getElementById('month-picker').value;
-        lockTable();
-        try {
-            const resp = await fetch(`${scriptUrl}?action=getSchedule&month=${monthVal}`);
-            const schedule = await resp.json();
-            schedule.forEach(row => {
-                const day = parseInt(row.date.split('/')[0]);
-                const specCode = row.specCode; 
-                const inputId = `input-${day}-${specCode}`;
-                const inputEl = document.getElementById(inputId);
-                if (inputEl && row.name) {
-                    inputEl.value = row.name;
-                    inputEl.classList.add('prefilled');
-                }
-            });
-            unlockTable();
         } catch (e) { unlockTable(); }
     }
 
@@ -172,16 +172,12 @@
         const picker = document.getElementById('month-picker').value;
         const [year, month] = picker.split('-').map(Number);
         const daysInMonth = new Date(year, month, 0).getDate();
-        const hRow = document.getElementById('table-headers');
         
-        let hHtml = ``;
-        specialties.forEach(s => hHtml += `<th>${s.name}</th>`);
-        hHtml += `<th class="date-col border-l border-slate-800">Date</th><th class="day-col">Day</th>`;
-        hRow.innerHTML = hHtml;
+        let hHtml = specialties.map(s => `<th>${s.name}</th>`).join('') + `<th class="date-col">Date</th><th class="day-col">Day</th>`;
+        document.getElementById('table-headers').innerHTML = hHtml;
 
         const body = document.getElementById('table-body');
         body.innerHTML = "";
-        
         for (let d = 1; d <= daysInMonth; d++) {
             const dateObj = new Date(year, month-1, d);
             const dateStr = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
@@ -191,71 +187,144 @@
             const tr = document.createElement('tr');
             if (isWeekend) tr.classList.add('weekend-row');
             
-            let rHtml = ``;
-            specialties.forEach(s => {
-                rHtml += `<td><div class="ac-container"><div class="ghost-text" id="ghost-${d}-${s.id}"></div><input type="text" class="cell-input" id="input-${d}-${s.id}" autocomplete="off" oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" onkeydown="handleKeys(event, this, '${d}-${s.id}')" onblur="handleBlur('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}"><span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span><div class="custom-menu" id="menu-${d}-${s.id}"></div></div></td>`;
-            });
-            rHtml += `<td class="date-col border-l border-slate-800/30">${dateStr}</td><td class="day-col">${dayName}</td>`;
+            let rHtml = specialties.map(s => `
+                <td><div class="ac-container">
+                    <div class="ghost-text" id="ghost-${d}-${s.id}"></div>
+                    <input type="text" class="cell-input" id="input-${d}-${s.id}" autocomplete="off" 
+                        oninput="handleAC(this, '${s.id}', '${d}-${s.id}')" 
+                        onkeydown="handleKeys(event, this, '${d}-${s.id}')" 
+                        onblur="handleBlur('${d}-${s.id}')" data-date="${dateStr}" data-spec="${s.id}">
+                    <span class="dropdown-arrow" onclick="toggleMenu('${d}-${s.id}', '${s.id}')">▼</span>
+                    <div class="custom-menu" id="menu-${d}-${s.id}"></div>
+                </div></td>`).join('');
+            
+            rHtml += `<td class="date-col">${dateStr}</td><td class="day-col">${dayName}</td>`;
             tr.innerHTML = rHtml;
             body.appendChild(tr);
         }
-        if (Object.keys(nameData).length > 0) fetchExistingSchedule();
+        fetchExistingSchedule();
+    }
+
+    async function fetchExistingSchedule() {
+        const monthVal = document.getElementById('month-picker').value;
+        try {
+            const resp = await fetch(`${scriptUrl}?action=getSchedule&month=${monthVal}`);
+            const schedule = await resp.json();
+            schedule.forEach(row => {
+                const day = parseInt(row.date.split('/')[0]);
+                const inputEl = document.getElementById(`input-${day}-${row.specCode}`);
+                if (inputEl && row.name) {
+                    inputEl.value = row.name;
+                    inputEl.classList.add('prefilled');
+                }
+            });
+        } finally { unlockTable(); }
     }
 
     function handleAC(el, specId, uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
-        const val = el.value.toLowerCase();
-        ghost.innerText = "";
+        const val = el.value;
+        const valLower = val.toLowerCase().trim();
+        const prefix = "د. ";
+        
+        ghost.innerText = ""; 
+        ghost.removeAttribute('data-full-match');
         el.classList.remove('prefilled');
-        if(el.value.trim() !== "") el.classList.add('new-entry');
-        else el.classList.remove('new-entry');
 
-        if (val && nameData[specId]) {
-            const match = nameData[specId].find(name => name.toLowerCase().startsWith(val));
-            if (match && match.length > val.length) {
-                ghost.innerText = el.value + match.substring(val.length);
+        if (val.trim() === "") {
+            el.classList.remove('new-entry');
+            return;
+        }
+
+        el.classList.add('new-entry');
+
+        if (nameData[specId]) {
+            const userHasPrefix = val.startsWith("د.") || val.startsWith(prefix);
+            const cleanInput = valLower.replace(/^د\.\s*/, "");
+
+            const match = nameData[specId].find(name => {
+                const nameLower = name.toLowerCase();
+                const cleanName = nameLower.replace(/^د\.\s*/, "");
+                return nameLower.startsWith(valLower) || cleanName.startsWith(cleanInput);
+            });
+
+            if (match) {
+                ghost.setAttribute('data-full-match', match);
+                let ghostDisplay = userHasPrefix ? match : match.replace(/^د\.\s*/, "");
+
+                if (ghostDisplay.toLowerCase().startsWith(valLower)) {
+                    ghost.innerHTML = `<span class="ghost-offset">${val}</span>${ghostDisplay.substring(val.length)}`;
+                    ghost.style.color = "rgba(255, 255, 255, 0.4)";
+                } else {
+                    ghost.innerText = ghostDisplay;
+                    ghost.style.color = "rgba(255, 255, 255, 0.15)";
+                }
             }
         }
     }
 
-    function handleKeys(e, el, uniqueId) {
-        const ghost = document.getElementById(`ghost-${uniqueId}`);
-        if ((e.key === "Tab" || e.key === "ArrowRight") && ghost.innerText !== "") {
-            e.preventDefault(); 
-            el.value = ghost.innerText; 
+   function handleKeys(e, el, uniqueId) {
+    const ghost = document.getElementById(`ghost-${uniqueId}`);
+    const fullMatch = ghost.getAttribute('data-full-match');
+    
+    // Accept suggestion with Tab or ArrowRight
+    if ((e.key === "Tab" || e.key === "ArrowRight") && fullMatch) {
+        if (el.value !== fullMatch) {
+            if (e.key !== "ArrowRight") e.preventDefault();
+            el.value = fullMatch;
             ghost.innerText = "";
+            ghost.removeAttribute('data-full-match');
+            return;
         }
     }
 
+    // Combined Enter Logic: Apply suggestion AND Move Down 🇮🇶
+    if (e.key === "Enter") {
+        e.preventDefault();
+
+        // 1. If there's a suggestion, apply it first
+        if (fullMatch) {
+            el.value = fullMatch;
+            ghost.innerText = "";
+            ghost.removeAttribute('data-full-match');
+        }
+
+        // 2. Immediately shift focus to the next day
+        const parts = uniqueId.split('-'); // [day, specId]
+        const nextDay = parseInt(parts[0]) + 1;
+        const specId = parts[1];
+        const nextEl = document.getElementById(`input-${nextDay}-${specId}`);
+
+        if (nextEl) {
+            nextEl.focus();
+        } else {
+            el.blur(); // End of the month
+        }
+    }
+}
     function handleBlur(uniqueId) {
         const ghost = document.getElementById(`ghost-${uniqueId}`);
         const input = document.getElementById(`input-${uniqueId}`);
+        const fullMatch = ghost.getAttribute('data-full-match');
         
-        if (ghost.innerText.trim() !== "") {
-            input.value = ghost.innerText;
+        if (fullMatch && input.value.trim() !== "") {
+            input.value = fullMatch;
             input.classList.add('new-entry');
         }
-        ghost.innerText = "";
-        
-        // Timeout allows onmousedown of selectName to trigger before menu hides
-        setTimeout(() => { 
+        setTimeout(() => {
+            ghost.innerText = "";
+            ghost.removeAttribute('data-full-match');
             const menu = document.getElementById(`menu-${uniqueId}`);
-            if (menu) menu.style.display = "none"; 
-        }, 150);
+            if (menu) menu.style.display = "none";
+        }, 220);
     }
 
     function toggleMenu(uniqueId, specId) {
         const menu = document.getElementById(`menu-${uniqueId}`);
-        const isAlreadyOpen = menu.style.display === "block";
-        
-        // Hide all other open menus
+        const open = menu.style.display === "block";
         document.querySelectorAll('.custom-menu').forEach(m => m.style.display = "none");
-
-        if (isAlreadyOpen) {
-            menu.style.display = "none";
-        } else {
-            const names = nameData[specId] || [];
-            menu.innerHTML = names.map(n => `<div onmousedown="selectName('${uniqueId}', '${n}')">${n}</div>`).join('');
+        if (!open) {
+            menu.innerHTML = (nameData[specId] || []).map(n => `<div onmousedown="selectName('${uniqueId}', '${n}')">${n}</div>`).join('');
             menu.style.display = "block";
         }
     }
@@ -263,46 +332,36 @@
     function selectName(uniqueId, name) {
         const input = document.getElementById(`input-${uniqueId}`);
         input.value = name;
-        input.classList.remove('prefilled');
         input.classList.add('new-entry');
-        document.getElementById(`ghost-${uniqueId}`).innerText = "";
-        document.getElementById(`menu-${uniqueId}`).style.display = "none";
+        const ghost = document.getElementById(`ghost-${uniqueId}`);
+        ghost.innerText = "";
+        ghost.removeAttribute('data-full-match');
+    }
+
+    function unlockTable() {
+        const wrapper = document.getElementById('app-wrapper');
+        wrapper.style.opacity = "1";
+        wrapper.style.pointerEvents = "auto";
+        document.getElementById('led').className = "led-dot led-ready";
+        const status = document.getElementById('status-text');
+        status.innerText = "System Ready 🇮🇶";
+        status.className = "text-[0.65rem] font-black text-emerald-500 uppercase tracking-widest";
     }
 
     async function saveAll() {
         const btn = document.getElementById('save-btn');
-        const activeInputs = Array.from(document.querySelectorAll('.cell-input')).filter(input => input.value.trim() !== "");
-        if (activeInputs.length === 0) {
-            btn.innerText = "NO CHANGES DETECTED 🇮🇶";
-            setTimeout(() => { btn.innerText = "UPDATE DATABASE"; }, 2000);
-            return;
-        }
-        btn.disabled = true;
-        btn.innerText = "UPLOADING BULK PAYLOAD...";
-        lockTable();
-        const bulkData = activeInputs.map(el => ({
-            date: el.dataset.date,
-            specialty: el.dataset.spec,
-            name: el.value.trim()
-        }));
+        const activeInputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
+        if (!activeInputs.length) return;
+
+        btn.disabled = true; btn.innerText = "UPLOADING...";
+        const bulkData = activeInputs.map(el => ({ date: el.dataset.date, specialty: el.dataset.spec, name: el.value.trim() }));
+        
         try {
             await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload: bulkData }) });
-            btn.innerText = "CHANGES SYNCED ✅";
-            btn.style.color = "var(--emerald)";
-            document.querySelectorAll('.new-entry').forEach(el => {
-                el.classList.remove('new-entry');
-                el.classList.add('prefilled');
-            });
-        } catch (e) { 
-            btn.innerText = "SYNC FAILED ⚠️";
-            btn.style.color = "var(--crimson)";
-        }
-        setTimeout(() => {
-            btn.innerText = "UPDATE DATABASE";
-            btn.style.color = "var(--accent)";
-            btn.disabled = false;
-            unlockTable();
-        }, 3000);
+            btn.innerText = "SYNCED ✅";
+            activeInputs.forEach(i => { i.classList.remove('new-entry'); i.classList.add('prefilled'); });
+        } catch (e) { btn.innerText = "FAILED ⚠️"; }
+        setTimeout(() => { btn.disabled = false; btn.innerText = "UPDATE DATABASE"; }, 2000);
     }
 </script>
 </body>
