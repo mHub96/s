@@ -80,9 +80,10 @@
             <h1 class="text-lg font-black text-white uppercase tracking-tighter">Al-Iraqi Teaching Hosp. Scheduler 🇮🇶</h1>
             <div class="flex gap-4 items-center">
                 <input type="month" id="month-picker" class="bg-black text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-white/10 text-xs">
-                <button onclick="saveToGithub()" id="sync-btn" class="bg-white text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase active:scale-95 transition-transform">Sync Schedule</button>
-                <button onclick="migrateFromGoogle()" id="migrate-btn" class="bg-green-600 text-white px-5 py-2 rounded-lg font-black text-[10px] uppercase">Migrate</button>
-                <button onclick="login()" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-black text-[10px] uppercase">Login</button>
+                <button onclick="saveToGithub()" id="sync-btn" class="bg-white text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase active:scale-95 transition-transform">UPDATE</button>
+                
+                <button onclick="migrateFromGoogle()" id="migrate-btn" class="hidden bg-green-600 text-white px-5 py-2 rounded-lg font-black text-[10px] uppercase">Migrate</button>
+                <button id="login-btn" onclick="login()" class="hidden bg-blue-600 text-white px-5 py-2 rounded-lg font-black text-[10px] uppercase">Login</button>
             </div>
         </div>
         <div class="board-container" id="board" onscroll="closeAllMenus()"></div>
@@ -152,7 +153,6 @@
                     db = data;
                 }
                 
-                // CRITICAL NORMALIZATION: Ensure names are always objects
                 db.names = (db.names || []).map(item => {
                     if (Array.isArray(item)) return { name: item[0], spec: item[1] || "NS", phone: "" };
                     return item;
@@ -306,9 +306,6 @@
         try {
             const r = await fetch(`${CONFIG.scriptUrl}?action=migrate`);
             const res = await r.json();
-            
-            // MAP THE INCOMING SHEET DATA (ARRAYS) TO THE NEW DB FORMAT (OBJECTS)
-            // Assumes Sheet gives: [Name, DeptCode, DeptName, Phone]
             const sourceNames = res.names || res.residents || [];
             db.names = sourceNames.map(row => ({
                 name: String(row[0]).trim(),
@@ -317,24 +314,18 @@
             })).filter(x => x.name);
 
             db.schedule = res.schedule || [];
-            
             await saveToGithub();
             alert("Migration Successful! 🇮🇶 Reloading...");
             location.reload();
-        } catch(e) { 
-            console.error(e);
-            alert("Migration failed. Check the console."); 
-        } finally {
-            btn.innerText = "Migrate";
-            btn.disabled = false;
-        }
+        } catch(e) { console.error(e); alert("Migration failed."); }
+        finally { btn.innerText = "Migrate"; btn.disabled = false; }
     }
 
     async function saveToGithub() {
         if (!GH_TOKEN) return alert("Login first!");
         const btn = document.getElementById('sync-btn');
         const oldText = btn.innerText;
-        btn.innerText = "Syncing...";
+        btn.innerText = "UPDATING...";
 
         const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
         const currentData = inputs.map(i => ({ 
@@ -363,8 +354,8 @@
             if (res.ok) {
                 const update = await res.json();
                 fileSha = update.content.sha;
-                btn.innerText = "Synced ✅";
-            } else { btn.innerText = "Sync Error ❌"; }
+                btn.innerText = "UPDATED ✅";
+            } else { btn.innerText = "Error ❌"; }
         } catch(e) { btn.innerText = "Error"; }
         setTimeout(() => btn.innerText = oldText, 2000);
     }
