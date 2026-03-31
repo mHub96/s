@@ -53,16 +53,47 @@
         .day-box.weekend { background: rgba(255,255,255,0.05); border-left: 3px solid var(--spec-color); }
 
         .day-label { display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 800; margin-bottom: 0.2rem; color: #4b5563; padding: 0 0.5rem; }
-        .input-wrapper { position: relative; width: 100%; direction: rtl; }
+        
+        .input-wrapper { position: relative; width: 100%; direction: rtl; text-align: right; }
 
-        .cell-input, .ghost-text { width: 100%; font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: var(--font-size); padding: 0.6rem 0.75rem; text-align: right; box-sizing: border-box; }
-        .cell-input { background: transparent; border: none; outline: none; color: #fff; position: relative; z-index: 10; }
-        .ghost-text { position: absolute; top: 0; right: 0; color: rgba(255,255,255,0.1); z-index: 5; pointer-events: none; height: 100%; display: flex; align-items: center; justify-content: flex-end; padding-right: 0.75rem; }
+        .cell-input, .ghost-text { 
+            width: 100%; 
+            font-family: 'IBM Plex Sans Arabic', sans-serif; 
+            font-size: var(--font-size); 
+            padding: 0.6rem 0.75rem; 
+            line-height: 1.2;
+            letter-spacing: 0;
+            text-align: right; 
+            box-sizing: border-box; 
+            white-space: pre;
+            margin: 0;
+            border: none;
+            font-weight: 700;
+        }
 
-        .dropdown-arrow { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.5rem; color: #334155; cursor: pointer; z-index: 25; padding: 6px; }
+        .cell-input { background: transparent; outline: none; color: #fff; position: relative; z-index: 10; direction: rtl; }
+        
+        .ghost-text { 
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            color: rgba(255,255,255,0.15); 
+            z-index: 5; 
+            pointer-events: none; 
+            height: 100%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start;
+            direction: rtl;
+            background: transparent;
+        }
+
+        .ghost-offset { color: transparent; visibility: hidden; white-space: pre; }
 
         .prefilled { color: var(--spec-color) !important; font-weight: 600; }
         .new-entry { color: #fff !important; font-weight: 700; }
+
+        .dropdown-arrow { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.5rem; color: #334155; cursor: pointer; z-index: 25; padding: 6px; }
 
         .custom-menu { position: absolute; top: 100%; right: 0; width: 100%; max-height: 180px; overflow-y: auto; background: #1c1f26; border: 1px solid var(--spec-color); border-radius: 0.6rem; z-index: 1000; display: none; }
         .custom-menu div { padding: 0.8rem; font-size: 0.8rem; text-align: right; cursor: pointer; color: #94a3b8; }
@@ -70,7 +101,6 @@
 
         .nav-bar { height: var(--nav-h); padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #111418; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* LOADING OVERLAY 🇮🇶 */
         #app-wrapper { transition: opacity 0.4s ease; }
         .loading-active { opacity: 0.3 !important; pointer-events: none !important; cursor: wait; }
     </style>
@@ -79,13 +109,13 @@
 
     <div id="app-wrapper" class="loading-active">
         <div class="nav-bar">
-            <h1 class="text-lg font-black text-white uppercase tracking-tighter">Iraqi Teaching Hosp. Schedules</h1>
+            <h1 class="text-lg font-black text-white uppercase tracking-tighter">Iraqi Teaching Hosp. Scheduler 🇮🇶</h1>
             <div class="flex gap-4 items-center">
                 <input type="month" id="month-picker" class="bg-black text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-white/10 text-xs" onchange="handleMonthChange()">
                 <button onclick="saveAll()" id="sync-btn" class="bg-white text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase active:scale-95 transition-transform">Sync Schedule</button>
             </div>
         </div>
-        <div class="board-container" id="board"></div>
+        <div class="board-container" id="board" onscroll="closeAllMenus()"></div>
     </div>
 
 <script>
@@ -103,22 +133,32 @@
 
     window.onload = () => {
         const now = new Date();
-        const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-        document.getElementById('month-picker').value = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}`;
-        
+        const nextMonthDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        const monthVal = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}`;
+        document.getElementById('month-picker').value = monthVal;
         generateBoard();
         initSync();
     };
 
+    // Close all menus when clicking anywhere outside
+    window.onclick = (e) => {
+        if (!e.target.classList.contains('dropdown-arrow') && !e.target.closest('.custom-menu')) {
+            closeAllMenus();
+        }
+    };
+
+    function closeAllMenus() {
+        document.querySelectorAll('.custom-menu').forEach(x => x.style.display = 'none');
+    }
+
     function lockUI() { document.getElementById('app-wrapper').classList.add('loading-active'); }
     function unlockUI() { document.getElementById('app-wrapper').classList.remove('loading-active'); }
 
-    // Logic for month selector 🇮🇶
     async function handleMonthChange() {
-        lockUI(); // 1. Make tables inactive (30% opacity)
-        generateBoard(); // 2. Redraw the empty board for the new dates
-        await fetchSchedule(); // 3. Fetch data for this specific month
-        unlockUI(); // 4. Reactivate UI
+        lockUI();
+        generateBoard();
+        await fetchSchedule();
+        unlockUI();
     }
 
     async function initSync() {
@@ -126,19 +166,14 @@
         try {
             const r = await fetch(`${scriptUrl}?action=getNames`);
             const all = await r.json();
-            
             specialties.forEach(s => {
                 if (s.id === "OP" || s.id === "ICU") nameData[s.id] = all.filter(x => x[1] === "A").map(x => x[0]);
                 else if (s.id === "D") nameData[s.id] = all.map(x => x[0]);
                 else nameData[s.id] = all.filter(x => x[1] === s.id).map(x => x[0]);
             });
-
             await fetchSchedule();
             unlockUI();
-        } catch(e) { 
-            console.error("Critical Load Error");
-            setTimeout(unlockUI, 3000); 
-        }
+        } catch(e) { setTimeout(unlockUI, 2000); }
     }
 
     async function fetchSchedule() {
@@ -149,12 +184,9 @@
             data.forEach(row => {
                 const d = parseInt(row.date.split('/')[0]);
                 const el = document.getElementById(`input-${d}-${row.specCode}`);
-                if (el && row.name) { 
-                    el.value = row.name; 
-                    el.classList.add('prefilled'); 
-                }
+                if (el && row.name) { el.value = row.name; el.classList.add('prefilled'); }
             });
-        } catch(e) { console.error("Schedule Fetch Error"); }
+        } catch(e) {}
     }
 
     function generateBoard() {
@@ -176,9 +208,10 @@
                 html += `
                     <div class="day-box ${dateObj.getDay() === 5 || dateObj.getDay() === 6 ? 'weekend' : ''}">
                         <div class="day-label"><span>${dateFull.substring(0,5)}</span><span>${dayName}</span></div>
-                        <div class="input-wrapper">
+                        <div class="input-wrapper" onclick="event.stopPropagation()">
                             <div class="ghost-text" id="ghost-${uid}"></div>
                             <input type="text" class="cell-input" id="input-${uid}" 
+                                onfocus="closeAllMenus()"
                                 oninput="handleAC(this, '${spec.id}', '${uid}')"
                                 onkeydown="handleKeys(event, this, '${uid}')"
                                 onblur="handleBlur('${uid}')"
@@ -188,13 +221,78 @@
                         </div>
                     </div>`;
             }
-            html += `</div>`;
-            track.innerHTML = html;
+            track.innerHTML = html + `</div>`;
             board.appendChild(track);
         });
     }
 
-    // --- AC, Save, and Utility Logic ---
+    function handleAC(el, sid, uid) {
+        const ghost = document.getElementById(`ghost-${uid}`);
+        const val = el.value;
+        ghost.innerHTML = ""; ghost.removeAttribute('data-full');
+        el.classList.remove('prefilled');
+        if (!val.trim()) { el.classList.remove('new-entry'); return; }
+        el.classList.add('new-entry');
+
+        if (nameData[sid]) {
+            const match = nameData[sid].find(n => {
+                const nClean = n.toLowerCase().replace(/^د\.\s*/, "");
+                const valClean = val.toLowerCase().replace(/^د\.\s*/, "");
+                return n.toLowerCase().startsWith(val.toLowerCase()) || nClean.startsWith(valClean);
+            });
+            if (match) {
+                ghost.setAttribute('data-full', match);
+                let display = val.startsWith("د.") ? match : match.replace(/^د\.\s*/, "");
+                if (display.toLowerCase().startsWith(val.toLowerCase())) {
+                    ghost.innerHTML = `<span class="ghost-offset">${val}</span><span>${display.substring(val.length)}</span>`;
+                } else { ghost.innerText = display; }
+            }
+        }
+    }
+
+    function handleKeys(e, el, uid) {
+        const ghost = document.getElementById(`ghost-${uid}`);
+        const full = ghost.getAttribute('data-full');
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (full) { el.value = full; el.classList.add('new-entry'); ghost.innerHTML = ""; }
+            const [d, sid] = uid.split('-');
+            const nextEl = document.getElementById(`input-${parseInt(d) + 1}-${sid}`);
+            if (nextEl) { nextEl.focus(); nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            else el.blur();
+        }
+    }
+
+    function toggleMenu(e, uid, sid) {
+        e.stopPropagation();
+        const m = document.getElementById(`menu-${uid}`);
+        const alreadyOpen = m.style.display === "block";
+        closeAllMenus();
+        if (!alreadyOpen) {
+            m.innerHTML = (nameData[sid] || []).map(n => `<div onmousedown="selectName('${uid}', '${n}')">${n}</div>`).join('');
+            m.style.display = "block";
+        }
+    }
+
+    function selectName(uid, name) {
+        const i = document.getElementById(`input-${uid}`);
+        i.value = name; i.classList.add('new-entry');
+        document.getElementById(`ghost-${uid}`).innerHTML = "";
+        closeAllMenus();
+    }
+
+    function handleBlur(uid) {
+        setTimeout(() => {
+            const g = document.getElementById(`ghost-${uid}`);
+            const input = document.getElementById(`input-${uid}`);
+            if (g && g.getAttribute('data-full') && input.value !== "") {
+                input.value = g.getAttribute('data-full');
+                input.classList.add('new-entry');
+            }
+            if (g) g.innerHTML = "";
+        }, 250);
+    }
+
     async function saveAll() {
         lockUI();
         const btn = document.getElementById('sync-btn');
@@ -206,77 +304,7 @@
             btn.innerText = "Synced ✅";
             inputs.forEach(x => { x.classList.remove('new-entry'); x.classList.add('prefilled'); });
         } catch(e) { btn.innerText = "Error ⚠️"; }
-        finally {
-            setTimeout(() => { btn.innerText = "Sync Schedule"; unlockUI(); }, 1500);
-        }
-    }
-
-    function handleAC(el, sid, uid) {
-        const ghost = document.getElementById(`ghost-${uid}`);
-        const val = el.value;
-        ghost.innerText = ""; ghost.removeAttribute('data-full');
-        el.classList.remove('prefilled');
-        if (!val.trim()) { el.classList.remove('new-entry'); return; }
-        el.classList.add('new-entry');
-        if (nameData[sid]) {
-            const cleanInput = val.toLowerCase().replace(/^د\.\s*/, "");
-            const match = nameData[sid].find(n => {
-                const nLower = n.toLowerCase();
-                return nLower.startsWith(val.toLowerCase()) || nLower.replace(/^د\.\s*/, "").startsWith(cleanInput);
-            });
-            if (match) {
-                ghost.setAttribute('data-full', match);
-                let display = val.startsWith("د.") ? match : match.replace(/^د\.\s*/, "");
-                if (display.toLowerCase().startsWith(val.toLowerCase())) {
-                    ghost.innerHTML = `<span class="ghost-offset">${val}</span>${display.substring(val.length)}`;
-                } else ghost.innerText = display;
-            }
-        }
-    }
-
-    function toggleMenu(e, uid, sid) {
-        e.stopPropagation();
-        const m = document.getElementById(`menu-${uid}`);
-        const open = m.style.display === "block";
-        document.querySelectorAll('.custom-menu').forEach(x => x.style.display = 'none');
-        if (!open) {
-            m.innerHTML = (nameData[sid] || []).map(n => `<div onmousedown="selectName('${uid}', '${n}')">${n}</div>`).join('');
-            m.style.display = "block";
-        }
-    }
-
-    function selectName(uid, name) {
-        const i = document.getElementById(`input-${uid}`);
-        i.value = name; i.classList.add('new-entry');
-        document.getElementById(`ghost-${uid}`).innerText = "";
-        document.getElementById(`menu-${uid}`).style.display = 'none';
-    }
-
-    function handleKeys(e, el, uid) {
-        const ghost = document.getElementById(`ghost-${uid}`);
-        const full = ghost.getAttribute('data-full');
-        if (e.key === "Enter") {
-            e.preventDefault();
-            if (full) { el.value = full; el.classList.add('new-entry'); ghost.innerText = ""; }
-            const [d, sid] = uid.split('-');
-            const nextEl = document.getElementById(`input-${parseInt(d) + 1}-${sid}`);
-            if (nextEl) { nextEl.focus(); nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-            else el.blur();
-        }
-    }
-
-    function handleBlur(uid) {
-        setTimeout(() => {
-            const m = document.getElementById(`menu-${uid}`);
-            const g = document.getElementById(`ghost-${uid}`);
-            const input = document.getElementById(`input-${uid}`);
-            if (m) m.style.display = 'none';
-            if (g && g.getAttribute('data-full') && input.value !== "") {
-                input.value = g.getAttribute('data-full');
-                input.classList.add('new-entry');
-            }
-            if (g) g.innerText = "";
-        }, 250);
+        finally { setTimeout(() => { btn.innerText = "Sync Schedule"; unlockUI(); }, 1500); }
     }
 </script>
 </body>
