@@ -12,13 +12,9 @@
             --card: #16191d;
             --column-width: 290px;
             --font-size: 0.9rem;
-            --line-height: 1.5;
-            --padding-y: 0.6rem;
-            --padding-x: 0.75rem;
             --nav-h: 70px;
         }
 
-        /* Specialty Hues 🇮🇶 */
         .track-NS { --spec-color: #fbbf24; } .track-CT { --spec-color: #f87171; } 
         .track-GS { --spec-color: #34d399; } .track-US { --spec-color: #60a5fa; } 
         .track-ENT { --spec-color: #a78bfa; } .track-H { --spec-color: #fb7185; } 
@@ -28,104 +24,67 @@
 
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
         
-        /* The "Visible Floor" Container 🇮🇶 */
         .board-container {
-            flex-grow: 1;
-            display: flex; 
-            gap: 1.5rem; 
-            padding: 1.5rem 1.5rem 3rem 1.5rem; /* Extra bottom padding for visibility */
-            overflow-x: auto;
-            align-items: flex-start;
-            box-sizing: border-box;
+            flex-grow: 1; display: flex; gap: 1.5rem; padding: 1.5rem 1.5rem 3rem 1.5rem;
+            overflow-x: auto; align-items: flex-start; box-sizing: border-box;
             height: calc(100vh - var(--nav-h));
         }
 
         .specialty-track {
-            flex: 0 0 var(--column-width); 
-            background: var(--card); 
-            border-radius: 1.8rem;
-            display: flex; 
-            flex-direction: column; 
-            /* THE FIX: Force the track to end before the container bottom 🇮🇶 */
-            max-height: 92%; 
+            flex: 0 0 var(--column-width); background: var(--card); border-radius: 1.8rem;
+            display: flex; flex-direction: column; max-height: 92%; 
             border: 1px solid rgba(255,255,255,0.04);
-            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.8), 
-                        0 0 15px -5px var(--spec-color);
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.8), 0 0 15px -5px var(--spec-color);
             overflow: hidden;
         }
 
         .track-header {
-            padding: 1.2rem; 
-            text-align: center;
-            flex-shrink: 0;
+            padding: 1.2rem; text-align: center; flex-shrink: 0;
             background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent);
             border-bottom: 3px solid var(--spec-color);
         }
-
         .track-header h2 { color: var(--spec-color); font-weight: 900; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; }
 
-        .days-list { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 0.75rem; 
-            padding-bottom: 2rem; /* Buffer for the last items */
-            scrollbar-width: none; 
-        }
+        .days-list { flex: 1; overflow-y: auto; padding: 0.75rem; padding-bottom: 2rem; scrollbar-width: none; }
         .days-list::-webkit-scrollbar { display: none; }
 
-        .day-box {
-            position: relative; background: rgba(255,255,255,0.02); margin-bottom: 0.5rem;
-            border-radius: 0.9rem; padding: 0.4rem; border: 1px solid transparent;
-        }
+        .day-box { position: relative; background: rgba(255,255,255,0.02); margin-bottom: 0.5rem; border-radius: 0.9rem; padding: 0.4rem; border: 1px solid transparent; }
         .day-box:focus-within { border-color: var(--spec-color); background: rgba(255,255,255,0.04); }
         .day-box.weekend { background: rgba(255,255,255,0.05); border-left: 3px solid var(--spec-color); }
 
-        .day-label {
-            display: flex; justify-content: space-between; font-size: 0.6rem;
-            font-weight: 800; margin-bottom: 0.2rem; color: #4b5563; padding: 0 0.5rem;
-        }
-
+        .day-label { display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 800; margin-bottom: 0.2rem; color: #4b5563; padding: 0 0.5rem; }
         .input-wrapper { position: relative; width: 100%; direction: rtl; }
 
-        .cell-input, .ghost-text {
-            width: 100%; font-family: 'IBM Plex Sans Arabic', sans-serif;
-            font-size: var(--font-size); line-height: var(--line-height);
-            padding: var(--padding-y) var(--padding-x); text-align: right;
-            box-sizing: border-box; white-space: pre; overflow: hidden;
-        }
-
+        .cell-input, .ghost-text { width: 100%; font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: var(--font-size); padding: 0.6rem 0.75rem; text-align: right; box-sizing: border-box; }
         .cell-input { background: transparent; border: none; outline: none; color: #fff; position: relative; z-index: 10; }
-        .ghost-text { position: absolute; top: 0; right: 0; color: rgba(255,255,255,0.15); z-index: 5; pointer-events: none; }
-        .ghost-offset { color: transparent; }
+        .ghost-text { position: absolute; top: 0; right: 0; color: rgba(255,255,255,0.1); z-index: 5; pointer-events: none; height: 100%; display: flex; align-items: center; justify-content: flex-end; padding-right: 0.75rem; }
 
         .dropdown-arrow { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.5rem; color: #334155; cursor: pointer; z-index: 25; padding: 6px; }
 
         .prefilled { color: var(--spec-color) !important; font-weight: 600; }
         .new-entry { color: #fff !important; font-weight: 700; }
 
-        .custom-menu {
-            position: absolute; top: 100%; right: 0; width: 100%; max-height: 180px;
-            overflow-y: auto; background: #1c1f26; border: 1px solid var(--spec-color);
-            border-radius: 0.6rem; z-index: 1000; display: none;
-        }
-        .custom-menu div { padding: 0.8rem; font-size: 0.8rem; text-align: right; cursor: pointer; color: #94a3b8; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .custom-menu { position: absolute; top: 100%; right: 0; width: 100%; max-height: 180px; overflow-y: auto; background: #1c1f26; border: 1px solid var(--spec-color); border-radius: 0.6rem; z-index: 1000; display: none; }
+        .custom-menu div { padding: 0.8rem; font-size: 0.8rem; text-align: right; cursor: pointer; color: #94a3b8; }
         .custom-menu div:hover { background: var(--spec-color); color: #000; }
 
-        /* Navigation Bar 🇮🇶 */
         .nav-bar { height: var(--nav-h); padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #111418; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        /* LOADING OVERLAY 🇮🇶 */
+        #app-wrapper { transition: opacity 0.4s ease; }
+        .loading-active { opacity: 0.3 !important; pointer-events: none !important; cursor: wait; }
     </style>
 </head>
 <body>
 
-    <div id="app-wrapper" class="opacity-30 pointer-events-none transition-opacity duration-500">
+    <div id="app-wrapper" class="loading-active">
         <div class="nav-bar">
             <h1 class="text-lg font-black text-white uppercase tracking-tighter">Iraqi Teaching Hosp. Schedules</h1>
             <div class="flex gap-4 items-center">
-                <input type="month" id="month-picker" class="bg-black text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-white/10 text-xs" onchange="generateBoard()">
+                <input type="month" id="month-picker" class="bg-black text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-white/10 text-xs" onchange="handleMonthChange()">
                 <button onclick="saveAll()" id="sync-btn" class="bg-white text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase active:scale-95 transition-transform">Sync Schedule</button>
             </div>
         </div>
-        
         <div class="board-container" id="board"></div>
     </div>
 
@@ -146,20 +105,56 @@
         const now = new Date();
         const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
         document.getElementById('month-picker').value = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}`;
+        
+        generateBoard();
         initSync();
     };
 
+    function lockUI() { document.getElementById('app-wrapper').classList.add('loading-active'); }
+    function unlockUI() { document.getElementById('app-wrapper').classList.remove('loading-active'); }
+
+    // Logic for month selector 🇮🇶
+    async function handleMonthChange() {
+        lockUI(); // 1. Make tables inactive (30% opacity)
+        generateBoard(); // 2. Redraw the empty board for the new dates
+        await fetchSchedule(); // 3. Fetch data for this specific month
+        unlockUI(); // 4. Reactivate UI
+    }
+
     async function initSync() {
+        lockUI(); 
         try {
             const r = await fetch(`${scriptUrl}?action=getNames`);
             const all = await r.json();
+            
             specialties.forEach(s => {
                 if (s.id === "OP" || s.id === "ICU") nameData[s.id] = all.filter(x => x[1] === "A").map(x => x[0]);
                 else if (s.id === "D") nameData[s.id] = all.map(x => x[0]);
                 else nameData[s.id] = all.filter(x => x[1] === s.id).map(x => x[0]);
             });
-            generateBoard();
-        } catch(e) { unlock(); }
+
+            await fetchSchedule();
+            unlockUI();
+        } catch(e) { 
+            console.error("Critical Load Error");
+            setTimeout(unlockUI, 3000); 
+        }
+    }
+
+    async function fetchSchedule() {
+        const m = document.getElementById('month-picker').value;
+        try {
+            const r = await fetch(`${scriptUrl}?action=getSchedule&month=${m}`);
+            const data = await r.json();
+            data.forEach(row => {
+                const d = parseInt(row.date.split('/')[0]);
+                const el = document.getElementById(`input-${d}-${row.specCode}`);
+                if (el && row.name) { 
+                    el.value = row.name; 
+                    el.classList.add('prefilled'); 
+                }
+            });
+        } catch(e) { console.error("Schedule Fetch Error"); }
     }
 
     function generateBoard() {
@@ -173,13 +168,11 @@
             const track = document.createElement('div');
             track.className = `specialty-track track-${spec.id}`;
             let html = `<div class="track-header"><h2>${spec.name}</h2></div><div class="days-list">`;
-            
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateObj = new Date(year, month-1, d);
                 const dayName = new Intl.DateTimeFormat('ar-IQ', { weekday: 'short' }).format(dateObj);
                 const dateFull = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
                 const uid = `${d}-${spec.id}`;
-
                 html += `
                     <div class="day-box ${dateObj.getDay() === 5 || dateObj.getDay() === 6 ? 'weekend' : ''}">
                         <div class="day-label"><span>${dateFull.substring(0,5)}</span><span>${dayName}</span></div>
@@ -199,7 +192,23 @@
             track.innerHTML = html;
             board.appendChild(track);
         });
-        fetchSchedule();
+    }
+
+    // --- AC, Save, and Utility Logic ---
+    async function saveAll() {
+        lockUI();
+        const btn = document.getElementById('sync-btn');
+        const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(x => x.value.trim() !== "");
+        const payload = inputs.map(x => ({ date: x.dataset.date, specialty: x.dataset.spec, name: x.value.trim() }));
+        btn.innerText = "Syncing...";
+        try {
+            await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload }) });
+            btn.innerText = "Synced ✅";
+            inputs.forEach(x => { x.classList.remove('new-entry'); x.classList.add('prefilled'); });
+        } catch(e) { btn.innerText = "Error ⚠️"; }
+        finally {
+            setTimeout(() => { btn.innerText = "Sync Schedule"; unlockUI(); }, 1500);
+        }
     }
 
     function handleAC(el, sid, uid) {
@@ -209,7 +218,6 @@
         el.classList.remove('prefilled');
         if (!val.trim()) { el.classList.remove('new-entry'); return; }
         el.classList.add('new-entry');
-
         if (nameData[sid]) {
             const cleanInput = val.toLowerCase().replace(/^د\.\s*/, "");
             const match = nameData[sid].find(n => {
@@ -269,37 +277,6 @@
             }
             if (g) g.innerText = "";
         }, 250);
-    }
-
-    async function fetchSchedule() {
-        const m = document.getElementById('month-picker').value;
-        try {
-            const r = await fetch(`${scriptUrl}?action=getSchedule&month=${m}`);
-            const data = await r.json();
-            data.forEach(row => {
-                const d = parseInt(row.date.split('/')[0]);
-                const el = document.getElementById(`input-${d}-${row.specCode}`);
-                if (el && row.name) { el.value = row.name; el.classList.add('prefilled'); }
-            });
-        } finally { unlock(); }
-    }
-
-    function unlock() {
-        document.getElementById('app-wrapper').style.opacity = "1";
-        document.getElementById('app-wrapper').style.pointerEvents = "auto";
-    }
-
-    async function saveAll() {
-        const btn = document.getElementById('sync-btn');
-        const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(x => x.value.trim() !== "");
-        const payload = inputs.map(x => ({ date: x.dataset.date, specialty: x.dataset.spec, name: x.value.trim() }));
-        btn.innerText = "Processing...";
-        try {
-            await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload }) });
-            btn.innerText = "Synced ✅";
-            inputs.forEach(x => { x.classList.remove('new-entry'); x.classList.add('prefilled'); });
-        } catch(e) { btn.innerText = "Error ⚠️"; }
-        setTimeout(() => btn.innerText = "Sync Schedule", 2000);
     }
 </script>
 </body>
