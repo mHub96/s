@@ -77,10 +77,13 @@
 
     <div id="app-wrapper" class="loading-active">
         <div class="nav-bar">
-            <h1 class="text-lg font-black text-white uppercase tracking-tighter">Al-Iraqi Hosp. Scheduler 🇮🇶</h1>
+            <h1 class="text-lg font-black text-white uppercase tracking-tighter">Al-Iraqi Teaching Hosp. Scheduler 🇮🇶</h1>
             <div class="flex gap-4 items-center">
                 <input type="month" id="month-picker" class="bg-black text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-white/10 text-xs">
                 <button onclick="saveToGithub()" id="sync-btn" class="bg-white text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase active:scale-95 transition-transform">UPDATE</button>
+                
+                <button onclick="migrateFromGoogle()" id="migrate-btn" class="hidden bg-green-600 text-white px-5 py-2 rounded-lg font-black text-[10px] uppercase">Migrate</button>
+                <button id="login-btn" onclick="login()" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-black text-[10px] uppercase">Login</button>
             </div>
         </div>
         <div class="board-container" id="board" onscroll="closeAllMenus()"></div>
@@ -89,12 +92,11 @@
 <script>
     const CONFIG = {
         user: "mHub96", repo: "s", path: "data.json",
-        rawUrl: "https://raw.githubusercontent.com/mHub96/s/main/data.json"
+        rawUrl: "https://raw.githubusercontent.com/mHub96/s/main/data.json",
+        scriptUrl: "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec"
     };
 
-    // Shared Token for all devices
-    const GH_TOKEN = "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";
-
+    let GH_TOKEN = localStorage.getItem('gh_token');
     let db = { names: [], schedule: [] };
     let fileSha = "";
     let nameData = {};
@@ -126,36 +128,38 @@
         document.querySelectorAll('.custom-menu').forEach(x => x.style.display = 'none');
     }
 
+    function login() {
+        const t = prompt("Paste your GitHub Token 🇮🇶:");
+        if (t) { localStorage.setItem('gh_token', t.trim()); location.reload(); }
+    }
+
     async function init() {
         document.getElementById('app-wrapper').classList.add('loading-active');
         try {
-            const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
-                headers: { 
-                    "Authorization": `token ${GH_TOKEN}`, 
-                    "Accept": "application/vnd.github.v3+json" 
-                }
+            const fetchUrl = GH_TOKEN 
+                ? `https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`
+                : `${CONFIG.rawUrl}?t=${Date.now()}`;
+            
+            const res = await fetch(fetchUrl, {
+                headers: GH_TOKEN ? { "Authorization": `token ${GH_TOKEN}`, "Accept": "application/vnd.github.v3+json" } : {}
             });
 
             if (res.ok) {
                 const data = await res.json();
-                fileSha = data.sha;
+                if (GH_TOKEN) {
+                    fileSha = data.sha;
+                    db = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+                } else {
+                    db = data;
+                }
                 
-                // Robust Base64 Decoding
-                const base64Clean = data.content.replace(/\s/g, '');
-                const decodedStr = decodeURIComponent(escape(atob(base64Clean)));
-                db = JSON.parse(decodedStr);
-                
-                // Normalize names list
                 db.names = (db.names || []).map(item => {
                     if (Array.isArray(item)) return { name: item[0], spec: item[1] || "NS", phone: "" };
                     return item;
                 });
-                
-                updateNameLookup();
-                refreshView();
-            } else {
-                console.error("Auth failed or repo not found");
             }
+            updateNameLookup();
+            refreshView();
         } catch (e) { console.error("Init Error", e); }
         document.getElementById('app-wrapper').classList.remove('loading-active');
     }
@@ -293,11 +297,35 @@
         }, 250);
     }
 
+    async function migrateFromGoogle() {
+        if (!GH_TOKEN) return alert("Login first!");
+        const btn = document.getElementById('migrate-btn');
+        btn.innerText = "Migrating...";
+        btn.disabled = true;
+
+        try {
+            const r = await fetch(`${CONFIG.scriptUrl}?action=migrate`);
+            const res = await r.json();
+            const sourceNames = res.names || res.residents || [];
+            db.names = sourceNames.map(row => ({
+                name: String(row[0]).trim(),
+                spec: String(row[1]).trim(),
+                phone: row[3] ? String(row[3]).trim() : ""
+            })).filter(x => x.name);
+
+            db.schedule = res.schedule || [];
+            await saveToGithub();
+            alert("Migration Successful! 🇮🇶 Reloading...");
+            location.reload();
+        } catch(e) { console.error(e); alert("Migration failed."); }
+        finally { btn.innerText = "Migrate"; btn.disabled = false; }
+    }
+
     async function saveToGithub() {
+        if (!GH_TOKEN) return alert("Login first!");
         const btn = document.getElementById('sync-btn');
         const oldText = btn.innerText;
         btn.innerText = "UPDATING...";
-        btn.disabled = true;
 
         const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
         const currentData = inputs.map(i => ({ 
@@ -329,11 +357,7 @@
                 btn.innerText = "UPDATED ✅";
             } else { btn.innerText = "Error ❌"; }
         } catch(e) { btn.innerText = "Error"; }
-        
-        setTimeout(() => {
-            btn.innerText = oldText;
-            btn.disabled = false;
-        }, 2000);
+        setTimeout(() => btn.innerText = oldText, 2000);
     }
 </script>
 </body>
