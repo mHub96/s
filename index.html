@@ -3,18 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SCHEDULER 🇮🇶</title>
+    <title>MRJ SCHEDULER 🇮🇶</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0b0e11;
-            --card: #16191d;
-            --column-width: 290px;
-            --font-size: 0.9rem;
-            --nav-h: 70px;
-        }
-
+        :root { --bg: #0b0e11; --card: #16191d; --column-width: 290px; --font-size: 0.9rem; --nav-h: 70px; }
+        
         .track-NS { --spec-color: #fbbf24; } .track-CT { --spec-color: #f87171; } 
         .track-GS { --spec-color: #34d399; } .track-US { --spec-color: #60a5fa; } 
         .track-ENT { --spec-color: #a78bfa; } .track-H { --spec-color: #fb7185; } 
@@ -24,34 +18,20 @@
 
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
         
-        .board-container {
-            flex-grow: 1; display: flex; gap: 1.5rem; padding: 1.5rem 1.5rem 3rem 1.5rem;
-            overflow-x: auto; align-items: flex-start; box-sizing: border-box;
-            height: calc(100vh - var(--nav-h));
-        }
-
-        .specialty-track {
-            flex: 0 0 var(--column-width); background: var(--card); border-radius: 1.8rem;
-            display: flex; flex-direction: column; max-height: 92%; 
-            border: 1px solid rgba(255,255,255,0.04);
-            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.8), 0 0 15px -5px var(--spec-color);
-            overflow: hidden;
-        }
-
-        .track-header {
-            padding: 1.2rem; text-align: center; flex-shrink: 0;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent);
-            border-bottom: 3px solid var(--spec-color);
-        }
+        .board-container { flex-grow: 1; display: flex; gap: 1.5rem; padding: 1.5rem 1.5rem 3rem 1.5rem; overflow-x: auto; align-items: flex-start; box-sizing: border-box; height: calc(100vh - var(--nav-h)); }
+        
+        .specialty-track { flex: 0 0 var(--column-width); background: var(--card); border-radius: 1.8rem; display: flex; flex-direction: column; max-height: 92%; border: 1px solid rgba(255,255,255,0.04); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.8), 0 0 15px -5px var(--spec-color); overflow: hidden; }
+        
+        .track-header { padding: 1.2rem; text-align: center; flex-shrink: 0; background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent); border-bottom: 3px solid var(--spec-color); }
         .track-header h2 { color: var(--spec-color); font-weight: 900; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; }
-
+        
         .days-list { flex: 1; overflow-y: auto; padding: 0.75rem; padding-bottom: 2rem; scrollbar-width: none; }
         .days-list::-webkit-scrollbar { display: none; }
 
         .day-box { position: relative; background: rgba(255,255,255,0.02); margin-bottom: 0.5rem; border-radius: 0.9rem; padding: 0.4rem; border: 1px solid transparent; }
         .day-box:focus-within { border-color: var(--spec-color); background: rgba(255,255,255,0.04); }
         .day-box.weekend { background: rgba(255,255,255,0.05); border-left: 3px solid var(--spec-color); }
-
+        
         .day-label { display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 800; margin-bottom: 0.2rem; color: #4b5563; padding: 0 0.5rem; }
         
         .input-wrapper { position: relative; width: 100%; direction: rtl; text-align: right; }
@@ -62,7 +42,6 @@
             font-size: var(--font-size); 
             padding: 0.6rem 0.75rem; 
             line-height: 1.2;
-            letter-spacing: 0;
             text-align: right; 
             box-sizing: border-box; 
             white-space: pre;
@@ -74,34 +53,23 @@
         .cell-input { background: transparent; outline: none; color: #fff; position: relative; z-index: 10; direction: rtl; }
         
         .ghost-text { 
-            position: absolute; 
-            top: 0; 
-            right: 0; 
-            color: rgba(255,255,255,0.15); 
-            z-index: 5; 
-            pointer-events: none; 
-            height: 100%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: flex-start;
-            direction: rtl;
-            background: transparent;
+            position: absolute; top: 0; right: 0; color: rgba(255,255,255,0.15); 
+            z-index: 5; pointer-events: none; height: 100%; display: flex; 
+            align-items: center; justify-content: flex-start; direction: rtl; background: transparent;
         }
 
         .ghost-offset { color: transparent; visibility: hidden; white-space: pre; }
 
-        .prefilled { color: var(--spec-color) !important; font-weight: 600; }
-        .new-entry { color: #fff !important; font-weight: 700; }
-
         .dropdown-arrow { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.5rem; color: #334155; cursor: pointer; z-index: 25; padding: 6px; }
-
+        
         .custom-menu { position: absolute; top: 100%; right: 0; width: 100%; max-height: 180px; overflow-y: auto; background: #1c1f26; border: 1px solid var(--spec-color); border-radius: 0.6rem; z-index: 1000; display: none; }
         .custom-menu div { padding: 0.8rem; font-size: 0.8rem; text-align: right; cursor: pointer; color: #94a3b8; }
         .custom-menu div:hover { background: var(--spec-color); color: #000; }
-
+        
+        .prefilled { color: var(--spec-color) !important; font-weight: 600; }
+        .new-entry { color: #fff !important; font-weight: 700; }
+        
         .nav-bar { height: var(--nav-h); padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #111418; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
-        #app-wrapper { transition: opacity 0.4s ease; }
         .loading-active { opacity: 0.3 !important; pointer-events: none !important; cursor: wait; }
     </style>
 </head>
@@ -109,17 +77,29 @@
 
     <div id="app-wrapper" class="loading-active">
         <div class="nav-bar">
-            <h1 class="text-lg font-black text-white uppercase tracking-tighter">Iraqi Teaching Hosp. Scheduler 🇮🇶</h1>
+            <h1 class="text-lg font-black text-white uppercase tracking-tighter">Al-Iraqi Teaching Hosp. Scheduler 🇮🇶</h1>
             <div class="flex gap-4 items-center">
-                <input type="month" id="month-picker" class="bg-black text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-white/10 text-xs" onchange="handleMonthChange()">
-                <button onclick="saveAll()" id="sync-btn" class="bg-white text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase active:scale-95 transition-transform">Sync Schedule</button>
+                <input type="month" id="month-picker" class="bg-black text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-white/10 text-xs">
+                <button onclick="saveToGithub()" id="sync-btn" class="bg-white text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase active:scale-95 transition-transform">Sync Schedule</button>
+                <button onclick="migrateFromGoogle()" id="migrate-btn" class="bg-green-600 text-white px-5 py-2 rounded-lg font-black text-[10px] uppercase">Migrate</button>
+                <button onclick="login()" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-black text-[10px] uppercase">Login</button>
             </div>
         </div>
         <div class="board-container" id="board" onscroll="closeAllMenus()"></div>
     </div>
 
 <script>
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec";
+    const CONFIG = {
+        user: "mHub96", repo: "s", path: "data.json",
+        rawUrl: "https://raw.githubusercontent.com/mHub96/s/main/data.json",
+        scriptUrl: "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec"
+    };
+
+    let GH_TOKEN = localStorage.getItem('gh_token');
+    let db = { names: [], schedule: [] };
+    let fileSha = "";
+    let nameData = {};
+
     const specialties = [
         { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
         { id: "GS", name: "General Surg" }, { id: "US", name: "Urosurgery" },
@@ -129,18 +109,14 @@
         { id: "ON", name: "Oncology" }
     ];
 
-    let nameData = {};
-
-    window.onload = () => {
+    window.onload = async () => {
         const now = new Date();
         const nextMonthDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-        const monthVal = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}`;
-        document.getElementById('month-picker').value = monthVal;
-        generateBoard();
-        initSync();
+        document.getElementById('month-picker').value = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}`;
+        document.getElementById('month-picker').onchange = refreshView;
+        await init();
     };
 
-    // Close all menus when clicking anywhere outside
     window.onclick = (e) => {
         if (!e.target.classList.contains('dropdown-arrow') && !e.target.closest('.custom-menu')) {
             closeAllMenus();
@@ -151,48 +127,65 @@
         document.querySelectorAll('.custom-menu').forEach(x => x.style.display = 'none');
     }
 
-    function lockUI() { document.getElementById('app-wrapper').classList.add('loading-active'); }
-    function unlockUI() { document.getElementById('app-wrapper').classList.remove('loading-active'); }
+    function login() {
+        const t = prompt("Paste your GitHub Token 🇮🇶:");
+        if (t) { localStorage.setItem('gh_token', t.trim()); location.reload(); }
+    }
 
-    async function handleMonthChange() {
-        lockUI();
+    async function init() {
+        document.getElementById('app-wrapper').classList.add('loading-active');
+        try {
+            const fetchUrl = GH_TOKEN 
+                ? `https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`
+                : `${CONFIG.rawUrl}?t=${Date.now()}`;
+            
+            const res = await fetch(fetchUrl, {
+                headers: GH_TOKEN ? { "Authorization": `token ${GH_TOKEN}`, "Accept": "application/vnd.github.v3+json" } : {}
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                if (GH_TOKEN) {
+                    fileSha = data.sha;
+                    db = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+                } else {
+                    db = data;
+                }
+                
+                // CRITICAL NORMALIZATION: Ensure names are always objects
+                db.names = (db.names || []).map(item => {
+                    if (Array.isArray(item)) return { name: item[0], spec: item[1] || "NS", phone: "" };
+                    return item;
+                });
+            }
+            updateNameLookup();
+            refreshView();
+        } catch (e) { console.error("Init Error", e); }
+        document.getElementById('app-wrapper').classList.remove('loading-active');
+    }
+
+    function updateNameLookup() {
+        nameData = {};
+        const residents = db.names || [];
+        specialties.forEach(s => {
+            if (s.id === "OP" || s.id === "ICU") {
+                nameData[s.id] = residents.filter(x => x.spec === "A").map(x => x.name);
+            } else if (s.id === "D") {
+                nameData[s.id] = residents.map(x => x.name);
+            } else {
+                nameData[s.id] = residents.filter(x => x.spec === s.id).map(x => x.name);
+            }
+        });
+    }
+
+    function refreshView() {
         generateBoard();
-        await fetchSchedule();
-        unlockUI();
-    }
-
-    async function initSync() {
-        lockUI(); 
-        try {
-            const r = await fetch(`${scriptUrl}?action=getNames`);
-            const all = await r.json();
-            specialties.forEach(s => {
-                if (s.id === "OP" || s.id === "ICU") nameData[s.id] = all.filter(x => x[1] === "A").map(x => x[0]);
-                else if (s.id === "D") nameData[s.id] = all.map(x => x[0]);
-                else nameData[s.id] = all.filter(x => x[1] === s.id).map(x => x[0]);
-            });
-            await fetchSchedule();
-            unlockUI();
-        } catch(e) { setTimeout(unlockUI, 2000); }
-    }
-
-    async function fetchSchedule() {
-        const m = document.getElementById('month-picker').value;
-        try {
-            const r = await fetch(`${scriptUrl}?action=getSchedule&month=${m}`);
-            const data = await r.json();
-            data.forEach(row => {
-                const d = parseInt(row.date.split('/')[0]);
-                const el = document.getElementById(`input-${d}-${row.specCode}`);
-                if (el && row.name) { el.value = row.name; el.classList.add('prefilled'); }
-            });
-        } catch(e) {}
+        renderData();
     }
 
     function generateBoard() {
-        const picker = document.getElementById('month-picker').value;
-        const [year, month] = picker.split('-').map(Number);
-        const daysInMonth = new Date(year, month, 0).getDate();
+        const [yr, mon] = document.getElementById('month-picker').value.split('-').map(Number);
+        const days = new Date(yr, mon, 0).getDate();
         const board = document.getElementById('board');
         board.innerHTML = "";
 
@@ -200,10 +193,10 @@
             const track = document.createElement('div');
             track.className = `specialty-track track-${spec.id}`;
             let html = `<div class="track-header"><h2>${spec.name}</h2></div><div class="days-list">`;
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateObj = new Date(year, month-1, d);
+            for (let d = 1; d <= days; d++) {
+                const dateObj = new Date(yr, mon - 1, d);
                 const dayName = new Intl.DateTimeFormat('ar-IQ', { weekday: 'short' }).format(dateObj);
-                const dateFull = `${String(d).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+                const dateFull = `${String(d).padStart(2, '0')}/${String(mon).padStart(2, '0')}/${yr}`;
                 const uid = `${d}-${spec.id}`;
                 html += `
                     <div class="day-box ${dateObj.getDay() === 5 || dateObj.getDay() === 6 ? 'weekend' : ''}">
@@ -226,6 +219,17 @@
         });
     }
 
+    function renderData() {
+        const [yr, mon] = document.getElementById('month-picker').value.split('-');
+        (db.schedule || []).forEach(row => {
+            if (row.date && row.date.endsWith(`${mon}/${yr}`)) {
+                const day = parseInt(row.date.split('/')[0]);
+                const el = document.getElementById(`input-${day}-${row.specCode}`);
+                if (el) { el.value = row.name; el.classList.add('prefilled'); }
+            }
+        });
+    }
+
     function handleAC(el, sid, uid) {
         const ghost = document.getElementById(`ghost-${uid}`);
         const val = el.value;
@@ -236,8 +240,8 @@
 
         if (nameData[sid]) {
             const match = nameData[sid].find(n => {
-                const nClean = n.toLowerCase().replace(/^د\.\s*/, "");
-                const valClean = val.toLowerCase().replace(/^د\.\s*/, "");
+                const nClean = n.toLowerCase().replace(/^د\.\s*/, "").trim();
+                const valClean = val.toLowerCase().replace(/^د\.\s*/, "").trim();
                 return n.toLowerCase().startsWith(val.toLowerCase()) || nClean.startsWith(valClean);
             });
             if (match) {
@@ -266,9 +270,9 @@
     function toggleMenu(e, uid, sid) {
         e.stopPropagation();
         const m = document.getElementById(`menu-${uid}`);
-        const alreadyOpen = m.style.display === "block";
+        const open = m.style.display === "block";
         closeAllMenus();
-        if (!alreadyOpen) {
+        if (!open) {
             m.innerHTML = (nameData[sid] || []).map(n => `<div onmousedown="selectName('${uid}', '${n}')">${n}</div>`).join('');
             m.style.display = "block";
         }
@@ -293,18 +297,76 @@
         }, 250);
     }
 
-    async function saveAll() {
-        lockUI();
-        const btn = document.getElementById('sync-btn');
-        const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(x => x.value.trim() !== "");
-        const payload = inputs.map(x => ({ date: x.dataset.date, specialty: x.dataset.spec, name: x.value.trim() }));
-        btn.innerText = "Syncing...";
+    async function migrateFromGoogle() {
+        if (!GH_TOKEN) return alert("Login first!");
+        const btn = document.getElementById('migrate-btn');
+        btn.innerText = "Migrating...";
+        btn.disabled = true;
+
         try {
-            await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ payload }) });
-            btn.innerText = "Synced ✅";
-            inputs.forEach(x => { x.classList.remove('new-entry'); x.classList.add('prefilled'); });
-        } catch(e) { btn.innerText = "Error ⚠️"; }
-        finally { setTimeout(() => { btn.innerText = "Sync Schedule"; unlockUI(); }, 1500); }
+            const r = await fetch(`${CONFIG.scriptUrl}?action=migrate`);
+            const res = await r.json();
+            
+            // MAP THE INCOMING SHEET DATA (ARRAYS) TO THE NEW DB FORMAT (OBJECTS)
+            // Assumes Sheet gives: [Name, DeptCode, DeptName, Phone]
+            const sourceNames = res.names || res.residents || [];
+            db.names = sourceNames.map(row => ({
+                name: String(row[0]).trim(),
+                spec: String(row[1]).trim(),
+                phone: row[3] ? String(row[3]).trim() : ""
+            })).filter(x => x.name);
+
+            db.schedule = res.schedule || [];
+            
+            await saveToGithub();
+            alert("Migration Successful! 🇮🇶 Reloading...");
+            location.reload();
+        } catch(e) { 
+            console.error(e);
+            alert("Migration failed. Check the console."); 
+        } finally {
+            btn.innerText = "Migrate";
+            btn.disabled = false;
+        }
+    }
+
+    async function saveToGithub() {
+        if (!GH_TOKEN) return alert("Login first!");
+        const btn = document.getElementById('sync-btn');
+        const oldText = btn.innerText;
+        btn.innerText = "Syncing...";
+
+        const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
+        const currentData = inputs.map(i => ({ 
+            date: i.dataset.date, 
+            specCode: i.dataset.spec, 
+            name: i.value.trim() 
+        }));
+
+        const [yr, mon] = document.getElementById('month-picker').value.split('-');
+        db.schedule = [
+            ...(db.schedule || []).filter(r => !r.date || !r.date.endsWith(`${mon}/${yr}`)), 
+            ...currentData
+        ];
+
+        try {
+            const body = { 
+                message: "Sync 🇮🇶", 
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2)))), 
+                sha: fileSha 
+            };
+            const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+                method: "PUT", 
+                headers: { "Authorization": `token ${GH_TOKEN}` }, 
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                const update = await res.json();
+                fileSha = update.content.sha;
+                btn.innerText = "Synced ✅";
+            } else { btn.innerText = "Sync Error ❌"; }
+        } catch(e) { btn.innerText = "Error"; }
+        setTimeout(() => btn.innerText = oldText, 2000);
     }
 </script>
 </body>
