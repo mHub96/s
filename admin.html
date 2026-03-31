@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>إدارة المقيمين 🇮🇶</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0b0e11; --card: #16191d; --accent: #fbbf24; }
+        body { 
+            background: var(--bg); color: #94a3b8; 
+            font-family: 'IBM Plex Sans Arabic', sans-serif; 
+            margin: 0; min-height: 100vh; direction: rtl; text-align: right;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+        .card { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.25rem; }
+        input, select { 
+            background: #000 !important; border: 1px solid #334155 !important; 
+            color: white !important; outline: none !important; text-align: right;
+        }
+        input:focus { border-color: var(--accent) !important; }
+
+        /* Modal */
+        #edit-modal { display: none; position: fixed; inset: 0; z-index: 3000; align-items: center; justify-content: center; padding: 1.25rem; }
+        #edit-modal.active { display: flex; }
+        .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); }
+        .modal-content { position: relative; width: 100%; max-width: 450px; background: #1c2128; border-radius: 2rem; padding: 2rem; border: 1px solid rgba(255,255,255,0.15); }
+
+        /* Collapsible System */
+        .spec-header { 
+            background: rgba(255,255,255,0.03); padding: 0.85rem 1.5rem; 
+            font-size: 0.75rem; font-weight: 800; color: var(--accent); 
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; user-select: none;
+        }
+        .spec-content { display: block; overflow: hidden; }
+        .spec-content.hidden { display: none; }
+        .chevron { transition: transform 0.3s; font-size: 0.6rem; opacity: 0.5; }
+        .collapsed .chevron { transform: rotate(90deg); }
+
+        /* Sync Button States */
+        .btn-save { transition: all 0.4s ease; min-width: 120px; }
+        .btn-save.loading { background: #3b82f6 !important; color: white; cursor: wait; }
+        .btn-save.success { background: #10b981 !important; color: white; }
+        .btn-save.error { background: #ef4444 !important; color: white; }
+        
+        .phone-display { direction: ltr; text-align: right; unicode-bidi: plaintext; }
+        .resident-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .resident-row:last-child { border-bottom: none; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div id="edit-modal">
+        <div class="modal-overlay" onclick="closeModal()"></div>
+        <div class="modal-content">
+            <h3 class="text-white font-bold mb-6 text-xl text-center">تعديل بيانات المقيم</h3>
+            <div class="flex flex-col gap-4">
+                <input type="text" id="edit-name" class="p-4 rounded-xl text-sm" placeholder="الاسم">
+                <input type="tel" id="edit-phone" class="p-4 rounded-xl text-sm font-mono ltr text-right" placeholder="0770...">
+                <select id="edit-spec" class="p-4 rounded-xl text-sm">
+                    <option value="NS">Neurosurgery (NS)</option>
+                    <option value="CT">Cardiothoracic (CT)</option>
+                    <option value="GS">General Surg (GS)</option>
+                    <option value="US">Urosurgery (US)</option>
+                    <option value="ENT">ENT Dept (ENT)</option>
+                    <option value="H">Cardiology (H)</option>
+                    <option value="A">Anesthesia (All)</option>
+                    <option value="R">Radiology (R)</option>
+                    <option value="ON">Oncology (ON)</option>
+                    <option value="RESERVE">RESERVE (احتياط)</option>
+                </select>
+                <div class="flex gap-3 mt-4">
+                    <button onclick="saveEdit()" class="flex-1 bg-amber-500 text-black py-4 rounded-2xl font-black text-sm">تأكيد التعديل</button>
+                    <button onclick="closeModal()" class="flex-1 bg-white/5 text-white py-4 rounded-2xl font-black text-sm">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-xl mx-auto">
+        <div class="flex justify-between items-center mb-8 sticky top-0 bg-[#0b0e11]/80 backdrop-blur-md py-4 z-20">
+            <div>
+                <h1 class="text-3xl font-black text-white tracking-tighter">المقيمين 🇮🇶</h1>
+                <p id="count-tag" class="text-[11px] font-bold text-amber-500 uppercase">جاري المزامنة...</p>
+            </div>
+            <button id="main-save-btn" onclick="saveToGithub()" class="btn-save bg-white/5 text-slate-400 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase">سحابة متزامنة</button>
+        </div>
+
+        <div class="card p-6 mb-8">
+            <div class="flex flex-col gap-4">
+                <input type="text" id="new-name" placeholder="اسم المقيم" class="p-4 rounded-2xl text-sm font-bold shadow-inner">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="tel" id="new-phone" placeholder="0770..." class="p-4 rounded-2xl text-sm font-mono">
+                    <select id="new-spec" class="p-4 rounded-2xl text-sm font-bold">
+                        <option value="NS">Neurosurgery</option>
+                        <option value="CT">Cardiothoracic</option>
+                        <option value="GS">General Surg</option>
+                        <option value="US">Urosurgery</option>
+                        <option value="ENT">ENT Dept</option>
+                        <option value="H">Cardiology</option>
+                        <option value="A">Anesthesia</option>
+                        <option value="R">Radiology</option>
+                        <option value="ON">Oncology</option>
+                        <option value="RESERVE">RESERVE</option>
+                    </select>
+                </div>
+                <button onclick="addResident()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm active:scale-95 transition-transform">إضافة وحفظ</button>
+            </div>
+        </div>
+
+        <div class="card overflow-hidden mb-10">
+            <div class="p-4 bg-white/5 border-b border-white/5">
+                <input type="text" id="search-db" oninput="renderResidents()" placeholder="بحث سريع..." class="w-full p-4 px-6 rounded-2xl text-sm !bg-black border-none text-white">
+            </div>
+            <div id="resident-list"></div>
+        </div>
+    </div>
+
+<script>
+    const CONFIG = { user: "mHub96", repo: "db", path: "data.json" };
+    
+    // CRITICAL: Specialties IDs must match EXACTLY with your data.json spec keys
+    const specialties = [
+        { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
+        { id: "GS", name: "General Surg" }, { id: "US", name: "Urosurgery" },
+        { id: "ENT", name: "ENT Dept" }, { id: "H", name: "Cardiology" },
+        { id: "A", name: "Anesthesia (All)" }, { id: "R", name: "Radiology" },
+        { id: "ON", name: "Oncology" }, { id: "RESERVE", name: "RESERVE (احتياط)" }
+    ];
+
+    let sectionStates = JSON.parse(localStorage.getItem('admin_sections')) || {};
+    let GH_TOKEN = localStorage.getItem('gh_token');
+    let db = { names: [], schedule: [] };
+    let fileSha = "";
+    let currentEditIdx = null;
+
+    window.onload = init;
+
+    function ensureDoctorTitle(name) {
+        let n = name.trim();
+        if (!n) return "";
+        return (n.startsWith("د.") || n.startsWith("د ")) ? n : "د. " + n;
+    }
+
+    function formatIraqiPhone(num) {
+        if(!num) return "";
+        let clean = num.replace(/\D/g, ''); 
+        if (clean.startsWith('07')) return '+964' + clean.substring(1);
+        if (clean.startsWith('7')) return '+964' + clean;
+        return num;
+    }
+
+    async function init() {
+        if (!GH_TOKEN) return;
+        try {
+            const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
+                headers: { "Authorization": `token ${GH_TOKEN}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                fileSha = data.sha;
+                const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+                
+                // UNIFIED NORMALIZATION:
+                // Ensures any old ["Name", "Spec"] arrays become {"name": "...", "spec": "...", "phone": ""}
+                db.names = (content.names || []).map(item => {
+                    if (Array.isArray(item)) {
+                        return { name: item[0], spec: item[1] || "NS", phone: "" };
+                    }
+                    return {
+                        name: item.name || "",
+                        spec: item.spec || "NS",
+                        phone: item.phone || ""
+                    };
+                });
+                db.schedule = content.schedule || [];
+                
+                renderResidents();
+            }
+        } catch (e) { console.error("Init Error:", e); }
+    }
+
+    function toggleSection(specId) {
+        sectionStates[specId] = (sectionStates[specId] === false) ? true : false;
+        localStorage.setItem('admin_sections', JSON.stringify(sectionStates));
+        renderResidents();
+    }
+
+    function renderResidents() {
+        const list = document.getElementById('resident-list');
+        const searchTerm = (document.getElementById('search-db').value || "").toLowerCase();
+        list.innerHTML = "";
+        
+        const grouped = {};
+        specialties.forEach(s => grouped[s.id] = []);
+        
+        db.names.forEach((res, i) => {
+            const matchesSearch = (res.name || "").toLowerCase().includes(searchTerm);
+            if (matchesSearch) {
+                // If spec doesn't exist in our list, put in RESERVE
+                const targetSpec = grouped[res.spec] ? res.spec : "RESERVE";
+                grouped[targetSpec].push({ ...res, idx: i });
+            }
+        });
+
+        specialties.forEach(spec => {
+            const residents = grouped[spec.id];
+            if (!residents || residents.length === 0) return;
+            residents.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+
+            const section = document.createElement('div');
+            // Sections are OPEN by default unless specifically set to FALSE
+            const isOpen = sectionStates[spec.id] !== false;
+            section.className = isOpen ? "" : "collapsed";
+
+            const header = document.createElement('div');
+            header.className = "spec-header";
+            header.onclick = () => toggleSection(spec.id);
+            header.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <span class="chevron" style="transform: rotate(${isOpen ? '90deg' : '0deg'})">▶</span>
+                    <span>${spec.name}</span>
+                </div>
+                <span class="bg-white/10 px-2 py-0.5 rounded text-[10px]">${residents.length}</span>
+            `;
+            
+            const content = document.createElement('div');
+            content.className = `spec-content ${isOpen ? "" : "hidden"}`;
+
+            residents.forEach(res => {
+                const row = document.createElement('div');
+                row.className = "resident-row px-6 py-5";
+                row.innerHTML = `
+                    <div class="flex flex-col text-right">
+                        <span class="text-white font-bold text-sm underline decoration-amber-500/20 underline-offset-8">${res.name}</span>
+                        <span class="text-[11px] text-slate-500 font-mono mt-1 phone-display">${res.phone || 'بدون هاتف'}</span>
+                    </div>
+                    <div class="flex gap-3" dir="ltr">
+                        <button onclick="openEdit(${res.idx})" class="text-[11px] font-black text-blue-400 p-2.5 px-5 border border-blue-400/20 rounded-2xl active:bg-blue-400/10">تعديل</button>
+                        <button onclick="deleteResident(${res.idx})" class="text-[11px] font-black text-red-500 p-2.5 px-5 border border-red-500/20 rounded-2xl active:bg-red-500/10">حذف</button>
+                    </div>
+                `;
+                content.appendChild(row);
+            });
+
+            section.appendChild(header);
+            section.appendChild(content);
+            list.appendChild(section);
+        });
+        document.getElementById('count-tag').innerText = `العدد الإجمالي: ${db.names.length}`;
+    }
+
+    async function addResident() {
+        const nameEl = document.getElementById('new-name');
+        const phoneEl = document.getElementById('new-phone');
+        const specEl = document.getElementById('new-spec');
+        if (!nameEl.value.trim()) return;
+        
+        db.names.push({ 
+            name: ensureDoctorTitle(nameEl.value), 
+            spec: specEl.value, 
+            phone: formatIraqiPhone(phoneEl.value.trim()) 
+        });
+        
+        nameEl.value = ""; phoneEl.value = "";
+        renderResidents();
+        await saveToGithub();
+    }
+
+    function openEdit(idx) {
+        currentEditIdx = idx;
+        const res = db.names[idx];
+        document.getElementById('edit-name').value = res.name;
+        document.getElementById('edit-phone').value = res.phone || "";
+        document.getElementById('edit-spec').value = res.spec;
+        document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('edit-modal').classList.remove('active');
+        currentEditIdx = null;
+    }
+
+    async function saveEdit() {
+        if (currentEditIdx === null) return;
+        db.names[currentEditIdx] = {
+            name: ensureDoctorTitle(document.getElementById('edit-name').value),
+            phone: formatIraqiPhone(document.getElementById('edit-phone').value.trim()),
+            spec: document.getElementById('edit-spec').value
+        };
+        closeModal();
+        renderResidents();
+        await saveToGithub();
+    }
+
+    async function deleteResident(idx) {
+        if (confirm(`حذف ${db.names[idx].name}؟`)) {
+            db.names.splice(idx, 1);
+            renderResidents();
+            await saveToGithub();
+        }
+    }
+
+    async function saveToGithub() {
+        const btn = document.getElementById('main-save-btn');
+        btn.innerText = "جاري الحفظ...";
+        btn.className = "btn-save loading px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase shadow-xl";
+        btn.disabled = true;
+
+        try {
+            const body = { 
+                message: "Database Update 🇮🇶", 
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2)))), 
+                sha: fileSha 
+            };
+            const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GH_TOKEN}` },
+                body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+                const updated = await res.json();
+                fileSha = updated.content.sha;
+                btn.innerText = "تم الحفظ! ✅";
+                btn.className = "btn-save success px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase shadow-xl";
+            } else { throw new Error(); }
+        } catch (e) {
+            btn.innerText = "فشل الحفظ! ❌";
+            btn.className = "btn-save error px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase shadow-xl";
+        }
+
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerText = "سحابة متزامنة";
+            btn.className = "btn-save bg-white/5 text-slate-400 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase";
+        }, 2500);
+    }
+</script>
+</body>
+</html>
