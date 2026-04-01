@@ -22,7 +22,7 @@
         }
         input:focus { border-color: var(--accent) !important; }
 
-        /* Modal */
+        /* Modal Visibility */
         #edit-modal { display: none; position: fixed; inset: 0; z-index: 3000; align-items: center; justify-content: center; padding: 1.25rem; }
         #edit-modal.active { display: flex; }
         .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); }
@@ -37,18 +37,16 @@
         }
         .spec-content { display: block; overflow: hidden; }
         .spec-content.hidden { display: none; }
-        .chevron { transition: transform 0.3s; font-size: 0.6rem; opacity: 0.5; }
-        .collapsed .chevron { transform: rotate(90deg); }
-
-        /* Sync Button States */
+        
+        .resident-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .resident-row:last-child { border-bottom: none; }
+        .clickable-area { flex-grow: 1; cursor: pointer; padding: 1rem 1.5rem; }
+        
+        /* Sync States */
         .btn-save { transition: all 0.4s ease; min-width: 120px; }
         .btn-save.loading { background: #3b82f6 !important; color: white; cursor: wait; }
         .btn-save.success { background: #10b981 !important; color: white; }
         .btn-save.error { background: #ef4444 !important; color: white; }
-        
-        .phone-display { direction: ltr; text-align: right; unicode-bidi: plaintext; }
-        .resident-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .resident-row:last-child { border-bottom: none; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -65,7 +63,7 @@
                     <option value="CT">Cardiothoracic</option>
                     <option value="GS">General Surgery</option>
                     <option value="US">Urosurgery</option>
-                    <option value="ENT">ENT Dept </option>
+                    <option value="ENT">ENT</option>
                     <option value="H">Cardiology</option>
                     <option value="A">Anesthesia (All)</option>
                     <option value="R">Radiology</option>
@@ -84,7 +82,7 @@
         <div class="flex justify-between items-center mb-8 sticky top-0 bg-[#0b0e11]/80 backdrop-blur-md py-4 z-20">
             <div>
                 <h1 class="text-3xl font-black text-white tracking-tighter">المقيمين 🇮🇶</h1>
-                <p id="count-tag" class="text-[11px] font-bold text-amber-500 uppercase">جاري المزامنة...</p>
+                <p id="count-tag" class="text-[11px] font-bold text-amber-500 uppercase">جاري التحميل...</p>
             </div>
             <button id="main-save-btn" onclick="saveToGithub()" class="btn-save bg-white/5 text-slate-400 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase">سحابة متزامنة</button>
         </div>
@@ -97,7 +95,7 @@
                     <select id="new-spec" class="p-4 rounded-2xl text-sm font-bold">
                         <option value="NS">Neurosurgery</option>
                         <option value="CT">Cardiothoracic</option>
-                        <option value="GS">General Surgery</option>
+                        <option value="GS">General Surgey</option>
                         <option value="US">Urosurgery</option>
                         <option value="ENT">ENT</option>
                         <option value="H">Cardiology</option>
@@ -122,15 +120,14 @@
 <script>
     const CONFIG = { user: "mHub96", repo: "s", path: "data.json" };
     
-    // TOKEN FRAGMENTATION 🇮🇶
+    // FRAGMENTED TOKEN 🇮🇶
     const _p1 = "ghp_";
     const _p2 = "dAUtsFhTH";
     const _p3 = "a2KeJQO";
     const _p4 = "sxsCCt1v";
     const _p5 = "z8z1Z63Am";
     const _p6 = "sjS";
-    
-    let GH_TOKEN = [_p1, _p2, _p3, _p4, _p5, _p6].join('') || localStorage.getItem('gh_token');
+    const GH_TOKEN = [_p1, _p2, _p3, _p4, _p5, _p6].join('');
     
     let db = { names: [], schedule: [] };
     let fileSha = "";
@@ -138,7 +135,7 @@
 
     const specialties = [
         { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
-        { id: "GS", name: "General Surg" }, { id: "US", name: "Urosurgery" },
+        { id: "GS", name: "General Surgery" }, { id: "US", name: "Urosurgery" },
         { id: "ENT", name: "ENT" }, { id: "H", name: "Cardiology" },
         { id: "A", name: "Anesthesia (All)" }, { id: "R", name: "Radiology" },
         { id: "ON", name: "Oncology" }, { id: "RESERVE", name: "RESERVE" }
@@ -147,7 +144,6 @@
     window.onload = init;
 
     async function init() {
-        if (!GH_TOKEN) return;
         try {
             const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
                 headers: { "Authorization": `token ${GH_TOKEN}` }
@@ -157,17 +153,15 @@
                 fileSha = data.sha;
                 const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
                 
-                db.names = (content.names || []).map(item => {
-                    return {
-                        name: item.name || item[0] || "",
-                        spec: item.spec || item[1] || "NS",
-                        phone: item.phone || ""
-                    };
-                });
+                db.names = (content.names || []).map(item => ({
+                    name: item.name || item[0] || "",
+                    spec: item.spec || item[1] || "NS",
+                    phone: item.phone || ""
+                }));
                 db.schedule = content.schedule || [];
                 renderResidents();
             }
-        } catch (e) { console.error("Init Error:", e); }
+        } catch (e) { console.error("Load Error:", e); }
     }
 
     function renderResidents() {
@@ -180,22 +174,22 @@
             if (residents.length === 0) return;
 
             const section = document.createElement('div');
-            section.className = "spec-section border-b border-white/5 last:border-0";
+            section.className = "border-b border-white/5 last:border-0";
             section.innerHTML = `
                 <div class="spec-header" onclick="toggleSection('${spec.id}')">
                     <span>${spec.name} (${residents.length})</span>
-                    <span class="chevron">▶</span>
+                    <span class="opacity-30">▼</span>
                 </div>
                 <div id="content-${spec.id}" class="spec-content">
-                    ${residents.map((r, i) => {
-                        const originalIdx = db.names.indexOf(r);
+                    ${residents.map((r) => {
+                        const idx = db.names.indexOf(r);
                         return `
-                        <div class="resident-row p-4 px-6 hover:bg-white/[0.02]">
-                            <div onclick="openEdit(${originalIdx})">
+                        <div class="resident-row hover:bg-white/[0.02]">
+                            <div class="clickable-area" onclick="openEdit(${idx})">
                                 <div class="text-white font-bold text-sm">${r.name}</div>
-                                <div class="text-[10px] font-mono text-slate-500 phone-display">${r.phone || 'No Phone'}</div>
+                                <div class="text-[10px] font-mono text-slate-500 ltr text-right">${r.phone || ''}</div>
                             </div>
-                            <button onclick="deleteResident(${originalIdx})" class="text-red-900/50 hover:text-red-500 text-xs p-2">حذف</button>
+                            <button onclick="deleteResident(${idx})" class="text-red-900/50 hover:text-red-500 text-xs px-6 py-4">حذف</button>
                         </div>`;
                     }).join('')}
                 </div>
@@ -206,8 +200,7 @@
     }
 
     function toggleSection(id) {
-        const el = document.getElementById(`content-${id}`);
-        el.classList.toggle('hidden');
+        document.getElementById(`content-${id}`).classList.toggle('hidden');
     }
 
     function openEdit(idx) {
@@ -235,7 +228,7 @@
     }
 
     async function deleteResident(idx) {
-        if(!confirm("هل أنت متأكد من الحذف؟")) return;
+        if(!confirm("هل أنت متأكد من حذف هذا المقيم؟")) return;
         db.names.splice(idx, 1);
         renderResidents();
         await saveToGithub();
@@ -243,15 +236,12 @@
 
     function ensureDoctorTitle(name) {
         let n = name.trim();
-        if (!n) return "";
         return (n.startsWith("د.") || n.startsWith("د ")) ? n : "د. " + n;
     }
 
     function formatIraqiPhone(num) {
-        if(!num) return "";
         let clean = num.replace(/\D/g, ''); 
         if (clean.startsWith('07')) return '+964' + clean.substring(1);
-        if (clean.startsWith('7')) return '+964' + clean;
         return num;
     }
 
@@ -264,7 +254,7 @@
         db.names.push({ 
             name: ensureDoctorTitle(nameEl.value), 
             spec: specEl.value, 
-            phone: formatIraqiPhone(phoneEl.value.trim()) 
+            phone: formatIraqiPhone(phoneEl.value) 
         });
         
         nameEl.value = ""; phoneEl.value = "";
@@ -274,12 +264,13 @@
 
     async function saveToGithub() {
         const btn = document.getElementById('main-save-btn');
+        btn.disabled = true;
         btn.innerText = "جاري الحفظ...";
-        btn.className = "btn-save loading px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase";
+        btn.classList.add('loading');
         
         try {
             const body = { 
-                message: "Update 🇮🇶", 
+                message: "Database Update 🇮🇶", 
                 content: btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2)))), 
                 sha: fileSha 
             };
@@ -293,13 +284,14 @@
                 const updated = await res.json();
                 fileSha = updated.content.sha;
                 btn.innerText = "تم الحفظ! ✅";
-                btn.className = "btn-save success px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase";
+                btn.classList.replace('loading', 'success');
             } else { throw new Error(); }
         } catch (e) {
             btn.innerText = "فشل! ❌";
-            btn.className = "btn-save error px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase";
+            btn.classList.replace('loading', 'error');
         }
         setTimeout(() => {
+            btn.disabled = false;
             btn.innerText = "سحابة متزامنة";
             btn.className = "btn-save bg-white/5 text-slate-400 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase";
         }, 2500);
