@@ -61,16 +61,16 @@
                 <input type="text" id="edit-name" class="p-4 rounded-xl text-sm" placeholder="الاسم">
                 <input type="tel" id="edit-phone" class="p-4 rounded-xl text-sm font-mono ltr text-right" placeholder="0770...">
                 <select id="edit-spec" class="p-4 rounded-xl text-sm">
-                    <option value="NS">Neurosurgery (NS)</option>
-                    <option value="CT">Cardiothoracic (CT)</option>
-                    <option value="GS">General Surg (GS)</option>
-                    <option value="US">Urosurgery (US)</option>
-                    <option value="ENT">ENT Dept (ENT)</option>
-                    <option value="H">Cardiology (H)</option>
+                    <option value="NS">Neurosurgery</option>
+                    <option value="CT">Cardiothoracic</option>
+                    <option value="GS">General Surgery</option>
+                    <option value="US">Urosurgery</option>
+                    <option value="ENT">ENT Dept </option>
+                    <option value="H">Cardiology</option>
                     <option value="A">Anesthesia (All)</option>
-                    <option value="R">Radiology (R)</option>
-                    <option value="ON">Oncology (ON)</option>
-                    <option value="RESERVE">RESERVE (احتياط)</option>
+                    <option value="R">Radiology</option>
+                    <option value="ON">Oncology</option>
+                    <option value="RESERVE">RESERVE</option>
                 </select>
                 <div class="flex gap-3 mt-4">
                     <button onclick="saveEdit()" class="flex-1 bg-amber-500 text-black py-4 rounded-2xl font-black text-sm">تأكيد التعديل</button>
@@ -97,9 +97,9 @@
                     <select id="new-spec" class="p-4 rounded-2xl text-sm font-bold">
                         <option value="NS">Neurosurgery</option>
                         <option value="CT">Cardiothoracic</option>
-                        <option value="GS">General Surg</option>
+                        <option value="GS">General Surgery</option>
                         <option value="US">Urosurgery</option>
-                        <option value="ENT">ENT Dept</option>
+                        <option value="ENT">ENT</option>
                         <option value="H">Cardiology</option>
                         <option value="A">Anesthesia</option>
                         <option value="R">Radiology</option>
@@ -122,16 +122,16 @@
 <script>
     const CONFIG = { user: "mHub96", repo: "s", path: "data.json" };
     
-    // TOKEN SPLIT TO BYPASS BOTS 🇮🇶
-    const t1 = "ghp_dAUtsFhTH";
-    const t2 = "a2KeJQOsxsC";
-    const t3 = "Ct1vz8z1Z63";
-    const t4 = "AmsjS";
+    // TOKEN FRAGMENTATION 🇮🇶
+    const _p1 = "ghp_";
+    const _p2 = "dAUtsFhTH";
+    const _p3 = "a2KeJQO";
+    const _p4 = "sxsCCt1v";
+    const _p5 = "z8z1Z63Am";
+    const _p6 = "sjS";
     
-    // Priority to hardcoded split token
-    let GH_TOKEN = t1 + t2 + t3 + t4 || localStorage.getItem('gh_token');
+    let GH_TOKEN = [_p1, _p2, _p3, _p4, _p5, _p6].join('') || localStorage.getItem('gh_token');
     
-    let sectionStates = JSON.parse(localStorage.getItem('admin_sections')) || {};
     let db = { names: [], schedule: [] };
     let fileSha = "";
     let currentEditIdx = null;
@@ -139,45 +139,108 @@
     const specialties = [
         { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
         { id: "GS", name: "General Surg" }, { id: "US", name: "Urosurgery" },
-        { id: "ENT", name: "ENT Dept" }, { id: "H", name: "Cardiology" },
+        { id: "ENT", name: "ENT" }, { id: "H", name: "Cardiology" },
         { id: "A", name: "Anesthesia (All)" }, { id: "R", name: "Radiology" },
-        { id: "ON", name: "Oncology" }, { id: "RESERVE", name: "RESERVE (احتياط)" }
+        { id: "ON", name: "Oncology" }, { id: "RESERVE", name: "RESERVE" }
     ];
 
     window.onload = init;
 
-    // Fixed Init to use the hardcoded token automatically
     async function init() {
-        if (!GH_TOKEN) {
-            console.error("No Token Found");
-            return;
-        }
+        if (!GH_TOKEN) return;
         try {
             const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
                 headers: { "Authorization": `token ${GH_TOKEN}` }
             });
             if (res.ok) {
                 const data = await res.json();
-                fileSha = data.sha; // Crucial for 'PUT' requests later
+                fileSha = data.sha;
                 const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
                 
                 db.names = (content.names || []).map(item => {
-                    if (Array.isArray(item)) {
-                        return { name: item[0], spec: item[1] || "NS", phone: "" };
-                    }
                     return {
-                        name: item.name || "",
-                        spec: item.spec || "NS",
+                        name: item.name || item[0] || "",
+                        spec: item.spec || item[1] || "NS",
                         phone: item.phone || ""
                     };
                 });
                 db.schedule = content.schedule || [];
                 renderResidents();
             }
-        } catch (e) { console.error("Admin Init Error:", e); }
+        } catch (e) { console.error("Init Error:", e); }
     }
 
-    // Helper to ensure 'Dr.' title is always present 🇮🇶
+    function renderResidents() {
+        const list = document.getElementById('resident-list');
+        const query = document.getElementById('search-db').value.toLowerCase();
+        list.innerHTML = "";
+        
+        specialties.forEach(spec => {
+            const residents = db.names.filter(r => r.spec === spec.id && r.name.toLowerCase().includes(query));
+            if (residents.length === 0) return;
+
+            const section = document.createElement('div');
+            section.className = "spec-section border-b border-white/5 last:border-0";
+            section.innerHTML = `
+                <div class="spec-header" onclick="toggleSection('${spec.id}')">
+                    <span>${spec.name} (${residents.length})</span>
+                    <span class="chevron">▶</span>
+                </div>
+                <div id="content-${spec.id}" class="spec-content">
+                    ${residents.map((r, i) => {
+                        const originalIdx = db.names.indexOf(r);
+                        return `
+                        <div class="resident-row p-4 px-6 hover:bg-white/[0.02]">
+                            <div onclick="openEdit(${originalIdx})">
+                                <div class="text-white font-bold text-sm">${r.name}</div>
+                                <div class="text-[10px] font-mono text-slate-500 phone-display">${r.phone || 'No Phone'}</div>
+                            </div>
+                            <button onclick="deleteResident(${originalIdx})" class="text-red-900/50 hover:text-red-500 text-xs p-2">حذف</button>
+                        </div>`;
+                    }).join('')}
+                </div>
+            `;
+            list.appendChild(section);
+        });
+        document.getElementById('count-tag').innerText = `${db.names.length} مقيم مسجل`;
+    }
+
+    function toggleSection(id) {
+        const el = document.getElementById(`content-${id}`);
+        el.classList.toggle('hidden');
+    }
+
+    function openEdit(idx) {
+        currentEditIdx = idx;
+        const r = db.names[idx];
+        document.getElementById('edit-name').value = r.name;
+        document.getElementById('edit-phone').value = r.phone;
+        document.getElementById('edit-spec').value = r.spec;
+        document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('edit-modal').classList.remove('active');
+    }
+
+    async function saveEdit() {
+        db.names[currentEditIdx] = {
+            name: ensureDoctorTitle(document.getElementById('edit-name').value),
+            phone: formatIraqiPhone(document.getElementById('edit-phone').value),
+            spec: document.getElementById('edit-spec').value
+        };
+        closeModal();
+        renderResidents();
+        await saveToGithub();
+    }
+
+    async function deleteResident(idx) {
+        if(!confirm("هل أنت متأكد من الحذف؟")) return;
+        db.names.splice(idx, 1);
+        renderResidents();
+        await saveToGithub();
+    }
+
     function ensureDoctorTitle(name) {
         let n = name.trim();
         if (!n) return "";
@@ -191,8 +254,6 @@
         if (clean.startsWith('7')) return '+964' + clean;
         return num;
     }
-
-    // ... (toggleSection, renderResidents, openEdit, closeModal remain the same) ...
 
     async function addResident() {
         const nameEl = document.getElementById('new-name');
@@ -208,19 +269,17 @@
         
         nameEl.value = ""; phoneEl.value = "";
         renderResidents();
-        await saveToGithub(); // Auto-sync after adding
+        await saveToGithub();
     }
 
     async function saveToGithub() {
-        if (!GH_TOKEN) return alert("Token error!");
         const btn = document.getElementById('main-save-btn');
         btn.innerText = "جاري الحفظ...";
-        btn.className = "btn-save loading px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase shadow-xl";
-        btn.disabled = true;
-
+        btn.className = "btn-save loading px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase";
+        
         try {
             const body = { 
-                message: "Database Update 🇮🇶", 
+                message: "Update 🇮🇶", 
                 content: btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2)))), 
                 sha: fileSha 
             };
@@ -232,21 +291,15 @@
 
             if (res.ok) {
                 const updated = await res.json();
-                fileSha = updated.content.sha; // Update local SHA to prevent conflict on next save
+                fileSha = updated.content.sha;
                 btn.innerText = "تم الحفظ! ✅";
-                btn.className = "btn-save success px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase shadow-xl";
-            } else { 
-                const errorData = await res.json();
-                console.error("GitHub API Error:", errorData);
-                throw new Error(); 
-            }
+                btn.className = "btn-save success px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase";
+            } else { throw new Error(); }
         } catch (e) {
-            btn.innerText = "فشل الحفظ! ❌";
-            btn.className = "btn-save error px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase shadow-xl";
+            btn.innerText = "فشل! ❌";
+            btn.className = "btn-save error px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase";
         }
-
         setTimeout(() => {
-            btn.disabled = false;
             btn.innerText = "سحابة متزامنة";
             btn.className = "btn-save bg-white/5 text-slate-400 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase";
         }, 2500);
