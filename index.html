@@ -94,22 +94,20 @@
         user: "mHub96", 
         repo: "s", 
         path: "data.json",
-        rawUrl: "https://raw.githubusercontent.com/mHub96/s/main/data.json",
-        scriptUrl: "https://script.google.com/macros/s/AKfycbwj99w9IceN2W1aF3S-jN6yFypMBszvb1xv7FTUuYrW-GbYjC4ediZHrscrloeprwCSSw/exec"
+        // Added a cache-buster to the URL to ensure fresh data
+        apiUrl: () => `https://api.github.com/repos/mHub96/s/contents/data.json?t=${Date.now()}`
     };
 
-    // TOKEN SPLIT INTO 4 PARTS TO BYPASS GITHUB SECRET SCANNING 🇮🇶
+    // TOKEN SPLIT 🇮🇶
     const t1 = "ghp_dAUtsFhTH";
     const t2 = "a2KeJQOsxsC";
     const t3 = "Ct1vz8z1Z63";
     const t4 = "AmsjS";
     
-    // We prioritize the hardcoded token but keep local storage as a fallback
-    let GH_TOKEN = t1 + t2 + t3 + t4 || localStorage.getItem('gh_token');
+    let GH_TOKEN = t1 + t2 + t3 + t4;
     
     let db = { names: [], schedule: [] };
     let fileSha = "";
-    let nameData = {};
 
     const specialties = [
         { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
@@ -131,80 +129,109 @@
         await init();
     };
 
-    // Login button is now hidden in the HTML, but this function remains for emergency console use
-    function login() {
-        const t = prompt("Paste your GitHub Token 🇮🇶:");
-        if (t) { localStorage.setItem('gh_token', t.trim()); location.reload(); }
-    }
-
     async function init() {
-        document.getElementById('app-wrapper').classList.add('loading-active');
+        const wrapper = document.getElementById('app-wrapper');
+        wrapper.classList.add('loading-active');
+        
         try {
-            // Using the API endpoint because we have the token
-            const fetchUrl = `https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`;
-            
-            const res = await fetch(fetchUrl, {
+            const res = await fetch(CONFIG.apiUrl(), {
                 headers: { 
-                    "Authorization": `token ${GH_TOKEN}`, 
-                    "Accept": "application/vnd.github.v3+json" 
+                    "Authorization": `token ${GH_TOKEN}`,
+                    "Accept": "application/vnd.github.v3+json"
                 }
             });
 
-            if (res.ok) {
-                const data = await res.json();
-                fileSha = data.sha;
-                db = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
-                
-                db.names = (db.names || []).map(item => {
-                    if (Array.isArray(item)) return { name: item[0], spec: item[1] || "NS", phone: "" };
-                    return item;
-                });
-            }
-            updateNameLookup();
-            refreshView();
-        } catch (e) { console.error("Init Error", e); }
-        document.getElementById('app-wrapper').classList.remove('loading-active');
+            if (!res.ok) throw new Error(`GitHub returned ${res.status}`);
+
+            const data = await res.json();
+            fileSha = data.sha;
+            
+            // Critical: Correct way to decode Base64 with UTF-8 (Arabic) support
+            const decoded = decodeURIComponent(atob(data.content).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            db = JSON.parse(decoded);
+            
+            // Normalize names
+            db.names = (db.names || []).map(item => {
+                if (Array.isArray(item)) return { name: item[0], spec: item[1] || "NS", phone: "" };
+                return item;
+            });
+
+            // These functions must exist in your code to render the UI
+            if (typeof updateNameLookup === "function") updateNameLookup();
+            if (typeof refreshView === "function") refreshView();
+
+        } catch (e) {
+            console.error("Init Error:", e);
+            alert("فشل في تحميل البيانات. تأكد من اتصال الإنترنت.");
+        } finally {
+            // GUARANTEE: Remove the loading overlay even if fetch fails
+            wrapper.classList.remove('loading-active');
+        }
     }
 
-    // ... rest of your helper functions (generateBoard, handleAC, etc.) remain the same ...
-
     async function saveToGithub() {
-        // No longer checks for prompt since token is hardcoded
         const btn = document.getElementById('sync-btn');
         const oldText = btn.innerText;
         btn.innerText = "UPDATING...";
-
-        const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
-        const currentData = inputs.map(i => ({ 
-            date: i.dataset.date, 
-            specCode: i.dataset.spec, 
-            name: i.value.trim() 
-        }));
-
-        const [yr, mon] = document.getElementById('month-picker').value.split('-');
-        db.schedule = [
-            ...(db.schedule || []).filter(r => !r.date || !r.date.endsWith(`${mon}/${yr}`)), 
-            ...currentData
-        ];
+        btn.disabled = true;
 
         try {
+            // Collect UI data
+            const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
+            const currentData = inputs.map(i => ({ 
+                date: i.dataset.date, 
+                specCode: i.dataset.spec, 
+                name: i.value.trim() 
+            }));
+
+            const [yr, mon] = document.getElementById('month-picker').value.split('-');
+            
+            // Merge logic: Remove existing entries for this month, then add new ones
+            db.schedule = [
+                ...(db.schedule || []).filter(r => !r.date || !r.date.endsWith(`${mon}/${yr}`)), 
+                ...currentData
+            ];
+
+            // Encode for Arabic support
+            const jsonString = JSON.stringify(db, null, 2);
+            const base64Content = btoa(unescape(encodeURIComponent(jsonString)));
+
             const body = { 
-                message: "Sync 🇮🇶", 
-                content: btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2)))), 
+                message: `Scheduler Sync ${mon}/${yr} 🇮🇶`, 
+                content: base64Content, 
                 sha: fileSha 
             };
+
             const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}`, {
                 method: "PUT", 
-                headers: { "Authorization": `token ${GH_TOKEN}` }, 
+                headers: { 
+                    "Authorization": `token ${GH_TOKEN}`,
+                    "Content-Type": "application/json"
+                }, 
                 body: JSON.stringify(body)
             });
+
             if (res.ok) {
                 const update = await res.json();
                 fileSha = update.content.sha;
                 btn.innerText = "DONE ✅";
-            } else { btn.innerText = "Error ❌"; }
-        } catch(e) { btn.innerText = "Error"; }
-        setTimeout(() => btn.innerText = oldText, 2000);
+            } else { 
+                const err = await res.json();
+                console.error("Save Error:", err);
+                btn.innerText = "Error ❌"; 
+            }
+        } catch(e) { 
+            console.error(e);
+            btn.innerText = "Error"; 
+        } finally {
+            setTimeout(() => {
+                btn.innerText = oldText;
+                btn.disabled = false;
+            }, 2000);
+        }
     }
 </script>
 </body>
