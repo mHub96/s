@@ -852,8 +852,13 @@
     },
     {
       "name": "د. RESERVE",
-      "phone": "+9647805658985",
-      "spec": "RESERVE"
+      "spec": "RESERVE",
+      "phone": "+9647805658985"
+    },
+    {
+      "name": "د. وسن عباس عبدالكريم",
+      "spec": "H",
+      "phone": "+9647808794104"
     }
   ],
   "schedule": [
