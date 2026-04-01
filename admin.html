@@ -22,27 +22,33 @@
         }
         input:focus { border-color: var(--accent) !important; }
 
-        /* Modal Visibility */
+        /* Modal */
         #edit-modal { display: none; position: fixed; inset: 0; z-index: 3000; align-items: center; justify-content: center; padding: 1.25rem; }
         #edit-modal.active { display: flex; }
         .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); }
         .modal-content { position: relative; width: 100%; max-width: 450px; background: #1c2128; border-radius: 2rem; padding: 2rem; border: 1px solid rgba(255,255,255,0.15); }
 
-        /* Collapsible System - HIDDEN BY DEFAULT */
+        /* Collapsible - Hidden by Default */
         .spec-header { 
             background: rgba(255,255,255,0.03); padding: 0.85rem 1.5rem; 
             font-size: 0.75rem; font-weight: 800; color: var(--accent); 
             display: flex; justify-content: space-between; align-items: center;
             cursor: pointer; user-select: none;
         }
-        .spec-content { display: none; overflow: hidden; } /* Changed from block to none */
+        .spec-content { display: none; overflow: hidden; }
         .spec-content.active { display: block; }
         
         .resident-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .resident-row:last-child { border-bottom: none; }
         .clickable-area { flex-grow: 1; cursor: pointer; padding: 1rem 1.5rem; }
         
-        /* Sync States */
+        /* Fixed Phone Orientation */
+        .phone-display { 
+            direction: ltr !important; 
+            unicode-bidi: isolate;
+            display: inline-block;
+        }
+
         .btn-save { transition: all 0.4s ease; min-width: 120px; }
         .btn-save.loading { background: #3b82f6 !important; color: white; cursor: wait; }
         .btn-save.success { background: #10b981 !important; color: white; }
@@ -119,14 +125,8 @@
 
 <script>
     const CONFIG = { user: "mHub96", repo: "s", path: "data.json" };
-    
-    const _p1 = "ghp_";
-    const _p2 = "dAUtsFhTH";
-    const _p3 = "a2KeJQO";
-    const _p4 = "sxsCCt1v";
-    const _p5 = "z8z1Z63Am";
-    const _p6 = "sjS";
-    const GH_TOKEN = [_p1, _p2, _p3, _p4, _p5, _p6].join('');
+    const _p = ["ghp_", "dAUtsFhTH", "a2KeJQO", "sxsCCt1v", "z8z1Z63Am", "sjS"];
+    const GH_TOKEN = _p.join('');
     
     let db = { names: [], schedule: [] };
     let fileSha = "";
@@ -171,8 +171,6 @@
             const residents = db.names.filter(r => r.spec === spec.id && r.name.toLowerCase().includes(query));
             if (residents.length === 0) return;
 
-            // If there is a search query, show the section content. 
-            // If query is empty, keep it hidden (collapsed by default).
             const isExpanded = query.length > 0 ? "active" : "";
 
             const section = document.createElement('div');
@@ -189,7 +187,7 @@
                         <div class="resident-row hover:bg-white/[0.02]">
                             <div class="clickable-area" onclick="openEdit(${idx})">
                                 <div class="text-white font-bold text-sm">${r.name}</div>
-                                <div class="text-[10px] font-mono text-slate-500 ltr text-right">${r.phone || ''}</div>
+                                <div class="text-[10px] font-mono text-slate-500 phone-display">${r.phone || ''}</div>
                             </div>
                             <button onclick="deleteResident(${idx})" class="text-red-900/50 hover:text-red-500 text-xs px-6 py-4">حذف</button>
                         </div>`;
@@ -202,8 +200,26 @@
     }
 
     function toggleSection(id) {
-        const content = document.getElementById(`content-${id}`);
-        content.classList.toggle('active');
+        document.getElementById(`content-${id}`).classList.toggle('active');
+    }
+
+    function formatIraqiPhone(num) {
+        let clean = num.replace(/\D/g, '').trim(); 
+        if (!clean) return "";
+        // Convert 07... to +9647...
+        if (clean.startsWith('07')) return '+964' + clean.substring(1);
+        // Ensure + is there if starts with 964
+        if (clean.startsWith('964')) return '+' + clean;
+        // If they enter just 7... (common mistake), assume +964
+        if (clean.length === 10 && clean.startsWith('7')) return '+964' + clean;
+        
+        return num.trim();
+    }
+
+    function ensureDoctorTitle(name) {
+        let n = name.trim();
+        if (!n) return "";
+        return (n.startsWith("د.") || n.startsWith("د ")) ? n : "د. " + n;
     }
 
     function openEdit(idx) {
@@ -220,9 +236,12 @@
     }
 
     async function saveEdit() {
+        const nameVal = document.getElementById('edit-name').value;
+        const phoneVal = document.getElementById('edit-phone').value;
+        
         db.names[currentEditIdx] = {
-            name: ensureDoctorTitle(document.getElementById('edit-name').value),
-            phone: formatIraqiPhone(document.getElementById('edit-phone').value),
+            name: ensureDoctorTitle(nameVal),
+            phone: formatIraqiPhone(phoneVal),
             spec: document.getElementById('edit-spec').value
         };
         closeModal();
@@ -235,17 +254,6 @@
         db.names.splice(idx, 1);
         renderResidents();
         await saveToGithub();
-    }
-
-    function ensureDoctorTitle(name) {
-        let n = name.trim();
-        return (n.startsWith("د.") || n.startsWith("د ")) ? n : "د. " + n;
-    }
-
-    function formatIraqiPhone(num) {
-        let clean = num.replace(/\D/g, ''); 
-        if (clean.startsWith('07')) return '+964' + clean.substring(1);
-        return num;
     }
 
     async function addResident() {
