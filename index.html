@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MRJ SCHEDULER 🇮🇶</title>
+    <title>HOSPITAL SCHEDULER 🇮🇶</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -77,13 +77,10 @@
 
     <div id="app-wrapper" class="loading-active">
         <div class="nav-bar">
-            <h1 class="text-lg font-black text-white uppercase tracking-tighter">Scheduler 🇮🇶</h1>
+            <h1 class="text-lg font-black text-white uppercase tracking-tighter">Teaching Hosp. Scheduler 🇮🇶</h1>
             <div class="flex gap-4 items-center">
                 <input type="month" id="month-picker" class="bg-black text-amber-500 px-3 py-1.5 rounded-lg font-bold border border-white/10 text-xs">
-                <button onclick="saveToGithub()" id="sync-btn" class="bg-white text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase active:scale-95 transition-transform">UPDATE</button>
-                
-                <button onclick="migrateFromGoogle()" id="migrate-btn" class="hidden bg-green-600 text-white px-5 py-2 rounded-lg font-black text-[10px] uppercase">Migrate</button>
-                <button id="login-btn" onclick="login()" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-black text-[10px] uppercase">Login</button>
+                <button onclick="saveToGithub()" id="sync-btn" class="bg-white text-black px-5 py-2 rounded-lg font-black text-[10px] uppercase active:scale-95 transition-transform">Sync Schedule</button>
             </div>
         </div>
         <div class="board-container" id="board" onscroll="closeAllMenus()"></div>
@@ -93,26 +90,23 @@
     const CONFIG = {
         user: "mHub96", 
         repo: "s", 
-        path: "data.json",
-        // Added a cache-buster to the URL to ensure fresh data
-        apiUrl: () => `https://api.github.com/repos/mHub96/s/contents/data.json?t=${Date.now()}`
+        path: "data.json"
     };
 
-    // TOKEN SPLIT 🇮🇶
     const t1 = "ghp_dAUtsFhTH";
     const t2 = "a2KeJQOsxsC";
     const t3 = "Ct1vz8z1Z63";
     const t4 = "AmsjS";
-    
-    let GH_TOKEN = t1 + t2 + t3 + t4;
+    const GH_TOKEN = t1 + t2 + t3 + t4; 
     
     let db = { names: [], schedule: [] };
     let fileSha = "";
+    let nameData = {};
 
     const specialties = [
         { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
         { id: "GS", name: "General Surg" }, { id: "US", name: "Urosurgery" },
-        { id: "ENT", name: "ENT Dept" }, { id: "H", name: "Cardiology" },
+        { id: "ENT", name: "ENT" }, { id: "H", name: "Cardiology" },
         { id: "D", name: "Death Certs" }, { id: "OP", name: "OT Anaesth" },
         { id: "ICU", name: "ICU Anaesth" }, { id: "R", name: "Radiology" },
         { id: "ON", name: "Oncology" }
@@ -129,82 +123,210 @@
         await init();
     };
 
+    window.onclick = (e) => {
+        if (!e.target.classList.contains('dropdown-arrow') && !e.target.closest('.custom-menu')) {
+            closeAllMenus();
+        }
+    };
+
+    function closeAllMenus() {
+        document.querySelectorAll('.custom-menu').forEach(x => x.style.display = 'none');
+    }
+
     async function init() {
         const wrapper = document.getElementById('app-wrapper');
-        wrapper.classList.add('loading-active');
+        if(wrapper) wrapper.classList.add('loading-active');
         
         try {
-            const res = await fetch(CONFIG.apiUrl(), {
+            const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
                 headers: { 
-                    "Authorization": `token ${GH_TOKEN}`,
-                    "Accept": "application/vnd.github.v3+json"
+                    "Authorization": `token ${GH_TOKEN}`, 
+                    "Accept": "application/vnd.github.v3+json" 
                 }
             });
 
-            if (!res.ok) throw new Error(`GitHub returned ${res.status}`);
+            if (res.ok) {
+                const data = await res.json();
+                fileSha = data.sha;
+                db = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+                
+                db.names = (db.names || []).map(item => {
+                    if (Array.isArray(item)) return { name: item[0], spec: item[1] || "NS", phone: "" };
+                    return item;
+                });
+            }
+            updateNameLookup();
+            refreshView();
+        } catch (e) { console.error("Init Error", e); }
+        
+        if(wrapper) wrapper.classList.remove('loading-active');
+    }
 
-            const data = await res.json();
-            fileSha = data.sha;
-            
-            // Critical: Correct way to decode Base64 with UTF-8 (Arabic) support
-            const decoded = decodeURIComponent(atob(data.content).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
+    function updateNameLookup() {
+        nameData = {};
+        const residents = db.names || [];
+        specialties.forEach(s => {
+            if (s.id === "OP" || s.id === "ICU") {
+                nameData[s.id] = residents.filter(x => x.spec === "A").map(x => x.name);
+            } else if (s.id === "D") {
+                nameData[s.id] = residents.map(x => x.name);
+            } else {
+                nameData[s.id] = residents.filter(x => x.spec === s.id).map(x => x.name);
+            }
+        });
+    }
 
-            db = JSON.parse(decoded);
-            
-            // Normalize names
-            db.names = (db.names || []).map(item => {
-                if (Array.isArray(item)) return { name: item[0], spec: item[1] || "NS", phone: "" };
-                return item;
+    function refreshView() {
+        generateBoard();
+        renderData();
+    }
+
+    function generateBoard() {
+        const picker = document.getElementById('month-picker');
+        if(!picker) return;
+        const [yr, mon] = picker.value.split('-').map(Number);
+        const days = new Date(yr, mon, 0).getDate();
+        const board = document.getElementById('board');
+        board.innerHTML = "";
+
+        specialties.forEach(spec => {
+            const track = document.createElement('div');
+            track.className = `specialty-track track-${spec.id}`;
+            let html = `<div class="track-header"><h2>${spec.name}</h2></div><div class="days-list">`;
+            for (let d = 1; d <= days; d++) {
+                const dateObj = new Date(yr, mon - 1, d);
+                const dayName = new Intl.DateTimeFormat('ar-IQ', { weekday: 'short' }).format(dateObj);
+                const dateFull = `${String(d).padStart(2, '0')}/${String(mon).padStart(2, '0')}/${yr}`;
+                const uid = `${d}-${spec.id}`;
+                html += `
+                    <div class="day-box ${dateObj.getDay() === 5 || dateObj.getDay() === 6 ? 'weekend' : ''}">
+                        <div class="day-label"><span>${dateFull.substring(0,5)}</span><span>${dayName}</span></div>
+                        <div class="input-wrapper" onclick="event.stopPropagation()">
+                            <div class="ghost-text" id="ghost-${uid}"></div>
+                            <input type="text" class="cell-input" id="input-${uid}" 
+                                onfocus="closeAllMenus()"
+                                oninput="handleAC(this, '${spec.id}', '${uid}')"
+                                onkeydown="handleKeys(event, this, '${uid}')"
+                                onblur="handleBlur('${uid}')"
+                                data-date="${dateFull}" data-spec="${spec.id}" autocomplete="off">
+                            <span class="dropdown-arrow" onclick="toggleMenu(event, '${uid}', '${spec.id}')">▼</span>
+                            <div class="custom-menu" id="menu-${uid}"></div>
+                        </div>
+                    </div>`;
+            }
+            track.innerHTML = html + `</div>`;
+            board.appendChild(track);
+        });
+    }
+
+    function renderData() {
+        const picker = document.getElementById('month-picker');
+        if(!picker) return;
+        const [yr, mon] = picker.value.split('-');
+        (db.schedule || []).forEach(row => {
+            if (row.date && row.date.endsWith(`${mon}/${yr}`)) {
+                const day = parseInt(row.date.split('/')[0]);
+                const el = document.getElementById(`input-${day}-${row.specCode}`);
+                if (el) { el.value = row.name; el.classList.add('prefilled'); }
+            }
+        });
+    }
+
+    function handleAC(el, sid, uid) {
+        const ghost = document.getElementById(`ghost-${uid}`);
+        const val = el.value;
+        ghost.innerHTML = ""; ghost.removeAttribute('data-full');
+        el.classList.remove('prefilled');
+        if (!val.trim()) { el.classList.remove('new-entry'); return; }
+        el.classList.add('new-entry');
+
+        if (nameData[sid]) {
+            const match = nameData[sid].find(n => {
+                const nClean = n.toLowerCase().replace(/^د\.\s*/, "").trim();
+                const valClean = val.toLowerCase().replace(/^د\.\s*/, "").trim();
+                return n.toLowerCase().startsWith(val.toLowerCase()) || nClean.startsWith(valClean);
             });
-
-            // These functions must exist in your code to render the UI
-            if (typeof updateNameLookup === "function") updateNameLookup();
-            if (typeof refreshView === "function") refreshView();
-
-        } catch (e) {
-            console.error("Init Error:", e);
-            alert("فشل في تحميل البيانات. تأكد من اتصال الإنترنت.");
-        } finally {
-            // GUARANTEE: Remove the loading overlay even if fetch fails
-            wrapper.classList.remove('loading-active');
+            if (match) {
+                ghost.setAttribute('data-full', match);
+                let display = val.startsWith("د.") ? match : match.replace(/^د\.\s*/, "");
+                if (display.toLowerCase().startsWith(val.toLowerCase())) {
+                    ghost.innerHTML = `<span class="ghost-offset">${val}</span><span>${display.substring(val.length)}</span>`;
+                } else { ghost.innerText = display; }
+            }
         }
+    }
+
+    function handleKeys(e, el, uid) {
+        const ghost = document.getElementById(`ghost-${uid}`);
+        const full = ghost.getAttribute('data-full');
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (full) { el.value = full; el.classList.add('new-entry'); ghost.innerHTML = ""; }
+            const [d, sid] = uid.split('-');
+            const nextEl = document.getElementById(`input-${parseInt(d) + 1}-${sid}`);
+            if (nextEl) { nextEl.focus(); nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            else el.blur();
+        }
+    }
+
+    function toggleMenu(e, uid, sid) {
+        e.stopPropagation();
+        const m = document.getElementById(`menu-${uid}`);
+        const open = m.style.display === "block";
+        closeAllMenus();
+        if (!open) {
+            m.innerHTML = (nameData[sid] || []).map(n => `<div onmousedown="selectName('${uid}', '${n}')">${n}</div>`).join('');
+            m.style.display = "block";
+        }
+    }
+
+    function selectName(uid, name) {
+        const i = document.getElementById(`input-${uid}`);
+        if(i) {
+            i.value = name; i.classList.add('new-entry');
+            const g = document.getElementById(`ghost-${uid}`);
+            if(g) g.innerHTML = "";
+        }
+        closeAllMenus();
+    }
+
+    function handleBlur(uid) {
+        setTimeout(() => {
+            const g = document.getElementById(`ghost-${uid}`);
+            const input = document.getElementById(`input-${uid}`);
+            if (g && g.getAttribute('data-full') && input && input.value !== "") {
+                input.value = g.getAttribute('data-full');
+                input.classList.add('new-entry');
+            }
+            if (g) g.innerHTML = "";
+        }, 250);
     }
 
     async function saveToGithub() {
         const btn = document.getElementById('sync-btn');
         const oldText = btn.innerText;
-        btn.innerText = "UPDATING...";
-        btn.disabled = true;
+        btn.innerText = "Syncing...";
+
+        const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
+        const currentData = inputs.map(i => ({ 
+            date: i.dataset.date, 
+            specCode: i.dataset.spec, 
+            name: i.value.trim() 
+        }));
+
+        const picker = document.getElementById('month-picker');
+        const [yr, mon] = picker.value.split('-');
+        db.schedule = [
+            ...(db.schedule || []).filter(r => !r.date || !r.date.endsWith(`${mon}/${yr}`)), 
+            ...currentData
+        ];
 
         try {
-            // Collect UI data
-            const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
-            const currentData = inputs.map(i => ({ 
-                date: i.dataset.date, 
-                specCode: i.dataset.spec, 
-                name: i.value.trim() 
-            }));
-
-            const [yr, mon] = document.getElementById('month-picker').value.split('-');
-            
-            // Merge logic: Remove existing entries for this month, then add new ones
-            db.schedule = [
-                ...(db.schedule || []).filter(r => !r.date || !r.date.endsWith(`${mon}/${yr}`)), 
-                ...currentData
-            ];
-
-            // Encode for Arabic support
-            const jsonString = JSON.stringify(db, null, 2);
-            const base64Content = btoa(unescape(encodeURIComponent(jsonString)));
-
             const body = { 
-                message: `Scheduler Sync ${mon}/${yr} 🇮🇶`, 
-                content: base64Content, 
+                message: "Sync Schedule 🇮🇶", 
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2)))), 
                 sha: fileSha 
             };
-
             const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}`, {
                 method: "PUT", 
                 headers: { 
@@ -213,25 +335,13 @@
                 }, 
                 body: JSON.stringify(body)
             });
-
             if (res.ok) {
                 const update = await res.json();
                 fileSha = update.content.sha;
-                btn.innerText = "DONE ✅";
-            } else { 
-                const err = await res.json();
-                console.error("Save Error:", err);
-                btn.innerText = "Error ❌"; 
-            }
-        } catch(e) { 
-            console.error(e);
-            btn.innerText = "Error"; 
-        } finally {
-            setTimeout(() => {
-                btn.innerText = oldText;
-                btn.disabled = false;
-            }, 2000);
-        }
+                btn.innerText = "Synced ✅";
+            } else { btn.innerText = "Sync Error ❌"; }
+        } catch(e) { btn.innerText = "Error"; }
+        setTimeout(() => btn.innerText = oldText, 2000);
     }
 </script>
 </body>
