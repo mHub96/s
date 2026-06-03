@@ -18,7 +18,9 @@
 
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #94a3b8; margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
         
-        .board-container { flex-grow: 1; display: flex; gap: 1.5rem; padding: 1.5rem 1.5rem 3rem 1.5rem; overflow-x: auto; align-items: flex-start; box-sizing: border-box; height: calc(100vh - var(--nav-h)); }
+        .nav-bar { height: var(--nav-h); padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #111418; border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; position: relative; z-index: 50; }
+        
+        .board-container { flex-grow: 1; display: flex; gap: 1.5rem; padding: 1.5rem 1.5rem 3rem 1.5rem; overflow-x: auto; overflow-y: hidden; align-items: flex-start; box-sizing: border-box; height: calc(100vh - var(--nav-h)); }
         
         .specialty-track { flex: 0 0 var(--column-width); background: var(--card); border-radius: 1.8rem; display: flex; flex-direction: column; max-height: 92%; border: 1px solid rgba(255,255,255,0.04); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.8), 0 0 15px -5px var(--spec-color); overflow: hidden; }
         
@@ -69,7 +71,6 @@
         .prefilled { color: var(--spec-color) !important; font-weight: 600; }
         .new-entry { color: #fff !important; font-weight: 700; }
         
-        .nav-bar { height: var(--nav-h); padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #111418; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .loading-active { opacity: 0.3 !important; pointer-events: none !important; cursor: wait; }
     </style>
 </head>
