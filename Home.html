@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Basra Teaching Hospital · Duty Roster 🇮🇶</title>
+    <title>Iraqi Teaching Hospital Duties 🇮🇶</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -502,7 +502,7 @@
 
     <div id="shield">
         <div class="shield-spinner"></div>
-        <span class="shield-text" style="color:rgba(212,175,55,0.06);font-size:0.6rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;">Basra Teaching Hospital</span>
+        <span class="shield-text" style="color:rgba(212,175,55,0.06);font-size:0.6rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;">Iraqi Teaching Hospital</span>
     </div>
 
     <div id="toast-container"></div>
@@ -513,7 +513,7 @@
             <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <i class="fas fa-user-md text-3xl text-white"></i>
             </div>
-            <h2 class="text-2xl font-black text-primary mb-1">🔐 Basra Teaching Hospital</h2>
+            <h2 class="text-2xl font-black text-primary mb-1">🔐 Iraqi Teaching Hospital</h2>
             <p class="text-sm text-secondary mb-6">أدخل كلمة المرور للدخول</p>
             <div class="relative">
                 <input type="password" id="password-input" placeholder="•••••"
@@ -561,7 +561,7 @@
             </div>
         </div>
 
-        <h1 class="header-3d">Basra Teaching Hospital</h1>
+        <h1 class="header-3d">Iraqi Teaching Hospital</h1>
         <p class="text-center text-sm font-bold text-secondary/50 mb-4 tracking-wider">On-Call Residents · Duty Roster</p>
 
         <p id="count-tag" class="counter-badge mt-2 mb-4 inline-block">
@@ -637,16 +637,31 @@
         const _p = ["ghp_", "dAUtsFhTH", "a2KeJQO", "sxsCCt1v", "z8z1Z63Am", "sjS"];
         const GH_TOKEN = _p.join('');
 
+        // ========== SPECIALTIES — UPDATED TO MATCH THE REQUESTED LIST ==========
         const arabicSpecs = {
-            "MF":"جراحة الوجه و الفكين","M":"الباطنية","P":"النفسية","G":"النسائية و التوليد",
-            "GS":"الجراحة العامة","US":"جراحة المسالك البولية",
-            "ENT":"الأذن و الأنف و الحنجرة","OR":"الكسور","Pe":"الاطفال","NM":"طب الجملة العصبية","N":"طب امراض الكلى",
-            "ICU":"تخدير العناية المركزة","OP":"تخدير العمليات",
-            "R":"الأشعة و السونار","O":"العيون","D":"الوفيات"
+            "NS": "جراحة الأعصاب",
+            "CT": "جراحة القلب و الصدر",
+            "GS": "الجراحة العامة",
+            "US": "جراحة المسالك البولية",
+            "ENT": "الأذن و الأنف و الحنجرة",
+            "D": "شهادات الوفاة",
+            "OP": "تخدير العمليات",
+            "ICU": "تخدير العناية المركزة",
+            "R": "الأشعة",
+            "ON": "الأورام"
         };
+        
         const specIcons = {
-            "GS":"🔪","US":"🧬","OR":"🦴","ENT":"👂","M":"💊","Pe":"👶","NM":"🧠","N":"🧫",
-            "O":"👁️","ICU":"💉","OP":"💉","MF":"🦷","R":"🩻","G":"🌸","P":"🧠","D":"📋"
+            "NS": "🧠",
+            "CT": "❤️",
+            "GS": "🔪",
+            "US": "🧬",
+            "ENT": "👂",
+            "D": "📋",
+            "OP": "💉",
+            "ICU": "🫀",
+            "R": "🩻",
+            "ON": "🎗️"
         };
 
         let db = { names: [], schedule: [], passwords: {} };
@@ -1028,8 +1043,8 @@
             
             let report = `🏥 *تبليغ خفراء اليوم*\n`;
             report += `📅 *${formattedDate}*\n`;
-            report += `📍 مستشفى البصرة التعليمي — البصرة\n\n`;
-	        report += `https://mhub96.github.io/BTH/Home\n\n`;
+            report += `📍 المستشفى العراقي التعليمي — البصرة\n\n`;
+            report += `https://mhub96.github.io/s/Home\n\n`;
             
             sortedEntries.forEach((entry) => {
                 const resident = db.names.find(n => n.name === entry.name);
@@ -1037,7 +1052,6 @@
                 const specName = arabicSpecs[entry.specCode] || entry.specCode;
                 
                 report += `*${specName}*\n`;
-                // Use the name as-is from the database (already includes "د. " if present)
                 report += `👨‍⚕️ *${entry.name}*\n`;
                 report += `☎️ _${phone}_\n`;
                 report += `┈┈┈┈┈┈┈┈┈┈┈┈┈\n\n`;
