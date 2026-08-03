@@ -210,12 +210,12 @@
         body.dark .trending-badge { color: #0b0e12; }
         
         /* ============================================================
-           STEP CHART — PREMIUM SEGMENT WITH CONTRASTING THEME
+           STEP CHART — PREMIUM SEGMENT WITH CONTRASTING THEME (FIXED)
            ============================================================ */
         .step-chart-wrapper {
             border-radius: 1.5rem;
-            padding: 1.2rem 1rem 1rem;
-            margin: 0.5rem 0 0.2rem;
+            padding: 0.8rem 1rem 1rem;
+            margin: 0.3rem 0 0.2rem;
             border: 1px solid rgba(212,175,55,0.06);
             transition: all 0.3s ease;
             background: rgba(0,0,0,0.04);
@@ -224,29 +224,41 @@
             background: rgba(255,255,255,0.04);
             border-color: rgba(212,175,55,0.08);
         }
+        .step-chart-title {
+            text-align: center;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary, #475569);
+            opacity: 0.5;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid rgba(212,175,55,0.06);
+            margin-bottom: 0.8rem;
+        }
+        body.dark .step-chart-title { color: #a8b3c9; opacity: 0.6; }
         .step-chart {
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 2.5rem;
-            padding: 0.2rem 0.5rem 0.2rem;
-            height: 150px;
+            gap: 2rem;
+            padding: 0.2rem 0.3rem 0.2rem;
+            height: 140px;
             width: 100%;
         }
         .step-bar {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.3rem;
+            gap: 0.2rem;
             flex: 1;
-            max-width: 90px;
-            min-width: 70px;
+            max-width: 80px;
+            min-width: 60px;
         }
         .step-bar .bar {
             width: 100%;
-            max-width: 60px;
+            max-width: 50px;
             border-radius: 6px 6px 0 0;
-            min-height: 8px;
+            min-height: 6px;
             transition: all 0.6s cubic-bezier(0.175,0.885,0.32,1.275);
             position: relative;
         }
@@ -257,37 +269,26 @@
         .step-chart .step-bar:nth-child(2) { order: 1; }
         .step-chart .step-bar:nth-child(3) { order: 3; }
         .step-bar .bar-label {
-            font-size: 0.7rem;
-            font-weight: 800;
+            font-size: 0.6rem;
+            font-weight: 700;
             text-align: center;
             color: var(--text-secondary, #475569);
-            white-space: nowrap;
-            max-width: 90px;
-            overflow: visible;
-            text-overflow: clip;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            max-width: 80px;
+            line-height: 1.2;
             padding: 0 2px;
         }
         .step-bar .bar-value {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 800;
             color: var(--text-primary, #1a2332);
         }
         body.dark .step-bar .bar-value { color: #f0f3f8; }
         body.dark .step-bar .bar-label { color: #a8b3c9; }
-        .step-chart-title {
-            text-align: center;
-            font-size: 0.6rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            color: var(--text-secondary, #475569);
-            opacity: 0.5;
-            padding-bottom: 0.3rem;
-            border-bottom: 1px solid rgba(212,175,55,0.06);
-            margin-bottom: 0.6rem;
-        }
-        body.dark .step-chart-title { color: #a8b3c9; opacity: 0.6; }
         .step-medal-icon {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             line-height: 1;
         }
         
@@ -657,7 +658,7 @@
             "GS": "🔪",
             "US": "🫘",
             "ENT": "👂",
-            "D": "⚰️",    // Death
+            "D": "⚰️",
             "OP": "🏥",
             "ICU": "🚨",
             "R": "🩻",
@@ -1144,7 +1145,7 @@
                         <div class="step-chart">
                 `;
                 ordered.forEach((item, index) => {
-                    const height = Math.max((item.totalVisits / maxVisits) * 130, 12);
+                    const height = Math.max((item.totalVisits / maxVisits) * 120, 10);
                     const specName = arabicSpecs[item.specCode] || item.specCode;
                     const icon = specIcons[item.specCode] || "🏥";
                     html += `
