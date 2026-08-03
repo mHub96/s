@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Iraqi Teaching Hospital Duties 🇮🇶</title>
+    <title>Basra Teaching Hospital · Duty Roster 🇮🇶</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -35,7 +35,7 @@
         .glass-card { border-radius: 1.5rem; transition: all 0.3s ease; position: relative; z-index: 1; }
         
         /* ============================================================
-           ROSTER CARDS — 3D POP & PRESS ANIMATION (FIXED)
+           ROSTER CARDS — 3D POP & PRESS ANIMATION
            ============================================================ */
         .roster-grid {
             display: flex;
@@ -51,22 +51,19 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid; 
             gap: 0.3rem;
             position: relative; 
             overflow: hidden; 
-            cursor: pointer;
+            cursor: default;
             transform: translateY(0) scale(1) perspective(600px) rotateX(0) rotateY(0);
             box-shadow: 10px 10px 20px rgba(0,0,0,0.06), -8px -8px 18px rgba(255,255,255,0.8), 0 4px 0 rgba(0,0,0,0.02), 0 8px 24px rgba(0,0,0,0.02), inset 0 1px 0 rgba(255,255,255,0.9);
             will-change: transform;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
         body.dark .roster-card {
             box-shadow: 12px 12px 28px rgba(0,0,0,0.7), -10px -10px 24px rgba(255,255,255,0.02), 0 5px 0 rgba(0,0,0,0.5), 0 0 50px rgba(212,175,55,0.01), inset 0 1px 0 rgba(255,255,255,0.02);
         }
-        /* Hover: 3D pop-up effect - using CSS for better compatibility */
         .roster-card:hover {
             transform: perspective(600px) translateY(-6px) scale(1.02) rotateX(2deg) rotateY(2deg);
             border-color: rgba(212,175,55,0.15);
@@ -77,7 +74,6 @@
             box-shadow: 16px 16px 36px rgba(0,0,0,0.8), -12px -12px 28px rgba(255,255,255,0.03), 0 7px 0 rgba(0,0,0,0.5), 0 0 70px rgba(212,175,55,0.04), 0 0 100px rgba(212,175,55,0.01), inset 0 1px 0 rgba(255,255,255,0.03);
             transform: perspective(600px) translateY(-6px) scale(1.02) rotateX(2deg) rotateY(2deg);
         }
-        /* Press: depressed effect */
         .roster-card:active {
             transform: perspective(600px) translateY(4px) scale(0.97) rotateX(0) rotateY(0) !important;
             box-shadow: 4px 4px 10px rgba(0,0,0,0.04), -3px -3px 10px rgba(255,255,255,0.5), 0 1px 0 rgba(0,0,0,0.01) !important;
@@ -87,7 +83,6 @@
             transform: perspective(600px) translateY(5px) scale(0.97) rotateX(0) rotateY(0) !important;
             box-shadow: 5px 5px 14px rgba(0,0,0,0.4), -4px -4px 12px rgba(255,255,255,0.01), 0 1px 0 rgba(0,0,0,0.2) !important;
         }
-        /* Glow effect on hover - using CSS pseudo-element */
         .roster-card::after {
             content: '';
             position: absolute;
@@ -99,18 +94,6 @@
             pointer-events: none;
         }
         .roster-card:hover::after { opacity: 1; }
-        /* Touch device support - add a class for touch interactions */
-        .roster-card.touch-hover {
-            transform: perspective(600px) translateY(-6px) scale(1.02) rotateX(2deg) rotateY(2deg);
-            border-color: rgba(212,175,55,0.15);
-            box-shadow: 14px 14px 28px rgba(0,0,0,0.08), -10px -10px 22px rgba(255,255,255,0.9), 0 6px 0 rgba(0,0,0,0.02), 0 12px 32px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,0.95);
-        }
-        body.dark .roster-card.touch-hover {
-            border-color: rgba(212,175,55,0.15);
-            box-shadow: 16px 16px 36px rgba(0,0,0,0.8), -12px -12px 28px rgba(255,255,255,0.03), 0 7px 0 rgba(0,0,0,0.5), 0 0 70px rgba(212,175,55,0.04), 0 0 100px rgba(212,175,55,0.01), inset 0 1px 0 rgba(255,255,255,0.03);
-            transform: perspective(600px) translateY(-6px) scale(1.02) rotateX(2deg) rotateY(2deg);
-        }
-        .roster-card.touch-hover::after { opacity: 1; }
         
         .roster-card .resident-spec {
             font-size: 0.7rem;
@@ -227,12 +210,12 @@
         body.dark .trending-badge { color: #0b0e12; }
         
         /* ============================================================
-           STEP CHART — PREMIUM SEGMENT WITH CONTRASTING THEME (FIXED)
+           STEP CHART — PREMIUM SEGMENT WITH CONTRASTING THEME
            ============================================================ */
         .step-chart-wrapper {
             border-radius: 1.5rem;
-            padding: 0.8rem 1rem 1rem;
-            margin: 0.3rem 0 0.2rem;
+            padding: 1.2rem 1rem 1rem;
+            margin: 0.5rem 0 0.2rem;
             border: 1px solid rgba(212,175,55,0.06);
             transition: all 0.3s ease;
             background: rgba(0,0,0,0.04);
@@ -241,41 +224,29 @@
             background: rgba(255,255,255,0.04);
             border-color: rgba(212,175,55,0.08);
         }
-        .step-chart-title {
-            text-align: center;
-            font-size: 0.6rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            color: var(--text-secondary, #475569);
-            opacity: 0.5;
-            padding-bottom: 0.4rem;
-            border-bottom: 1px solid rgba(212,175,55,0.06);
-            margin-bottom: 0.8rem;
-        }
-        body.dark .step-chart-title { color: #a8b3c9; opacity: 0.6; }
         .step-chart {
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 2rem;
-            padding: 0.2rem 0.3rem 0.2rem;
-            height: 140px;
+            gap: 2.5rem;
+            padding: 0.2rem 0.5rem 0.2rem;
+            height: 150px;
             width: 100%;
         }
         .step-bar {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.2rem;
+            gap: 0.3rem;
             flex: 1;
-            max-width: 80px;
-            min-width: 60px;
+            max-width: 90px;
+            min-width: 70px;
         }
         .step-bar .bar {
             width: 100%;
-            max-width: 50px;
+            max-width: 60px;
             border-radius: 6px 6px 0 0;
-            min-height: 6px;
+            min-height: 8px;
             transition: all 0.6s cubic-bezier(0.175,0.885,0.32,1.275);
             position: relative;
         }
@@ -286,26 +257,37 @@
         .step-chart .step-bar:nth-child(2) { order: 1; }
         .step-chart .step-bar:nth-child(3) { order: 3; }
         .step-bar .bar-label {
-            font-size: 0.6rem;
-            font-weight: 700;
+            font-size: 0.7rem;
+            font-weight: 800;
             text-align: center;
             color: var(--text-secondary, #475569);
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
-            max-width: 80px;
-            line-height: 1.2;
+            white-space: nowrap;
+            max-width: 90px;
+            overflow: visible;
+            text-overflow: clip;
             padding: 0 2px;
         }
         .step-bar .bar-value {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 800;
             color: var(--text-primary, #1a2332);
         }
         body.dark .step-bar .bar-value { color: #f0f3f8; }
         body.dark .step-bar .bar-label { color: #a8b3c9; }
+        .step-chart-title {
+            text-align: center;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary, #475569);
+            opacity: 0.5;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid rgba(212,175,55,0.06);
+            margin-bottom: 0.6rem;
+        }
+        body.dark .step-chart-title { color: #a8b3c9; opacity: 0.6; }
         .step-medal-icon {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             line-height: 1;
         }
         
@@ -520,7 +502,7 @@
 
     <div id="shield">
         <div class="shield-spinner"></div>
-        <span class="shield-text" style="color:rgba(212,175,55,0.06);font-size:0.6rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;">Iraqi Teaching Hospital</span>
+        <span class="shield-text" style="color:rgba(212,175,55,0.06);font-size:0.6rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;">Basra Teaching Hospital</span>
     </div>
 
     <div id="toast-container"></div>
@@ -531,7 +513,7 @@
             <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <i class="fas fa-user-md text-3xl text-white"></i>
             </div>
-            <h2 class="text-2xl font-black text-primary mb-1">🔐 Iraqi Teaching Hospital</h2>
+            <h2 class="text-2xl font-black text-primary mb-1">🔐 Basra Teaching Hospital</h2>
             <p class="text-sm text-secondary mb-6">أدخل كلمة المرور للدخول</p>
             <div class="relative">
                 <input type="password" id="password-input" placeholder="•••••"
@@ -579,7 +561,7 @@
             </div>
         </div>
 
-        <h1 class="header-3d">Iraqi Teaching Hospital</h1>
+        <h1 class="header-3d">Basra Teaching Hospital</h1>
         <p class="text-center text-sm font-bold text-secondary/50 mb-4 tracking-wider">On-Call Residents · Duty Roster</p>
 
         <p id="count-tag" class="counter-badge mt-2 mb-4 inline-block">
@@ -671,13 +653,13 @@
         
         const specIcons = {
             "NS": "🧠",
-            "CT": "🫀",
+            "CT": "❤️",
             "GS": "🔪",
-            "US": "🫘",
+            "US": "🧬",
             "ENT": "👂",
-            "D": "⚰️",
-            "OP": "🏥",
-            "ICU": "🚨",
+            "D": "📋",
+            "OP": "💉",
+            "ICU": "🫀",
             "R": "🩻",
             "ON": "🎗️"
         };
@@ -987,11 +969,8 @@
                 const waHref = isPhoneValid ? (isIOS ? `whatsapp://send?phone=${phoneClean}` : `intent://send/${phoneClean}#Intent;scheme=smsto;package=com.whatsapp;action=android.intent.action.SENDTO;end`) : '#';
                 return `
                     <div class="roster-card" 
-                         onmouseenter="handleCardEnter(event, this)"
-                         onmouseleave="handleCardLeave(this)"
                          onmousemove="handleCardTilt(event, this)"
-                         ontouchstart="handleTouchStart(event, this)"
-                         ontouchend="handleTouchEnd(event, this)">
+                         onmouseleave="resetCardTilt(this)">
                         <div class="resident-spec">${specName}</div>
                         <div class="resident-name"><span class="spec-icon">${icon}</span> ${entry.name}</div>
                         <div class="resident-phone">${phone}</div>
@@ -1014,56 +993,6 @@
             }).join('');
         }
 
-        // ========== CARD INTERACTION HANDLERS ==========
-        function handleCardEnter(event, card) {
-            // For mouse hover - handled by CSS :hover
-            // But we also want to set the mouse position for the glow effect
-            const rect = card.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
-            card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
-        }
-
-        function handleCardLeave(card) {
-            // Remove any touch-hover class if present
-            card.classList.remove('touch-hover');
-        }
-
-        function handleCardTilt(event, card) {
-            const rect = card.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / 16;
-            const rotateY = (centerX - x) / 16;
-            // Only apply tilt on hover (not on touch devices)
-            card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
-            card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
-        }
-
-        function handleTouchStart(event, card) {
-            // For touch devices - add a class that mimics hover
-            card.classList.add('touch-hover');
-            // Get touch position for glow effect
-            const touch = event.touches[0];
-            if (touch) {
-                const rect = card.getBoundingClientRect();
-                const x = touch.clientX - rect.left;
-                const y = touch.clientY - rect.top;
-                card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
-                card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
-            }
-        }
-
-        function handleTouchEnd(event, card) {
-            // Remove the touch-hover class after a small delay to allow for tap feedback
-            setTimeout(() => {
-                card.classList.remove('touch-hover');
-            }, 200);
-        }
-
         // ========== HANDLE TRENDING CLICK ==========
         function handleTrendingClick() {
             trendingHandVisible = false;
@@ -1072,10 +1001,22 @@
             triggerConfetti();
         }
 
-        // ========== 3D TILT EFFECT (for mouse) ==========
+        // ========== 3D TILT EFFECT ==========
+        function handleCardTilt(e, card) {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 16;
+            const rotateY = (centerX - x) / 16;
+            card.style.transform = `perspective(600px) translateY(-6px) scale(1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
+            card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
+        }
+
         function resetCardTilt(card) {
-            // Card tilt is now handled by CSS :hover
-            card.classList.remove('touch-hover');
+            card.style.transform = '';
         }
 
         function getMedicalDate() {
@@ -1102,8 +1043,8 @@
             
             let report = `🏥 *تبليغ خفراء اليوم*\n`;
             report += `📅 *${formattedDate}*\n`;
-            report += `📍 المستشفى العراقي التعليمي — البصرة\n\n`;
-            report += `https://mhub96.github.io/s/Home\n\n`;
+            report += `📍 مستشفى البصرة التعليمي — البصرة\n\n`;
+            report += `https://mhub96.github.io/BTH/Home\n\n`;
             
             sortedEntries.forEach((entry) => {
                 const resident = db.names.find(n => n.name === entry.name);
@@ -1203,7 +1144,7 @@
                         <div class="step-chart">
                 `;
                 ordered.forEach((item, index) => {
-                    const height = Math.max((item.totalVisits / maxVisits) * 120, 10);
+                    const height = Math.max((item.totalVisits / maxVisits) * 130, 12);
                     const specName = arabicSpecs[item.specCode] || item.specCode;
                     const icon = specIcons[item.specCode] || "🏥";
                     html += `
@@ -1304,10 +1245,6 @@
         window.handleCardTilt = handleCardTilt;
         window.resetCardTilt = resetCardTilt;
         window.handleTrendingClick = handleTrendingClick;
-        window.handleCardEnter = handleCardEnter;
-        window.handleCardLeave = handleCardLeave;
-        window.handleTouchStart = handleTouchStart;
-        window.handleTouchEnd = handleTouchEnd;
     </script>
 </body>
 </html>
