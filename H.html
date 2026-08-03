@@ -35,7 +35,7 @@
         .glass-card { border-radius: 1.5rem; transition: all 0.3s ease; position: relative; z-index: 1; }
         
         /* ============================================================
-           ROSTER CARDS — 3D POP & PRESS ANIMATION
+           ROSTER CARDS — 3D POP & PRESS ANIMATION (UPDATED)
            ============================================================ */
         .roster-grid {
             display: flex;
@@ -51,19 +51,22 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease;
             border: 1px solid; 
             gap: 0.3rem;
             position: relative; 
             overflow: hidden; 
-            cursor: default;
+            cursor: pointer;
             transform: translateY(0) scale(1) perspective(600px) rotateX(0) rotateY(0);
             box-shadow: 10px 10px 20px rgba(0,0,0,0.06), -8px -8px 18px rgba(255,255,255,0.8), 0 4px 0 rgba(0,0,0,0.02), 0 8px 24px rgba(0,0,0,0.02), inset 0 1px 0 rgba(255,255,255,0.9);
             will-change: transform;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         body.dark .roster-card {
             box-shadow: 12px 12px 28px rgba(0,0,0,0.7), -10px -10px 24px rgba(255,255,255,0.02), 0 5px 0 rgba(0,0,0,0.5), 0 0 50px rgba(212,175,55,0.01), inset 0 1px 0 rgba(255,255,255,0.02);
         }
+        /* Hover: 3D pop-up effect */
         .roster-card:hover {
             transform: perspective(600px) translateY(-6px) scale(1.02) rotateX(2deg) rotateY(2deg);
             border-color: rgba(212,175,55,0.15);
@@ -74,6 +77,7 @@
             box-shadow: 16px 16px 36px rgba(0,0,0,0.8), -12px -12px 28px rgba(255,255,255,0.03), 0 7px 0 rgba(0,0,0,0.5), 0 0 70px rgba(212,175,55,0.04), 0 0 100px rgba(212,175,55,0.01), inset 0 1px 0 rgba(255,255,255,0.03);
             transform: perspective(600px) translateY(-6px) scale(1.02) rotateX(2deg) rotateY(2deg);
         }
+        /* Press: depressed effect */
         .roster-card:active {
             transform: perspective(600px) translateY(4px) scale(0.97) rotateX(0) rotateY(0) !important;
             box-shadow: 4px 4px 10px rgba(0,0,0,0.04), -3px -3px 10px rgba(255,255,255,0.5), 0 1px 0 rgba(0,0,0,0.01) !important;
@@ -83,6 +87,7 @@
             transform: perspective(600px) translateY(5px) scale(0.97) rotateX(0) rotateY(0) !important;
             box-shadow: 5px 5px 14px rgba(0,0,0,0.4), -4px -4px 12px rgba(255,255,255,0.01), 0 1px 0 rgba(0,0,0,0.2) !important;
         }
+        /* Glow effect on hover */
         .roster-card::after {
             content: '';
             position: absolute;
@@ -94,6 +99,18 @@
             pointer-events: none;
         }
         .roster-card:hover::after { opacity: 1; }
+        /* Touch device support - add a class for touch interactions */
+        .roster-card.touch-hover {
+            transform: perspective(600px) translateY(-6px) scale(1.02) rotateX(2deg) rotateY(2deg);
+            border-color: rgba(212,175,55,0.15);
+            box-shadow: 14px 14px 28px rgba(0,0,0,0.08), -10px -10px 22px rgba(255,255,255,0.9), 0 6px 0 rgba(0,0,0,0.02), 0 12px 32px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,0.95);
+        }
+        body.dark .roster-card.touch-hover {
+            border-color: rgba(212,175,55,0.15);
+            box-shadow: 16px 16px 36px rgba(0,0,0,0.8), -12px -12px 28px rgba(255,255,255,0.03), 0 7px 0 rgba(0,0,0,0.5), 0 0 70px rgba(212,175,55,0.04), 0 0 100px rgba(212,175,55,0.01), inset 0 1px 0 rgba(255,255,255,0.03);
+            transform: perspective(600px) translateY(-6px) scale(1.02) rotateX(2deg) rotateY(2deg);
+        }
+        .roster-card.touch-hover::after { opacity: 1; }
         
         .roster-card .resident-spec {
             font-size: 0.7rem;
@@ -969,8 +986,11 @@
                 const waHref = isPhoneValid ? (isIOS ? `whatsapp://send?phone=${phoneClean}` : `intent://send/${phoneClean}#Intent;scheme=smsto;package=com.whatsapp;action=android.intent.action.SENDTO;end`) : '#';
                 return `
                     <div class="roster-card" 
+                         onmouseenter="handleCardEnter(event, this)"
+                         onmouseleave="handleCardLeave(this)"
                          onmousemove="handleCardTilt(event, this)"
-                         onmouseleave="resetCardTilt(this)">
+                         ontouchstart="handleTouchStart(event, this)"
+                         ontouchend="handleTouchEnd(event, this)">
                         <div class="resident-spec">${specName}</div>
                         <div class="resident-name"><span class="spec-icon">${icon}</span> ${entry.name}</div>
                         <div class="resident-phone">${phone}</div>
@@ -993,6 +1013,56 @@
             }).join('');
         }
 
+        // ========== CARD INTERACTION HANDLERS ==========
+        function handleCardEnter(event, card) {
+            // For mouse hover - handled by CSS :hover
+            // But we also want to set the mouse position for the glow effect
+            const rect = card.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
+            card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
+        }
+
+        function handleCardLeave(card) {
+            // Remove any touch-hover class if present
+            card.classList.remove('touch-hover');
+        }
+
+        function handleCardTilt(event, card) {
+            const rect = card.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 16;
+            const rotateY = (centerX - x) / 16;
+            // Only apply tilt on hover (not on touch devices)
+            card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
+            card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
+        }
+
+        function handleTouchStart(event, card) {
+            // For touch devices - add a class that mimics hover
+            card.classList.add('touch-hover');
+            // Get touch position for glow effect
+            const touch = event.touches[0];
+            if (touch) {
+                const rect = card.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
+                card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
+            }
+        }
+
+        function handleTouchEnd(event, card) {
+            // Remove the touch-hover class after a small delay to allow for tap feedback
+            setTimeout(() => {
+                card.classList.remove('touch-hover');
+            }, 200);
+        }
+
         // ========== HANDLE TRENDING CLICK ==========
         function handleTrendingClick() {
             trendingHandVisible = false;
@@ -1001,22 +1071,9 @@
             triggerConfetti();
         }
 
-        // ========== 3D TILT EFFECT ==========
-        function handleCardTilt(e, card) {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / 16;
-            const rotateY = (centerX - x) / 16;
-            card.style.transform = `perspective(600px) translateY(-6px) scale(1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            card.style.setProperty('--mouse-x', (x / rect.width * 100) + '%');
-            card.style.setProperty('--mouse-y', (y / rect.height * 100) + '%');
-        }
-
+        // ========== RESET CARD TILT ==========
         function resetCardTilt(card) {
-            card.style.transform = '';
+            card.classList.remove('touch-hover');
         }
 
         function getMedicalDate() {
@@ -1245,6 +1302,10 @@
         window.handleCardTilt = handleCardTilt;
         window.resetCardTilt = resetCardTilt;
         window.handleTrendingClick = handleTrendingClick;
+        window.handleCardEnter = handleCardEnter;
+        window.handleCardLeave = handleCardLeave;
+        window.handleTouchStart = handleTouchStart;
+        window.handleTouchEnd = handleTouchEnd;
     </script>
 </body>
 </html>
