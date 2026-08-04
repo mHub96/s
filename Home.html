@@ -180,7 +180,7 @@
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-card {
-            max-width: 600px; width: 100%; border-radius: 2rem; padding: 2rem;
+            max-width: 600px; width: 100%; border-radius: 2rem; padding: 1.5rem;
             transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
             background: #ffffff; max-height: 90vh; overflow-y: auto;
         }
@@ -210,15 +210,16 @@
         body.dark .trending-badge { color: #0b0e12; }
         
         /* ============================================================
-           STEP CHART — PREMIUM SEGMENT WITH CONTRASTING THEME (FIXED)
+           STEP CHART — PERFECT STYLE (from your reference code)
            ============================================================ */
         .step-chart-wrapper {
-            border-radius: 1.5rem;
-            padding: 0.8rem 1rem 1rem;
-            margin: 0.3rem 0 0.2rem;
+            border-radius: 1.2rem;
+            padding: 0.5rem 0.5rem 0.6rem;
+            margin: 0.2rem 0 0.2rem;
             border: 1px solid rgba(212,175,55,0.06);
             transition: all 0.3s ease;
             background: rgba(0,0,0,0.04);
+            overflow: hidden;
         }
         body.dark .step-chart-wrapper {
             background: rgba(255,255,255,0.04);
@@ -226,79 +227,108 @@
         }
         .step-chart-title {
             text-align: center;
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             font-weight: 700;
             letter-spacing: 0.1em;
             color: var(--text-secondary, #475569);
-            opacity: 0.5;
-            padding-bottom: 0.4rem;
-            border-bottom: 1px solid rgba(212,175,55,0.06);
-            margin-bottom: 0.8rem;
+            opacity: 0.35;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid rgba(212,175,55,0.04);
+            margin-bottom: 0.3rem;
         }
-        body.dark .step-chart-title { color: #a8b3c9; opacity: 0.6; }
+        body.dark .step-chart-title { color: #a8b3c9; opacity: 0.4; }
         .step-chart {
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 2rem;
-            padding: 0.2rem 0.3rem 0.2rem;
-            height: 140px;
+            gap: 0.8rem;
+            padding: 0.1rem 0.1rem 0.1rem;
+            height: 130px;
             width: 100%;
+            position: relative;
         }
         .step-bar {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.2rem;
+            gap: 0.1rem;
             flex: 1;
-            max-width: 80px;
-            min-width: 60px;
+            max-width: 60px;
+            min-width: 35px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+        .step-bar .bar-wrap {
+            width: 100%;
+            max-width: 60px;
+            height: 65px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
         }
         .step-bar .bar {
             width: 100%;
             max-width: 50px;
-            border-radius: 6px 6px 0 0;
-            min-height: 6px;
-            transition: all 0.6s cubic-bezier(0.175,0.885,0.32,1.275);
+            border-radius: 3px 3px 0 0;
+            min-height: 3px;
+            transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
+            will-change: height;
         }
-        .step-bar .bar.gold { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
-        .step-bar .bar.silver { background: linear-gradient(180deg, #94a3b8, #6b7280); }
-        .step-bar .bar.bronze { background: linear-gradient(180deg, #cd7f32, #a0522d); }
-        .step-chart .step-bar:nth-child(1) { order: 2; }
-        .step-chart .step-bar:nth-child(2) { order: 1; }
+        .step-bar .bar.gold { 
+            background: linear-gradient(180deg, #fbbf24, #f59e0b); 
+            box-shadow: 0 0 15px rgba(251,191,36,0.15); 
+        }
+        .step-bar .bar.silver { 
+            background: linear-gradient(180deg, #94a3b8, #6b7280); 
+            box-shadow: 0 0 10px rgba(148,163,184,0.1); 
+        }
+        .step-bar .bar.bronze { 
+            background: linear-gradient(180deg, #cd7f32, #a0522d); 
+            box-shadow: 0 0 10px rgba(205,127,50,0.1); 
+        }
+        .step-chart .step-bar:nth-child(1) { order: 1; }
+        .step-chart .step-bar:nth-child(2) { order: 2; }
         .step-chart .step-bar:nth-child(3) { order: 3; }
-        .step-bar .bar-label {
+        .step-bar .bar-value {
             font-size: 0.6rem;
+            font-weight: 800;
+            color: var(--text-primary, #1a2332);
+            line-height: 1;
+        }
+        body.dark .step-bar .bar-value { color: #f0f3f8; }
+        .step-bar .bar-label {
+            font-size: 0.45rem;
             font-weight: 700;
             text-align: center;
             color: var(--text-secondary, #475569);
             word-wrap: break-word;
             overflow-wrap: break-word;
             hyphens: auto;
-            max-width: 80px;
+            max-width: 60px;
             line-height: 1.2;
             padding: 0 2px;
+            min-height: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .step-bar .bar-value {
-            font-size: 0.7rem;
-            font-weight: 800;
-            color: var(--text-primary, #1a2332);
-        }
-        body.dark .step-bar .bar-value { color: #f0f3f8; }
         body.dark .step-bar .bar-label { color: #a8b3c9; }
         .step-medal-icon {
-            font-size: 1.4rem;
+            font-size: 1rem;
             line-height: 1;
         }
         
         .filter-tabs {
-            display: flex; gap: 0.5rem; flex-wrap: wrap;
-            margin-bottom: 0.3rem; padding-bottom: 0.3rem;
+            display: flex; gap: 0.3rem; flex-wrap: wrap;
+            margin-bottom: 0.3rem;
+            padding-bottom: 0.3rem;
             border-bottom: 1px solid rgba(212,175,55,0.04);
         }
         .filter-tab {
-            padding: 0.2rem 1rem; border-radius: 100px; font-size: 0.6rem;
+            padding: 0.15rem 0.8rem; border-radius: 100px; font-size: 0.55rem;
             font-weight: 700; cursor: pointer; transition: all 0.3s ease;
             border: 1px solid rgba(212,175,55,0.06);
             color: var(--text-secondary, #475569); background: transparent;
@@ -358,7 +388,7 @@
         }
         .top-bar { display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; padding: 0.25rem 0; flex-wrap: wrap; }
         .top-bar .spacer { flex: 1; }
-        .medal-item { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0.8rem; border-radius: 1rem; transition: all 0.3s ease; }
+        .medal-item { display: flex; align-items: center; gap: 0.8rem; padding: 0.4rem 0.6rem; border-radius: 0.8rem; transition: all 0.3s ease; }
         .medal-item:hover { background: rgba(212,175,55,0.04); }
 
         /* TRENDING CARD FIRE BORDER */
@@ -578,7 +608,9 @@
         <div class="footer-credit text-secondary">All rights reserved for Dr. Mohammed Riyadh</div>
     </div>
 
-    <!-- LEADERBOARD MODAL -->
+    <!-- ============================================================
+         LEADERBOARD MODAL — PERFECT STYLE (REPLACED)
+         ============================================================ -->
     <div id="trending-modal" class="modal-overlay" onclick="if(event.target===this) closeTrendingModal()">
         <div class="modal-card glass-card">
             <div class="flex justify-between items-center mb-2">
@@ -590,9 +622,9 @@
                 </button>
             </div>
             <div class="filter-tabs" id="leaderboard-tabs">
-                <button class="filter-tab active" data-filter="today" onclick="switchLeaderboardFilter('today')">Today</button>
-                <button class="filter-tab" data-filter="month" onclick="switchLeaderboardFilter('month')">This Month</button>
-                <button class="filter-tab" data-filter="all" onclick="switchLeaderboardFilter('all')">All Time</button>
+                <button class="filter-tab active" data-filter="today" onclick="switchLeaderboardFilter('today')">اليوم</button>
+                <button class="filter-tab" data-filter="month" onclick="switchLeaderboardFilter('month')">هذا الشهر</button>
+                <button class="filter-tab" data-filter="all" onclick="switchLeaderboardFilter('all')">الكل</button>
             </div>
             <div id="trending-content" class="space-y-2 mt-1"></div>
         </div>
@@ -1111,7 +1143,7 @@
             document.body.removeChild(textArea);
         }
 
-        // ========== LEADERBOARD MODAL ==========
+        // ========== LEADERBOARD MODAL — PERFECT STYLE (REPLACED) ==========
         let currentFilter = 'today';
         function showTrendingModal() {
             document.getElementById('trending-modal').classList.add('active');
@@ -1133,6 +1165,7 @@
             
             let html = '';
             
+            // Step chart with proper scaling
             if (topThree.length > 0) {
                 const maxVisits = topThree[0]?.totalVisits || 1;
                 const ordered = [ topThree[1] || topThree[0], topThree[0], topThree[2] || topThree[0] ];
@@ -1145,13 +1178,17 @@
                         <div class="step-chart">
                 `;
                 ordered.forEach((item, index) => {
-                    const height = Math.max((item.totalVisits / maxVisits) * 120, 10);
+                    const maxHeight = 60;
+                    const ratio = item.totalVisits / maxVisits;
+                    const heightPx = Math.max(ratio * maxHeight, 4);
                     const specName = arabicSpecs[item.specCode] || item.specCode;
                     const icon = specIcons[item.specCode] || "🏥";
                     html += `
                         <div class="step-bar">
                             <div class="bar-value">${item.totalVisits}</div>
-                            <div class="bar ${medals[index]}" style="height:${height}px;"></div>
+                            <div class="bar-wrap">
+                                <div class="bar ${medals[index]}" style="height: ${heightPx}px;"></div>
+                            </div>
                             <div class="bar-label">${icon} ${item.name}</div>
                             <div class="step-medal-icon">${medalIcons[index]}</div>
                         </div>
@@ -1173,6 +1210,13 @@
             const filterLabels = { 'today':'Today', 'month':'This Month', 'all':'All Time' };
             html += `<div class="mt-3 text-center text-[0.5rem] text-secondary/30 border-t border-white/5 pt-2">${leaderboard.length} residents · ${filterLabels[filter]||''}</div>`;
             content.innerHTML = html;
+            
+            // Trigger animation after render
+            setTimeout(() => {
+                document.querySelectorAll('.step-bar .bar').forEach(bar => {
+                    void bar.offsetHeight;
+                });
+            }, 50);
         }
 
         // ========== CONFETTI ==========
