@@ -10209,12 +10209,6 @@
       "VisitCount": 8
     },
     {
-      "date": "08/08/2026",
-      "specCode": "ICU",
-      "name": "د. ايناس عدنان",
-      "VisitCount": 2
-    },
-    {
       "date": "09/08/2026",
       "specCode": "ICU",
       "name": "د. زينب عبد الرزاق"
@@ -10725,6 +10719,12 @@
       "specCode": "ON",
       "name": "د. زهراء سهيل نجم",
       "timestamp": "08:50"
+    },
+    {
+      "date": "08/08/2026",
+      "specCode": "ICU",
+      "name": "د. علاء سلمان",
+      "timestamp": "10:30"
     }
   ]
 }
