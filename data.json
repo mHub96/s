@@ -10212,12 +10212,6 @@
       "VisitCount": 8
     },
     {
-      "date": "09/08/2026",
-      "specCode": "ICU",
-      "name": "د. زينب عبد الرزاق",
-      "VisitCount": 1
-    },
-    {
       "date": "10/08/2026",
       "specCode": "ICU",
       "name": "د. مريم عبد الحميد"
@@ -10736,6 +10730,12 @@
       "name": "د. هناء شدود منشد",
       "timestamp": "08:51",
       "VisitCount": 1
+    },
+    {
+      "date": "09/08/2026",
+      "specCode": "ICU",
+      "name": "د. علاء سلمان",
+      "timestamp": "13:49"
     }
   ]
 }
