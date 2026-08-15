@@ -9180,12 +9180,6 @@
       "VisitCount": 1
     },
     {
-      "date": "15/08/2026",
-      "specCode": "NS",
-      "name": "د. اسعد حسن فرحان",
-      "VisitCount": 2
-    },
-    {
       "date": "16/08/2026",
       "specCode": "NS",
       "name": "د. فاطمة خليل"
@@ -10702,6 +10696,12 @@
       "specCode": "D",
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "12:40"
+    },
+    {
+      "date": "15/08/2026",
+      "specCode": "NS",
+      "name": "د. احمد عبدالله حسن",
+      "timestamp": "08:34"
     }
   ]
 }
