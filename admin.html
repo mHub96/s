@@ -1,312 +1,1950 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>إدارة المقيمين 🇮🇶</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>نظام المقيمين · المستشفى العراقي</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        :root { --bg: #0b0e11; --card: #16191d; --accent: #fbbf24; }
-        body { 
-            background: var(--bg); color: #94a3b8; 
-            font-family: 'IBM Plex Sans Arabic', sans-serif; 
-            margin: 0; min-height: 100vh; direction: rtl; text-align: right;
-            -webkit-tap-highlight-color: transparent;
-            padding-bottom: env(safe-area-inset-bottom, 20px);
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            direction: rtl;
+            text-align: right;
+            min-height: 100vh;
+            padding: 0;
+            transition: background 0.6s ease, color 0.4s ease;
+            overflow-x: hidden;
         }
-        .card { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.25rem; }
-        input, select { 
-            background: #000 !important; border: 1px solid #334155 !important; 
-            color: white !important; outline: none !important; text-align: right;
-        }
-        input:focus { border-color: var(--accent) !important; }
+        body.light { background: #f2f6fc; color: #1a2332; }
+        body.light .bg-surface { background: #ffffff; }
+        body.light .bg-surface2 { background: #f8fafc; }
+        body.light .text-primary { color: #1a2332; }
+        body.light .text-secondary { color: #475569; }
+        body.light .border-subtle { border-color: #e2e8f0; }
+        body.light .glass-card { background: rgba(255,255,255,0.78); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 8px 32px rgba(0,0,0,0.05); }
+        body.light .spec-header { background: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.4); }
+        body.light .resident-card { background: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.3); }
+        body.light .resident-card:hover { border-color: #2563eb; box-shadow: 0 12px 28px rgba(0,0,0,0.06); }
+        body.light .input-field { background: rgba(255,255,255,0.9); border-color: #e2e8f0; color: #1a2332; }
+        body.light .btn-ghost { background: rgba(255,255,255,0.5); border-color: rgba(0,0,0,0.08); color: #1a2332; }
+        body.light .btn-ghost:hover { background: rgba(255,255,255,0.8); }
+        body.light .lock-card { background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.5); }
+        body.light .modal-card { background: #ffffff; }
+        body.light .badge-spec { background: #dbeafe; color: #1e40af; font-weight: 700; }
+        body.light .badge-active { background: #d1fae5; color: #065f46; font-weight: 700; }
+        body.light .badge-reserve { background: #fef3c7; color: #92400e; font-weight: 700; }
+        body.light .spec-count { background: #dbeafe; color: #1e40af; }
+        body.light .spec-count-reserve { background: #fef3c7; color: #92400e; }
+        body.light .counter-badge { background: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
+        body.light .counter-badge i { color: #3b82f6; }
 
-        /* Modal */
-        #edit-modal { display: none; position: fixed; inset: 0; z-index: 3000; align-items: center; justify-content: center; padding: 1.25rem; }
-        #edit-modal.active { display: flex; }
-        .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); }
-        .modal-content { position: relative; width: 100%; max-width: 450px; background: #1c2128; border-radius: 2rem; padding: 2rem; border: 1px solid rgba(255,255,255,0.15); }
+        body.dark { background: #0b0e12; color: #e8edf5; }
+        body.dark::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.08; background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.25'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); background-size: 120px 120px; }
+        body.dark .bg-surface { background: #141a24; }
+        body.dark .bg-surface2 { background: #0f151e; }
+        body.dark .text-primary { color: #f0f3f8; }
+        body.dark .text-secondary { color: #a8b3c9; }
+        body.dark .border-subtle { border-color: #2a3346; }
+        body.dark .glass-card { background: rgba(16,22,34,0.82); backdrop-filter: blur(14px); border: 1px solid rgba(212,175,55,0.12); box-shadow: 0 8px 32px rgba(0,0,0,0.6); }
+        body.dark .spec-header { background: rgba(20,28,44,0.6); border-color: rgba(212,175,55,0.08); color: #f0f3f8; }
+        body.dark .spec-header:hover { background: rgba(30,40,60,0.6); }
+        body.dark .badge-spec { background: rgba(212,175,55,0.15); color: #d4af37; font-weight: 700; }
+        body.dark .badge-active { background: rgba(16,185,129,0.15); color: #6ee7b7; font-weight: 700; }
+        body.dark .badge-reserve { background: rgba(251,191,36,0.12); color: #fbbf24; font-weight: 700; }
+        body.dark .spec-count { background: rgba(212,175,55,0.15); color: #d4af37; }
+        body.dark .spec-count-reserve { background: rgba(251,191,36,0.12); color: #fbbf24; }
+        body.dark .counter-badge { background: rgba(212,175,55,0.12); color: #d4af37; border-color: rgba(212,175,55,0.15); }
+        body.dark .counter-badge i { color: #d4af37; }
+        body.dark .resident-card { background: rgba(14,20,32,0.7); border-color: rgba(212,175,55,0.06); }
+        body.dark .resident-card:hover { border-color: #d4af37; box-shadow: 0 12px 28px rgba(0,0,0,0.5); }
+        body.dark .input-field { background: rgba(10,14,24,0.9); border-color: #2a3346; color: #f0f3f8; }
+        body.dark .input-field:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212,175,55,0.12); }
+        body.dark .input-field::placeholder { color: #6a7a94; }
+        body.dark .btn-ghost { background: rgba(255,255,255,0.04); border-color: rgba(212,175,55,0.12); color: #f0f3f8; }
+        body.dark .btn-ghost:hover { background: rgba(212,175,55,0.08); border-color: rgba(212,175,55,0.25); }
+        body.dark .lock-card { background: rgba(12,18,30,0.92); backdrop-filter: blur(20px); border: 1px solid rgba(212,175,55,0.12); box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
+        body.dark .modal-card { background: #141c2a; border: 1px solid rgba(212,175,55,0.08); }
+        body.dark .btn-gradient { background: linear-gradient(135deg, #d4af37, #b8942e); box-shadow: 0 8px 24px rgba(212,175,55,0.2); color: #0b0e12; }
+        body.dark .btn-gradient:hover { box-shadow: 0 12px 32px rgba(212,175,55,0.3); }
+        body.dark .text-blue-600 { color: #d4af37 !important; }
+        body.dark .text-blue-500 { color: #d4af37 !important; }
+        body.dark .bg-blue-50 { background: rgba(212,175,55,0.06) !important; }
+        body.dark .bg-blue-100 { background: rgba(212,175,55,0.10) !important; }
+        body.dark .text-blue-700 { color: #d4af37 !important; }
+        body.dark .border-blue-500 { border-color: rgba(212,175,55,0.2) !important; }
+        body.dark .shadow-blue-500\/30 { box-shadow: 0 8px 24px rgba(212,175,55,0.15) !important; }
+        body.dark .from-blue-500 { --tw-gradient-from: #d4af37 !important; }
+        body.dark .to-blue-600 { --tw-gradient-to: #b8942e !important; }
+        body.dark .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #d4af37, #b8942e) !important; }
+        body.dark .bg-blue-600 { background: #d4af37 !important; }
+        body.dark .hover\:bg-blue-700:hover { background: #b8942e !important; }
+        body.dark .text-white { color: #f0f3f8 !important; }
+        body.dark .border-amber-200 { border-color: rgba(212,175,55,0.2) !important; }
+        body.dark .bg-amber-50 { background: rgba(212,175,55,0.06) !important; }
+        body.dark .text-amber-600 { color: #d4af37 !important; }
+        body.dark .text-amber-700 { color: #d4af37 !important; }
+        body.dark .bg-amber-100 { background: rgba(212,175,55,0.10) !important; }
+        body.dark .text-amber-500 { color: #d4af37 !important; }
+        body.dark .bg-amber-500 { background: #d4af37 !important; }
+        body.dark .from-amber-500 { --tw-gradient-from: #d4af37 !important; }
+        body.dark .to-amber-600 { --tw-gradient-to: #b8942e !important; }
+        body.dark .ring-amber-500 { --tw-ring-color: #d4af37 !important; }
+        body.dark .shadow-amber-500\/20 { box-shadow: 0 8px 24px rgba(212,175,55,0.15) !important; }
+        body.dark .accent-amber-500 { accent-color: #d4af37 !important; }
+        body.dark .toast-success { background: #10b981; color: white; }
+        body.dark .toast-error { background: #ef4444; color: white; }
+        body.dark .toast-info { background: #3b82f6; color: white; }
 
-        /* Collapsible - Hidden by Default */
-        .spec-header { 
-            background: rgba(255,255,255,0.03); padding: 0.85rem 1.5rem; 
-            font-size: 0.75rem; font-weight: 800; color: var(--accent); 
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; user-select: none;
-        }
-        .spec-content { display: none; overflow: hidden; }
+        .glass-card { border-radius: 1.5rem; transition: all 0.3s ease; position: relative; z-index: 1; }
+        .input-field { border-radius: 1rem; padding: 0.9rem 1.4rem; font-weight: 500; transition: all 0.3s ease; width: 100%; border: 2px solid; outline: none; }
+        .input-field:focus { transform: translateY(-1px); }
+        .btn-gradient { border: none; font-weight: 700; padding: 0.9rem 2rem; border-radius: 1.2rem; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; box-shadow: 0 8px 24px rgba(37,99,235,0.3); }
+        .btn-gradient:hover { transform: translateY(-2px) scale(1.01); }
+        .btn-gradient:active { transform: scale(0.97); }
+        .btn-ghost { border-radius: 1.2rem; padding: 0.6rem 1.4rem; font-weight: 600; transition: all 0.3s ease; cursor: pointer; border: 1px solid; }
+        .resident-card { border-radius: 1.2rem; padding: 1rem 1.5rem; margin-bottom: 0.6rem; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); border: 1px solid; }
+        .spec-header { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.2rem; border-radius: 1.2rem; margin: 0.25rem 0; cursor: pointer; transition: all 0.3s ease; border: 1px solid; font-weight: 700; }
+        .spec-header:hover { transform: translateX(-4px); }
+        .spec-content { display: none; padding: 0.25rem 0; animation: slideDown 0.3s ease; }
         .spec-content.active { display: block; }
-        
-        .resident-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .resident-row:last-child { border-bottom: none; }
-        .clickable-area { flex-grow: 1; cursor: pointer; padding: 1rem 1.5rem; }
-        
-        /* Fixed Phone Orientation */
-        .phone-display { 
-            direction: ltr !important; 
-            unicode-bidi: isolate;
+        @keyframes slideDown { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }
+        .badge-spec, .badge-active, .badge-reserve { font-size: 0.6rem; padding: 0.15rem 0.7rem; border-radius: 100px; font-weight: 700; display: inline-block; }
+        .spec-count, .spec-count-reserve { font-size: 0.7rem; padding: 0.1rem 0.7rem; border-radius: 100px; font-weight: 700; display: inline-block; }
+        .counter-badge { font-size: 0.65rem; padding: 0.3rem 0.9rem; border-radius: 100px; font-weight: 700; display: inline-block; border: 1px solid; transition: all 0.3s ease; }
+        .modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(12px); position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: all 0.4s ease; padding: 1.5rem; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-card { max-width: 560px; width: 100%; border-radius: 2rem; padding: 2rem; transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.16,1,0.3,1); box-shadow: 0 40px 80px rgba(0,0,0,0.2); }
+        .modal-overlay.active .modal-card { transform: scale(1) translateY(0); }
+        .lock-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 1.5rem; position: relative; z-index: 2; }
+        .lock-card { border-radius: 2.5rem; padding: 2.5rem 2.2rem; width: 100%; max-width: 400px; box-shadow: 0 30px 60px rgba(0,0,0,0.08); }
+        .hidden-content { display: none; }
+        body.session-checking #lock-screen { visibility: hidden; }
+        .phone-ltr { direction: ltr; unicode-bidi: plaintext; }
+        .btn-save { transition: all 0.4s ease; min-width: 120px; }
+        .btn-save.loading { background: #3b82f6 !important; color: white !important; cursor: wait; }
+        .btn-save.success { background: #10b981 !important; color: white !important; }
+        .btn-save.error { background: #ef4444 !important; color: white !important; }
+        body.dark .btn-save.loading { background: #d4af37 !important; color: #0b0e12 !important; }
+        body.dark .btn-save.success { background: #10b981 !important; color: white !important; }
+        body.dark .btn-save.error { background: #ef4444 !important; color: white !important; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        body.dark ::-webkit-scrollbar-thumb { background: #4a5568; }
+        @media (max-width: 640px) { .lock-card { padding: 2rem 1.5rem; } .modal-card { padding: 1.5rem; } }
+
+        .theme-toggle-wrap { perspective: 200px; display: inline-block; }
+        .theme-toggle-btn { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; border: 2px solid; cursor: pointer; transition: all 0.3s ease; position: relative; transform-style: preserve-3d; background: rgba(255,255,255,0.3); border-color: rgba(0,0,0,0.1); }
+        body.dark .theme-toggle-btn { background: rgba(212,175,55,0.08); border-color: rgba(212,175,55,0.2); }
+        .theme-toggle-btn .icon-wrap { position: relative; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+        .theme-toggle-btn .icon-wrap i { position: absolute; font-size: 1.1rem; transition: all 0.5s cubic-bezier(0.4,0,0.2,1); backface-visibility: hidden; }
+        .theme-toggle-btn .icon-wrap .icon-moon { transform: rotateY(0deg); opacity: 1; }
+        .theme-toggle-btn .icon-wrap .icon-sun { transform: rotateY(180deg); opacity: 0; }
+        body.dark .theme-toggle-btn .icon-wrap .icon-moon { transform: rotateY(-180deg); opacity: 0; }
+        body.dark .theme-toggle-btn .icon-wrap .icon-sun { transform: rotateY(0deg); opacity: 1; }
+        .theme-toggle-btn .icon-wrap i.fa-moon { color: #1a2332; }
+        body.dark .theme-toggle-btn .icon-wrap i.fa-moon { color: #f0f3f8; }
+        .theme-toggle-btn .icon-wrap i.fa-sun { color: #fbbf24; }
+        .theme-toggle-btn:hover { transform: scale(1.05); }
+        body.dark .theme-toggle-btn:hover { border-color: rgba(212,175,55,0.4); }
+
+        .footer-credit { font-size: 0.7rem; opacity: 0.5; padding: 0.8rem 0; text-align: center; border-top: 1px solid rgba(128,128,128,0.1); margin-top: 2rem; }
+        body.dark .footer-credit { border-top-color: rgba(212,175,55,0.05); }
+        .lock-footer { margin-top: 1.5rem; font-size: 0.65rem; opacity: 0.4; text-align: center; }
+
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; width: 90%; max-width: 420px; }
+        .toast { padding: 14px 24px; border-radius: 1rem; font-weight: 600; font-size: 0.9rem; box-shadow: 0 12px 40px rgba(0,0,0,0.15); transform: translateY(-20px); opacity: 0; transition: all 0.5s cubic-bezier(0.16,1,0.3,1); pointer-events: auto; display: flex; align-items: center; gap: 12px; width: 100%; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.hide { transform: translateY(-20px); opacity: 0; }
+        .toast i { font-size: 1.1rem; flex-shrink: 0; }
+        .toast .toast-close { margin-right: auto; cursor: pointer; opacity: 0.6; transition: opacity 0.2s; background: none; border: none; color: inherit; font-size: 1rem; padding: 0 4px; }
+        .toast .toast-close:hover { opacity: 1; }
+        .toast-success { background: rgba(16,185,129,0.92); color: white; border-color: rgba(255,255,255,0.15); }
+        .toast-error { background: rgba(239,68,68,0.92); color: white; border-color: rgba(255,255,255,0.15); }
+        .toast-info { background: rgba(59,130,246,0.92); color: white; border-color: rgba(255,255,255,0.15); }
+        body.dark .toast-success { background: rgba(16,185,129,0.92); }
+        body.dark .toast-error { background: rgba(239,68,68,0.92); }
+        body.dark .toast-info { background: rgba(59,130,246,0.92); }
+
+        /* Specialty Management Styles */
+        .specialty-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.8rem;
+            border: 1px solid rgba(212,175,55,0.06);
+            transition: all 0.3s ease;
+            flex-wrap: wrap;
+        }
+        .specialty-item:hover { background: rgba(212,175,55,0.04); border-color: rgba(212,175,55,0.12); }
+        .specialty-item.sorting-source { opacity: 0.35; }
+        .specialty-drag-handle {
+            width: 1.8rem;
+            height: 1.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 0.5rem;
+            background: rgba(128,128,128,0.08);
+            color: var(--text-secondary, #475569);
+            cursor: grab;
+            touch-action: none;
+            flex-shrink: 0;
+        }
+        .specialty-drag-handle:active { cursor: grabbing; }
+        .specialty-drag-handle i { font-size: 0.75rem; }
+        .specialty-drag-ghost {
+            position: fixed;
+            z-index: 2000;
+            pointer-events: none;
+            opacity: 0.94;
+            box-shadow: 0 18px 38px rgba(0,0,0,0.24);
+            transform: rotate(1deg) scale(1.02);
+        }
+        .specialty-item .spec-icon { font-size: 1.2rem; width: 2rem; text-align: center; flex-shrink: 0; }
+        .specialty-item .spec-id { font-weight: 700; font-size: 0.65rem; color: var(--text-secondary, #475569); min-width: 2rem; flex-shrink: 0; }
+        .specialty-item .spec-name { flex: 1; font-weight: 600; font-size: 0.8rem; min-width: 60px; }
+        .specialty-item .spec-actions { display: flex; gap: 0.3rem; flex-shrink: 0; }
+        .specialty-item .spec-actions button { padding: 0.1rem 0.4rem; border-radius: 0.4rem; font-size: 0.6rem; cursor: pointer; border: none; transition: all 0.2s ease; }
+        .spec-edit-btn { background: rgba(59,130,246,0.1); color: #3b82f6; }
+        .spec-edit-btn:hover { background: rgba(59,130,246,0.2); }
+        .spec-delete-btn { background: rgba(239,68,68,0.1); color: #ef4444; }
+        .spec-delete-btn:hover { background: rgba(239,68,68,0.2); }
+        body.dark .spec-edit-btn { background: rgba(212,175,55,0.1); color: #d4af37; }
+        body.dark .spec-edit-btn:hover { background: rgba(212,175,55,0.2); }
+        body.dark .spec-delete-btn { background: rgba(239,68,68,0.1); color: #ef4444; }
+        body.dark .spec-delete-btn:hover { background: rgba(239,68,68,0.2); }
+
+        /* ===== IPHONE-STYLE TOGGLE SWITCH (Compact) ===== */
+        .toggle-switch-compact {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            flex-shrink: 0;
+        }
+        .toggle-switch-compact input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        .toggle-slider-compact {
+            position: relative;
             display: inline-block;
+            width: 36px;
+            height: 20px;
+            border-radius: 20px;
+            background: #ef4444;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+        .toggle-slider-compact::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .toggle-switch-compact input:checked + .toggle-slider-compact {
+            background: #22c55e;
+        }
+        .toggle-switch-compact input:checked + .toggle-slider-compact::before {
+            transform: translateX(16px);
+        }
+        .toggle-switch-compact input:focus + .toggle-slider-compact {
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+        }
+        .toggle-switch-compact .toggle-label-compact {
+            font-size: 0.55rem;
+            font-weight: 600;
+            margin-left: 0.4rem;
+            color: var(--text-secondary, #475569);
+            white-space: nowrap;
+            min-width: 28px;
+        }
+        .toggle-switch-compact .toggle-label-compact.on {
+            color: #22c55e;
+        }
+        .toggle-switch-compact .toggle-label-compact.off {
+            color: #ef4444;
+        }
+        body.dark .toggle-switch-compact .toggle-label-compact {
+            color: #a8b3c9;
+        }
+        body.dark .toggle-switch-compact .toggle-label-compact.on {
+            color: #4ade80;
+        }
+        body.dark .toggle-switch-compact .toggle-label-compact.off {
+            color: #f87171;
         }
 
-        .btn-save { transition: all 0.4s ease; min-width: 120px; }
-        .btn-save.loading { background: #3b82f6 !important; color: white; cursor: wait; }
-        .btn-save.success { background: #10b981 !important; color: white; }
-        .btn-save.error { background: #ef4444 !important; color: white; }
+        .specialty-item.disabled-spec {
+            opacity: 0.6;
+        }
+        .specialty-item.disabled-spec .spec-name {
+            text-decoration: line-through;
+        }
+
+        /* Color picker styling */
+        .color-picker-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(255,255,255,0.03);
+            padding: 0.3rem 0.6rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(212,175,55,0.06);
+            flex-wrap: wrap;
+        }
+        .color-picker-wrap input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(212,175,55,0.15);
+            cursor: pointer;
+            background: none;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        .color-picker-wrap input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .color-picker-wrap input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+        .color-picker-wrap .color-hex {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-secondary, #475569);
+            font-family: monospace;
+            min-width: 60px;
+        }
+        .color-picker-wrap .color-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary, #475569);
+            opacity: 0.6;
+        }
+        .spec-color-preview {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            display: inline-block;
+            border: 1px solid rgba(212,175,55,0.1);
+            flex-shrink: 0;
+        }
+        .color-gen-btn {
+            background: rgba(212,175,55,0.12);
+            border: 1px solid rgba(212,175,55,0.15);
+            color: var(--text-secondary, #475569);
+            padding: 0.2rem 0.7rem;
+            border-radius: 2rem;
+            font-size: 0.6rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            white-space: nowrap;
+        }
+        .color-gen-btn:hover {
+            background: rgba(212,175,55,0.2);
+            border-color: rgba(212,175,55,0.3);
+            transform: scale(1.02);
+        }
+        .color-gen-btn:active {
+            transform: scale(0.96);
+        }
+        body.dark .color-gen-btn {
+            color: #d4af37;
+        }
+
+        .pool-selection { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.3rem; max-height: 120px; overflow-y: auto; padding: 0.3rem; background: rgba(0,0,0,0.02); border-radius: 0.8rem; }
+        .pool-option { display: flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 100px; border: 1px solid rgba(212,175,55,0.06); cursor: pointer; transition: all 0.2s ease; background: rgba(255,255,255,0.03); }
+        .pool-option:hover { background: rgba(212,175,55,0.04); }
+        .pool-option.selected { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.15); }
+        .pool-option input[type="checkbox"] { width: 0.8rem; height: 0.8rem; accent-color: #d4af37; cursor: pointer; }
+        .pool-option .spec-label { font-weight: 500; }
+        .pool-option .spec-icon-small { font-size: 0.8rem; margin-left: 0.1rem; }
+
+        @media (max-width: 480px) {
+            .specialty-item {
+                gap: 0.3rem;
+                padding: 0.3rem 0.4rem;
+            }
+            .specialty-item .spec-name {
+                font-size: 0.7rem;
+                min-width: 40px;
+            }
+            .toggle-slider-compact {
+                width: 30px;
+                height: 18px;
+            }
+            .toggle-slider-compact::before {
+                width: 14px;
+                height: 14px;
+                top: 2px;
+                left: 2px;
+            }
+            .toggle-switch-compact input:checked + .toggle-slider-compact::before {
+                transform: translateX(12px);
+            }
+            .toggle-switch-compact .toggle-label-compact {
+                font-size: 0.45rem;
+                min-width: 20px;
+            }
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="light" id="app-body">
+    <script>
+        (function() {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.remove('light');
+                document.body.classList.add('dark');
+            }
+            const timestamp = Number(localStorage.getItem('admin_remember_timestamp'));
+            const hasRememberedSession = localStorage.getItem('admin_remember_enabled') === 'true' &&
+                localStorage.getItem('admin_remember_token') && timestamp &&
+                Date.now() - timestamp <= 7 * 24 * 60 * 60 * 1000;
+            if (hasRememberedSession) document.body.classList.add('session-checking');
+        })();
+    </script>
 
-    <div id="edit-modal">
-        <div class="modal-overlay" onclick="closeModal()"></div>
-        <div class="modal-content">
-            <h3 class="text-white font-bold mb-6 text-xl text-center">تعديل بيانات المقيم</h3>
-            <div class="flex flex-col gap-4">
-                <input type="text" id="edit-name" class="p-4 rounded-xl text-sm" placeholder="الاسم">
-                <input type="tel" id="edit-phone" class="p-4 rounded-xl text-sm font-mono ltr text-right" placeholder="0770...">
-                <select id="edit-spec" class="p-4 rounded-xl text-sm">
-                    <option value="NS">Neurosurgery</option>
-                    <option value="CT">Cardiothoracic</option>
-                    <option value="GS">General Surgery</option>
-                    <option value="US">Urosurgery</option>
-                    <option value="ENT">ENT</option>
-                    <option value="H">Cardiology</option>
-                    <option value="A">Anesthesia (All)</option>
-                    <option value="R">Radiology</option>
-                    <option value="ON">Oncology</option>
-                    <option value="RESERVE">RESERVE</option>
-                </select>
-                <div class="flex gap-3 mt-4">
-                    <button onclick="saveEdit()" class="flex-1 bg-amber-500 text-black py-4 rounded-2xl font-black text-sm">تأكيد التعديل</button>
-                    <button onclick="closeModal()" class="flex-1 bg-white/5 text-white py-4 rounded-2xl font-black text-sm">إلغاء</button>
-                </div>
+    <div id="toast-container"></div>
+
+    <!-- LOCK SCREEN -->
+    <div id="lock-screen" class="lock-screen">
+        <div class="lock-card text-center">
+            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                <i class="fas fa-user-md text-3xl text-white"></i>
             </div>
+            <h2 class="text-2xl font-black text-primary mb-1">🔐 <span data-hospital-name>Basra Teaching Hospital</span></h2>
+            <p class="text-sm text-secondary mb-6">أدخل كلمة المرور للدخول</p>
+            <div class="relative">
+                <input type="password" id="password-input" placeholder="•••••"
+                       class="input-field text-center text-xl tracking-[0.5rem] font-mono" maxlength="20">
+                <button id="login-btn" onclick="handleLogin()" class="btn-gradient w-full mt-4">
+                    <i class="fas fa-arrow-left ml-2"></i> Login
+                </button>
+                <p id="lock-error" class="text-red-500 text-sm mt-2 h-5"></p>
+            </div>
+            <div class="mt-4 flex items-center justify-center gap-3">
+                <label class="flex items-center gap-2 text-sm text-secondary cursor-pointer">
+                    <input type="checkbox" id="remember-me" checked class="w-4 h-4 accent-blue-500" /> تذكرني
+                </label>
+            </div>
+            <div class="lock-footer text-secondary">All rights reserved for Dr. Mohammed Riyadh</div>
         </div>
     </div>
 
-    <div class="max-w-xl mx-auto">
-        <div class="flex justify-between items-center mb-8 sticky top-0 bg-[#0b0e11]/80 backdrop-blur-md py-4 z-20">
+    <!-- MAIN APP -->
+    <div id="main-content" class="hidden-content max-w-3xl mx-auto px-4 py-6 relative z-10">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8 flex-wrap gap-3">
             <div>
-                <h1 class="text-3xl font-black text-white tracking-tighter">المقيمين 🇮🇶</h1>
-                <p id="count-tag" class="text-[11px] font-bold text-amber-500 uppercase">جاري التحميل...</p>
+                <h1 class="text-3xl font-black text-primary tracking-tight flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
+                        <i class="fas fa-hospital-user text-white text-sm"></i>
+                    </span>
+                    المقيمين
+                </h1>
+                <p id="count-tag" class="counter-badge mt-2">
+                    <i class="fas fa-users mr-1"></i> جاري التحميل...
+                </p>
             </div>
-            <button id="main-save-btn" onclick="saveToGithub()" class="btn-save bg-white/5 text-slate-400 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase">سحابة متزامنة</button>
+            <div class="flex items-center gap-2 flex-wrap">
+                <div class="pl-3 border-l border-subtle">
+                    <button id="logout-btn" onclick="logout()" class="btn-ghost hidden items-center gap-2 px-3 py-1.5 text-xs text-red-600 dark:text-red-400" title="تسجيل الخروج" aria-label="تسجيل الخروج">
+                        <i class="fas fa-right-from-bracket"></i> خروج
+                    </button>
+                </div>
+                <div class="theme-toggle-wrap">
+                    <button onclick="toggleTheme()" class="theme-toggle-btn" aria-label="Toggle theme">
+                        <span class="icon-wrap">
+                            <i class="fas fa-moon icon-moon"></i>
+                            <i class="fas fa-sun icon-sun"></i>
+                        </span>
+                    </button>
+                </div>
+                <!-- Admin Buttons (shown only when admin logged in) -->
+                <button id="admin-panel-btn" onclick="toggleAdminPanel()" class="btn-ghost text-xs px-3 py-1.5 hidden items-center gap-1 border-amber-200 dark:border-amber-800/30 bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400">
+                    <i class="fas fa-crown"></i> كلمات المرور
+                </button>
+                <button id="admin-specialties-btn" onclick="toggleSpecialtiesPanel()" class="btn-ghost text-xs px-3 py-1.5 hidden items-center gap-1 border-blue-200 dark:border-blue-800/30 bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400">
+                    <i class="fas fa-tags"></i> التخصصات
+                </button>
+                <button id="admin-import-btn" onclick="openImportModal()" class="btn-ghost text-xs px-3 py-1.5 hidden items-center gap-1 border-emerald-200 dark:border-emerald-800/30 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400">
+                    <i class="fas fa-file-import"></i> استيراد البيانات
+                </button>
+                <button id="admin-hospital-name-btn" onclick="openHospitalNameModal()" class="btn-ghost text-xs px-3 py-1.5 hidden items-center gap-1 border-violet-200 dark:border-violet-800/30 bg-violet-50 dark:bg-violet-950/20 text-violet-600 dark:text-violet-400">
+                    <i class="fas fa-hospital"></i> اسم المستشفى
+                </button>
+                <button onclick="toggleAddResidentPanel()" class="w-11 h-11 rounded-full bg-blue-600 dark:bg-amber-500 text-white dark:text-slate-950 flex items-center justify-center shadow-lg shadow-blue-500/25 dark:shadow-amber-500/20 transition-transform hover:scale-105 active:scale-95" title="إضافة مقيم" aria-label="إضافة مقيم">
+                    <i class="fas fa-plus text-base"></i>
+                </button>
+                <button id="main-save-btn" onclick="saveToGithub()" class="btn-ghost text-[10px] font-black uppercase flex items-center gap-2 px-4 py-2">
+                    <i class="fas fa-cloud-upload-alt"></i> حفظ
+                </button>
+            </div>
         </div>
 
-        <div class="card p-6 mb-8">
-            <div class="flex flex-col gap-4">
-                <input type="text" id="new-name" placeholder="اسم المقيم" class="p-4 rounded-2xl text-sm font-bold shadow-inner">
+        <!-- Admin Panel: Passwords -->
+        <div id="admin-panel" class="glass-card p-5 mb-4 hidden">
+            <h4 class="text-sm font-bold flex items-center gap-2 text-primary">
+                <i class="fas fa-lock text-amber-500"></i> تعديل كلمات المرور
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                <div>
+                    <label class="text-xs text-secondary">👤 عام</label>
+                    <input type="text" id="admin-pass-user" class="input-field text-sm" placeholder="user pass" />
+                </div>
+                <div>
+                    <label class="text-xs text-secondary">👑 مسؤول</label>
+                    <input type="text" id="admin-pass-admin" class="input-field text-sm" placeholder="admin pass" />
+                </div>
+            </div>
+            <button onclick="savePasswords()" class="btn-gradient w-full mt-3 text-sm"><i class="fas fa-save"></i> حفظ كلمات المرور</button>
+        </div>
+
+        <!-- Admin Panel: Specialties -->
+        <div id="specialties-panel" class="glass-card p-5 mb-4 hidden">
+            <div class="flex justify-between items-center mb-3">
+                <h4 class="text-sm font-bold flex items-center gap-2 text-primary">
+                    <i class="fas fa-tags text-blue-500 dark:text-blue-400"></i> إدارة التخصصات
+                </h4>
+                <button onclick="openAddSpecialty()" class="btn-gradient text-xs px-3 py-1.5">
+                    <i class="fas fa-plus"></i> إضافة تخصص
+                </button>
+            </div>
+            <div id="specialties-list" class="space-y-1 max-h-96 overflow-y-auto"></div>
+        </div>
+
+        <!-- Add Resident -->
+        <div id="add-resident-panel" class="glass-card p-6 mb-8 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-bold text-primary flex items-center gap-2">
+                    <i class="fas fa-plus-circle text-blue-500 dark:text-amber-400"></i> إضافة مقيم جديد
+                </h3>
+                <button onclick="toggleAddResidentPanel(false)" class="text-secondary/50 hover:text-red-500 text-lg px-2" title="إغلاق" aria-label="إغلاق"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="flex flex-col gap-3">
+                <input type="text" id="new-name" placeholder="اسم المقيم" class="input-field">
                 <div class="grid grid-cols-2 gap-3">
-                    <input type="tel" id="new-phone" placeholder="0770..." class="p-4 rounded-2xl text-sm font-mono">
-                    <select id="new-spec" class="p-4 rounded-2xl text-sm font-bold">
-                        <option value="NS">Neurosurgery</option>
-                        <option value="CT">Cardiothoracic</option>
-                        <option value="GS">General Surgery</option>
-                        <option value="US">Urosurgery</option>
-                        <option value="ENT">ENT</option>
-                        <option value="H">Cardiology</option>
-                        <option value="A">Anesthesia</option>
-                        <option value="R">Radiology</option>
-                        <option value="ON">Oncology</option>
-                        <option value="RESERVE">RESERVE</option>
+                    <input type="tel" id="new-phone" placeholder="0770..." class="input-field phone-ltr">
+                    <select id="new-spec" class="input-field appearance-none">
+                        <option value="">-- اختر التخصص --</option>
                     </select>
                 </div>
-                <button onclick="addResident()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-sm active:scale-95 transition-transform">إضافة وحفظ</button>
+                <div class="flex items-center gap-4 mt-1">
+                    <label class="flex items-center gap-2 text-sm font-medium text-primary cursor-pointer">
+                        <input type="checkbox" id="new-active" checked class="w-5 h-5 accent-blue-500 dark:accent-amber-500 rounded" />
+                        <span>نشط في الخدمة</span>
+                    </label>
+                </div>
+                <button onclick="addResident()" class="btn-gradient w-full"><i class="fas fa-plus"></i> إضافة وحفظ</button>
             </div>
         </div>
 
-        <div class="card overflow-hidden mb-10">
-            <div class="p-4 bg-white/5 border-b border-white/5">
-                <input type="text" id="search-db" oninput="renderResidents()" placeholder="بحث سريع..." class="w-full p-4 px-6 rounded-2xl text-sm !bg-black border-none text-white">
+        <!-- Search -->
+        <div class="glass-card p-4 mb-5">
+            <div class="relative">
+                <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-secondary/50"></i>
+                <input type="text" id="search-db" oninput="renderResidents()" placeholder="بحث سريع..." class="input-field pr-12">
             </div>
-            <div id="resident-list"></div>
+        </div>
+
+        <!-- Resident List -->
+        <div id="resident-list" class="space-y-1"></div>
+
+        <!-- Footer -->
+        <div class="footer-credit text-secondary">All rights reserved for Dr. Mohammed Riyadh</div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 class="text-xl font-black text-primary mb-5 text-center flex items-center justify-center gap-2">
+                <i class="fas fa-pen text-blue-500 dark:text-amber-400"></i> تعديل بيانات المقيم
+            </h3>
+            <div class="flex flex-col gap-4">
+                <input type="text" id="edit-name" class="input-field" placeholder="الاسم">
+                <input type="tel" id="edit-phone" class="input-field phone-ltr" placeholder="0770...">
+                <select id="edit-spec" class="input-field appearance-none">
+                    <option value="">-- اختر التخصص --</option>
+                </select>
+                <div class="flex items-center gap-3">
+                    <label class="flex items-center gap-2 text-sm font-medium text-primary cursor-pointer">
+                        <input type="checkbox" id="edit-active" class="w-5 h-5 accent-blue-500 dark:accent-amber-500 rounded" />
+                        <span>نشط</span>
+                    </label>
+                </div>
+                <div class="flex gap-3 mt-2">
+                    <button onclick="saveEdit()" class="flex-1 btn-gradient"><i class="fas fa-check ml-1"></i> تأكيد</button>
+                    <button onclick="closeModal()" class="flex-1 btn-ghost">إلغاء</button>
+                </div>
+            </div>
         </div>
     </div>
 
-<script>
-    const CONFIG = { user: "mHub96", repo: "s", path: "data.json" };
-    const _p = ["ghp_", "dAUtsFhTH", "a2KeJQO", "sxsCCt1v", "z8z1Z63Am", "sjS"];
-    const GH_TOKEN = _p.join('');
-    
-    let db = { passwords: [], names: [], schedule: [] };
-    let fileSha = "";
-    let currentEditIdx = null;
-
-    const specialties = [
-        { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
-        { id: "GS", name: "General Surgery" }, { id: "US", name: "Urosurgery" },
-        { id: "ENT", name: "ENT" }, { id: "H", name: "Cardiology" },
-        { id: "A", name: "Anesthesia (All)" }, { id: "R", name: "Radiology" },
-        { id: "ON", name: "Oncology" }, { id: "RESERVE", name: "RESERVE" }
-    ];
-
-    window.onload = init;
-
-    async function init() {
-        try {
-            const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
-                headers: { "Authorization": `token ${GH_TOKEN}` }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                fileSha = data.sha;
-                const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
-                db.names = (content.names || []).map(item => ({
-                    name: item.name || item[0] || "",
-                    spec: item.spec || item[1] || "NS",
-                    phone: item.phone || ""
-                }));
-                db.schedule = content.schedule || [];
-                renderResidents();
-            }
-        } catch (e) { console.error("Load Error:", e); }
-    }
-
-    function renderResidents() {
-        const list = document.getElementById('resident-list');
-        const query = document.getElementById('search-db').value.toLowerCase();
-        list.innerHTML = "";
-        
-        specialties.forEach(spec => {
-            const residents = db.names.filter(r => r.spec === spec.id && r.name.toLowerCase().includes(query));
-            if (residents.length === 0) return;
-
-            const isExpanded = query.length > 0 ? "active" : "";
-
-            const section = document.createElement('div');
-            section.className = "border-b border-white/5 last:border-0";
-            section.innerHTML = `
-                <div class="spec-header" onclick="toggleSection('${spec.id}')">
-                    <span>${spec.name} (${residents.length})</span>
-                    <span class="opacity-30">▼</span>
+    <!-- ADD/EDIT SPECIALTY MODAL (only for name/color/pool - toggle is in the list) -->
+    <div id="specialty-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 class="text-xl font-black text-primary mb-4 text-center flex items-center justify-center gap-2">
+                <i class="fas fa-tag text-blue-500 dark:text-amber-400"></i> <span id="specialty-modal-title">إضافة تخصص</span>
+            </h3>
+            <input type="hidden" id="specialty-edit-id">
+            <div class="flex flex-col gap-3">
+                <input type="text" id="spec-name-ar" class="input-field" placeholder="الاسم بالعربية (مثال: الجراحة العامة)">
+                <input type="text" id="spec-id" class="input-field" placeholder="المعرف (مثال: GS)" maxlength="10">
+                <input type="text" id="spec-name-en" class="input-field" placeholder="الاسم بالإنجليزية (مثال: General Surgery)">
+                <input type="text" id="spec-icon" class="input-field" placeholder="الأيقونة (مثال: 🔪)" maxlength="2">
+                
+                <!-- Color Picker with Generate Button -->
+                <div class="color-picker-wrap">
+                    <span class="color-label">لون التخصص</span>
+                    <input type="color" id="spec-color" value="#3b82f6" />
+                    <span class="color-hex" id="spec-color-hex">#3b82f6</span>
+                    <span class="spec-color-preview" id="spec-color-preview" style="background-color:#3b82f6;"></span>
+                    <button onclick="generateUniqueColor()" class="color-gen-btn" title="توليد لون فريد مختلف عن التخصصات الموجودة">
+                        <i class="fas fa-dice"></i> توليد
+                    </button>
                 </div>
-                <div id="content-${spec.id}" class="spec-content ${isExpanded}">
-                    ${residents.map((r) => {
-                        const idx = db.names.indexOf(r);
-                        return `
-                        <div class="resident-row hover:bg-white/[0.02]">
-                            <div class="clickable-area" onclick="openEdit(${idx})">
-                                <div class="text-white font-bold text-sm">${r.name}</div>
-                                <div class="text-[10px] font-mono text-slate-500 phone-display">${r.phone || ''}</div>
-                            </div>
-                            <button onclick="deleteResident(${idx})" class="text-red-900/50 hover:text-red-500 text-xs px-6 py-4">حذف</button>
-                        </div>`;
-                    }).join('')}
+
+                <div>
+                    <label class="text-xs text-secondary">التخصصات التي تقبل الأسماء منها (اختياري)</label>
+                    <div id="spec-pool-select" class="pool-selection"></div>
                 </div>
-            `;
-            list.appendChild(section);
-        });
-        document.getElementById('count-tag').innerText = `${db.names.length} مقيم مسجل`;
-    }
+                
+                <div class="flex gap-3 mt-2">
+                    <button onclick="saveSpecialty()" class="flex-1 btn-gradient"><i class="fas fa-check ml-1"></i> حفظ</button>
+                    <button onclick="closeSpecialtyModal()" class="flex-1 btn-ghost">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    function toggleSection(id) {
-        document.getElementById(`content-${id}`).classList.toggle('active');
-    }
+    <div id="import-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 class="text-xl font-black text-primary mb-2 text-center flex items-center justify-center gap-2">
+                <i class="fas fa-file-import text-emerald-500"></i> استيراد قاعدة البيانات
+            </h3>
+            <p class="text-xs text-secondary text-center mb-4">اختر دمج الأسماء فقط أو استبدال المقيمين والمناوبات. كلمات المرور وإعدادات التخصصات الحالية تبقى كما هي.</p>
+            <label class="text-xs font-bold text-secondary mb-1 block" for="import-file">ملف البيانات</label>
+            <input type="file" id="import-file" accept=".json,.txt,application/json,text/plain" onchange="loadImportFile(this)" class="input-field text-sm mb-3" />
+            <label class="text-xs font-bold text-secondary mb-1 block" for="import-data-text">محتوى البيانات</label>
+            <textarea id="import-data-text" class="input-field text-sm font-mono" rows="9" dir="ltr" placeholder='{"names": [], "schedule": [], "specialties": []}'></textarea>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                <button onclick="importDatabase('merge')" class="btn-gradient text-sm"><i class="fas fa-code-merge ml-1"></i> استيراد / دمج الأسماء</button>
+                <button onclick="importDatabase('replace')" class="btn-ghost border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-sm"><i class="fas fa-arrows-rotate ml-1"></i> استبدال البيانات</button>
+            </div>
+            <button onclick="closeImportModal()" class="btn-ghost w-full mt-3 text-sm">إلغاء</button>
+        </div>
+    </div>
 
-    function formatIraqiPhone(num) {
-        let clean = num.replace(/\D/g, '').trim(); 
-        if (!clean) return "";
-        // Convert 07... to +9647...
-        if (clean.startsWith('07')) return '+964' + clean.substring(1);
-        // Ensure + is there if starts with 964
-        if (clean.startsWith('964')) return '+' + clean;
-        // If they enter just 7... (common mistake), assume +964
-        if (clean.length === 10 && clean.startsWith('7')) return '+964' + clean;
-        
-        return num.trim();
-    }
+    <div id="hospital-name-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width:460px;">
+            <h3 class="text-xl font-black text-primary mb-2 text-center flex items-center justify-center gap-2">
+                <i class="fas fa-hospital text-violet-500"></i> اسم المستشفى
+            </h3>
+            <p class="text-xs text-secondary text-center mb-4">سيظهر هذا الاسم في رؤوس صفحات النظام دون تغيير التصميم.</p>
+            <input type="text" id="hospital-name-input" class="input-field text-center" maxlength="100" placeholder="Hospital name" dir="auto" />
+            <div class="flex gap-3 mt-4">
+                <button onclick="saveHospitalName()" class="flex-1 btn-gradient"><i class="fas fa-check ml-1"></i> حفظ الاسم</button>
+                <button onclick="closeHospitalNameModal()" class="flex-1 btn-ghost">إلغاء</button>
+            </div>
+        </div>
+    </div>
 
-    function ensureDoctorTitle(name) {
-        let n = name.trim();
-        if (!n) return "";
-        return (n.startsWith("د.") || n.startsWith("د ")) ? n : "د. " + n;
-    }
+    <script>
+        // ========== CONFIG ==========
+        const CONFIG = { user: "mHub96", repo: "s", path: "data.json" };
+        const _p = ["ghp_", "dAUtsFhTH", "a2KeJQO", "sxsCCt1v", "z8z1Z63Am", "sjS"];
+        const GH_TOKEN = _p.join('');
 
-    function openEdit(idx) {
-        currentEditIdx = idx;
-        const r = db.names[idx];
-        document.getElementById('edit-name').value = r.name;
-        document.getElementById('edit-phone').value = r.phone;
-        document.getElementById('edit-spec').value = r.spec;
-        document.getElementById('edit-modal').classList.add('active');
-    }
+        // ========== STATE ==========
+        const cachedHospitalName = localStorage.getItem('hospital_name_cache');
+        let db = { hospitalName: cachedHospitalName || 'Basra Teaching Hospital', specialties: [], names: [], schedule: [], passwords: {} };
+        let fileSha = "";
+        let currentEditIdx = null;
+        let currentSpecialtyEditId = null;
+        let isAdmin = false;
+        let isDataLoaded = false;
+        let isAutoLoginAttempted = false;
+        const REMEMBER_TOKEN_KEY = 'admin_remember_token';
+        const REMEMBER_ENABLED_KEY = 'admin_remember_enabled';
+        const REMEMBER_TIMESTAMP_KEY = 'admin_remember_timestamp';
 
-    function closeModal() {
-        document.getElementById('edit-modal').classList.remove('active');
-    }
-
-    async function saveEdit() {
-        const nameVal = document.getElementById('edit-name').value;
-        const phoneVal = document.getElementById('edit-phone').value;
-        
-        db.names[currentEditIdx] = {
-            name: ensureDoctorTitle(nameVal),
-            phone: formatIraqiPhone(phoneVal),
-            spec: document.getElementById('edit-spec').value
-        };
-        closeModal();
-        renderResidents();
-        await saveToGithub();
-    }
-
-    async function deleteResident(idx) {
-        if(!confirm("هل أنت متأكد من حذف هذا المقيم؟")) return;
-        db.names.splice(idx, 1);
-        renderResidents();
-        await saveToGithub();
-    }
-
-    async function addResident() {
-        const nameEl = document.getElementById('new-name');
-        const phoneEl = document.getElementById('new-phone');
-        const specEl = document.getElementById('new-spec');
-        if (!nameEl.value.trim()) return;
-        
-        db.names.push({ 
-            name: ensureDoctorTitle(nameEl.value), 
-            spec: specEl.value, 
-            phone: formatIraqiPhone(phoneEl.value) 
-        });
-        
-        nameEl.value = ""; phoneEl.value = "";
-        renderResidents();
-        await saveToGithub();
-    }
-
-    async function saveToGithub() {
-        const btn = document.getElementById('main-save-btn');
-        btn.disabled = true;
-        btn.innerText = "جاري الحفظ...";
-        btn.classList.add('loading');
-        
-        try {
-            const body = { 
-                message: "Database Update 🇮🇶", 
-                content: btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2)))), 
-                sha: fileSha 
-            };
-            const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}`, {
-                method: "PUT",
-                headers: { "Authorization": `token ${GH_TOKEN}` },
-                body: JSON.stringify(body)
-            });
-
-            if (res.ok) {
-                const updated = await res.json();
-                fileSha = updated.content.sha;
-                btn.innerText = "تم الحفظ! ✅";
-                btn.classList.replace('loading', 'success');
-            } else { throw new Error(); }
-        } catch (e) {
-            btn.innerText = "فشل! ❌";
-            btn.classList.replace('loading', 'error');
+        function applyHospitalName() {
+            const hospitalName = String(db.hospitalName || 'Basra Teaching Hospital').trim() || 'Basra Teaching Hospital';
+            document.querySelectorAll('[data-hospital-name]').forEach(element => { element.textContent = hospitalName; });
+            localStorage.setItem('hospital_name_cache', hospitalName);
+            document.title = hospitalName + ' · نظام المقيمين';
         }
-        setTimeout(() => {
-            btn.disabled = false;
-            btn.innerText = "سحابة متزامنة";
-            btn.className = "btn-save bg-white/5 text-slate-400 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase";
-        }, 2500);
-    }
-</script>
+
+        applyHospitalName();
+
+        function saveRememberedLogin(password) {
+            if (document.getElementById('remember-me').checked && password) {
+                localStorage.setItem(REMEMBER_TOKEN_KEY, btoa(password));
+                localStorage.setItem(REMEMBER_ENABLED_KEY, 'true');
+                localStorage.setItem(REMEMBER_TIMESTAMP_KEY, Date.now().toString());
+            } else {
+                clearRememberedLogin();
+            }
+        }
+
+        function clearRememberedLogin() {
+            localStorage.removeItem(REMEMBER_TOKEN_KEY);
+            localStorage.removeItem(REMEMBER_ENABLED_KEY);
+            localStorage.removeItem(REMEMBER_TIMESTAMP_KEY);
+        }
+
+        function getRememberedAdminPassword() {
+            const token = localStorage.getItem(REMEMBER_TOKEN_KEY);
+            const enabled = localStorage.getItem(REMEMBER_ENABLED_KEY);
+            const timestamp = Number(localStorage.getItem(REMEMBER_TIMESTAMP_KEY));
+            const expired = !timestamp || Date.now() - timestamp > 7 * 24 * 60 * 60 * 1000;
+            if (!token || enabled !== 'true' || expired) {
+                if (expired) clearRememberedLogin();
+                return null;
+            }
+            try { return atob(token); } catch (error) { clearRememberedLogin(); return null; }
+        }
+
+        function logout() {
+            clearRememberedLogin();
+            isAdmin = false;
+            isDataLoaded = false;
+            const logoutButton = document.getElementById('logout-btn');
+            logoutButton.classList.add('hidden');
+            logoutButton.classList.remove('flex');
+            document.getElementById('lock-screen').style.display = 'flex';
+            document.getElementById('main-content').classList.add('hidden-content');
+            document.body.classList.remove('session-checking');
+            document.getElementById('password-input').value = '';
+            document.getElementById('password-input').focus();
+            showToast('تم تسجيل الخروج', 'info');
+        }
+
+        // ========== TOAST SYSTEM ==========
+        function showToast(message, type = 'info', duration = 3000) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <i class="fas ${icons[type] || icons.info}"></i>
+                <span>${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.classList.add('hide');
+                setTimeout(() => { if (toast.parentElement) toast.remove(); }, 500);
+            }, duration);
+        }
+
+        // ========== THEME ==========
+        function toggleTheme() {
+            document.getElementById('app-body').classList.toggle('light');
+            document.getElementById('app-body').classList.toggle('dark');
+            localStorage.setItem('theme', document.getElementById('app-body').classList.contains('dark') ? 'dark' : 'light');
+        }
+        if (localStorage.getItem('theme') === 'dark') {
+            document.getElementById('app-body').classList.remove('light');
+            document.getElementById('app-body').classList.add('dark');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const lockScreen = document.getElementById('lock-screen');
+                if (lockScreen && lockScreen.style.display !== 'none') {
+                    e.preventDefault();
+                    handleLogin();
+                }
+            }
+            if (e.key === 'Escape') {
+                closeModal();
+                closeSpecialtyModal();
+            }
+        });
+
+        // ========== LOGIN FUNCTION ==========
+        async function handleLogin() {
+            const input = document.getElementById('password-input');
+            const err = document.getElementById('lock-error');
+            const pwd = input.value;
+
+            if (!pwd) {
+                err.innerText = '❌ الرجاء إدخال كلمة المرور';
+                input.focus();
+                setTimeout(() => err.innerText = '', 2500);
+                return;
+            }
+
+            err.innerText = '⏳ جاري التحقق...';
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
+                    headers: { "Authorization": `token ${GH_TOKEN}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    fileSha = data.sha;
+                    const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+
+                    const userPass = content.passwords?.user || null;
+                    const adminPass = content.passwords?.admin || null;
+
+                    if (userPass && pwd === userPass) {
+                        isAdmin = false;
+                        err.innerText = '';
+                        loginSuccess(content);
+                        return;
+                    } else if (adminPass && pwd === adminPass) {
+                        isAdmin = true;
+                        err.innerText = '';
+                        loginSuccess(content);
+                        return;
+                    } else {
+                        err.innerText = '❌ كلمة المرور غير صحيحة';
+                        input.value = '';
+                        input.focus();
+                        setTimeout(() => err.innerText = '', 2500);
+                        return;
+                    }
+                } else {
+                    err.innerText = '❌ خطأ في الاتصال بقاعدة البيانات';
+                    setTimeout(() => err.innerText = '', 2500);
+                }
+            } catch (error) {
+                console.error("Login error:", error);
+                err.innerText = '❌ خطأ في الاتصال بقاعدة البيانات';
+                setTimeout(() => err.innerText = '', 2500);
+            }
+        }
+
+        function loginSuccess(content) {
+            db.names = (content.names || []).map(item => ({
+                name: item.name || item[0] || "",
+                spec: item.spec || item[1] || "NS",
+                phone: item.phone || "",
+                tag: item.tag || item.spec || item[1] || "NS",
+                active: item.active !== undefined ? item.active : (item.spec !== "RESERVE")
+            }));
+            db.schedule = content.schedule || [];
+            db.passwords = content.passwords || {};
+            db.hospitalName = String(content.hospitalName || 'Basra Teaching Hospital').trim();
+            applyHospitalName();
+            db.specialties = (content.specialties || []).map(s => ({
+                ...s,
+                enabled: s.enabled !== undefined ? s.enabled : true
+            }));
+
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('main-content').classList.remove('hidden-content');
+            document.body.classList.remove('session-checking');
+
+            if (isAdmin) {
+                document.getElementById('admin-panel-btn').classList.remove('hidden');
+                document.getElementById('admin-specialties-btn').classList.remove('hidden');
+                document.getElementById('admin-import-btn').classList.remove('hidden');
+                document.getElementById('admin-hospital-name-btn').classList.remove('hidden');
+            }
+            const logoutButton = document.getElementById('logout-btn');
+            logoutButton.classList.remove('hidden');
+            logoutButton.classList.add('flex');
+
+            saveRememberedLogin(document.getElementById('password-input').value);
+
+            populateSpecialtySelects();
+            renderSpecialties();
+            renderResidents();
+            isDataLoaded = true;
+            showToast('تم تسجيل الدخول بنجاح', 'success');
+        }
+
+        // ========== AUTO-LOGIN ==========
+        (function() {
+            const password = getRememberedAdminPassword();
+            if (password && !isAutoLoginAttempted) {
+                isAutoLoginAttempted = true;
+                performAutoLogin(password);
+            }
+        })();
+
+        async function performAutoLogin(pwd) {
+            try {
+                const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
+                    headers: { "Authorization": `token ${GH_TOKEN}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    fileSha = data.sha;
+                    const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+                    const userPass = content.passwords?.user || null;
+                    const adminPass = content.passwords?.admin || null;
+                    if ((userPass && pwd === userPass) || (adminPass && pwd === adminPass)) {
+                        isAdmin = (adminPass && pwd === adminPass);
+                        document.getElementById('password-input').value = pwd;
+                        document.getElementById('lock-screen').style.display = 'none';
+                        document.getElementById('main-content').classList.remove('hidden-content');
+                        if (isAdmin) {
+                            document.getElementById('admin-panel-btn').classList.remove('hidden');
+                            document.getElementById('admin-specialties-btn').classList.remove('hidden');
+                            document.getElementById('admin-import-btn').classList.remove('hidden');
+                            document.getElementById('admin-hospital-name-btn').classList.remove('hidden');
+                        }
+                        loginSuccess(content);
+                        return;
+                    }
+                }
+            } catch (e) { console.error("Auto-login load error:", e); }
+            clearRememberedLogin();
+            document.body.classList.remove('session-checking');
+            document.getElementById('lock-screen').style.display = 'flex';
+            document.getElementById('password-input').focus();
+        }
+
+        // ========== POPULATE SPECIALTY SELECTS ==========
+        function populateSpecialtySelects() {
+            const selects = ['new-spec', 'edit-spec'];
+            selects.forEach(id => {
+                const sel = document.getElementById(id);
+                if (!sel) return;
+                const currentVal = sel.value;
+                sel.innerHTML = '<option value="">-- اختر التخصص --</option>';
+                (db.specialties || []).forEach(spec => {
+                    const opt = document.createElement('option');
+                    opt.value = spec.id;
+                    const disabledLabel = spec.enabled === false ? ' 🔒' : '';
+                    opt.textContent = `${spec.icon || '🏥'} ${spec.name_ar}${disabledLabel}`;
+                    sel.appendChild(opt);
+                });
+                if (currentVal) sel.value = currentVal;
+            });
+        }
+
+        // ========== COLOR GENERATOR ==========
+        function generateUniqueColor() {
+            const existingColors = (db.specialties || [])
+                .filter(s => s.id !== document.getElementById('specialty-edit-id').value)
+                .map(s => s.color || '#3b82f6');
+            
+            if (existingColors.length === 0) {
+                const color = '#3b82f6';
+                updateColorPicker(color);
+                return;
+            }
+
+            for (let attempt = 0; attempt < 100; attempt++) {
+                const hue = Math.floor(Math.random() * 360);
+                const saturation = 70 + Math.floor(Math.random() * 25);
+                const lightness = 45 + Math.floor(Math.random() * 30);
+                const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                const hexColor = hslToHex(hue, saturation, lightness);
+                
+                let isTooSimilar = false;
+                for (const existing of existingColors) {
+                    const distance = colorDistance(hexColor, existing);
+                    if (distance < 50) {
+                        isTooSimilar = true;
+                        break;
+                    }
+                }
+                
+                if (!isTooSimilar) {
+                    updateColorPicker(hexColor);
+                    showToast('تم توليد لون فريد!', 'success', 1500);
+                    return;
+                }
+            }
+            
+            for (let attempt = 0; attempt < 50; attempt++) {
+                const hue = Math.floor(Math.random() * 360);
+                const saturation = 60 + Math.floor(Math.random() * 35);
+                const lightness = 30 + Math.floor(Math.random() * 40);
+                const hexColor = hslToHex(hue, saturation, lightness);
+                
+                let isTooSimilar = false;
+                for (const existing of existingColors) {
+                    const distance = colorDistance(hexColor, existing);
+                    if (distance < 30) {
+                        isTooSimilar = true;
+                        break;
+                    }
+                }
+                
+                if (!isTooSimilar) {
+                    updateColorPicker(hexColor);
+                    showToast('تم توليد لون فريد!', 'success', 1500);
+                    return;
+                }
+            }
+            
+            const fallbackColors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e67e22', '#e84393'];
+            const randomIndex = Math.floor(Math.random() * fallbackColors.length);
+            updateColorPicker(fallbackColors[randomIndex]);
+            showToast('تم توليد لون', 'info', 1500);
+        }
+
+        function hslToHex(h, s, l) {
+            s /= 100;
+            l /= 100;
+            const c = (1 - Math.abs(2 * l - 1)) * s;
+            const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            const m = l - c / 2;
+            let r, g, b;
+            if (h < 60) { r = c; g = x; b = 0; }
+            else if (h < 120) { r = x; g = c; b = 0; }
+            else if (h < 180) { r = 0; g = c; b = x; }
+            else if (h < 240) { r = 0; g = x; b = c; }
+            else if (h < 300) { r = x; g = 0; b = c; }
+            else { r = c; g = 0; b = x; }
+            const rgb = [r, g, b].map(val => Math.round((val + m) * 255));
+            return '#' + rgb.map(val => val.toString(16).padStart(2, '0')).join('');
+        }
+
+        function colorDistance(hex1, hex2) {
+            const rgb1 = hexToRgb(hex1);
+            const rgb2 = hexToRgb(hex2);
+            if (!rgb1 || !rgb2) return 999;
+            return Math.sqrt(
+                Math.pow(rgb1.r - rgb2.r, 2) +
+                Math.pow(rgb1.g - rgb2.g, 2) +
+                Math.pow(rgb1.b - rgb2.b, 2)
+            );
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function updateColorPicker(color) {
+            const colorInput = document.getElementById('spec-color');
+            const hexDisplay = document.getElementById('spec-color-hex');
+            const preview = document.getElementById('spec-color-preview');
+            if (colorInput) colorInput.value = color;
+            if (hexDisplay) hexDisplay.textContent = color;
+            if (preview) preview.style.backgroundColor = color;
+        }
+
+        // ========== TOGGLE SPECIALTY ENABLED ==========
+        async function toggleSpecialtyEnabled(specId, checked) {
+            const spec = db.specialties.find(s => s.id === specId);
+            if (!spec) return;
+            
+            spec.enabled = checked;
+            
+            // Update the UI immediately
+            renderSpecialties();
+            renderResidents();
+            populateSpecialtySelects();
+            
+            // Save to GitHub
+            await saveToGithub(false);
+            
+            showToast(checked ? 'تم تفعيل التخصص' : 'تم إخفاء التخصص', 'success', 1500);
+        }
+
+        // ========== SPECIALTY MANAGEMENT ==========
+        function toggleSpecialtiesPanel() {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            const panel = document.getElementById('specialties-panel');
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) {
+                renderSpecialties();
+            }
+        }
+
+        function renderSpecialties() {
+            const container = document.getElementById('specialties-list');
+            if (!container) return;
+            const specialties = db.specialties || [];
+            if (specialties.length === 0) {
+                container.innerHTML = `<div class="text-center text-secondary/40 text-sm py-4">لا يوجد تخصصات. أضف تخصصاً جديداً.</div>`;
+                return;
+            }
+            container.innerHTML = specialties.map((spec, index) => {
+                const poolCount = (spec.acceptPool || []).length;
+                const color = spec.color || '#3b82f6';
+                const isEnabled = spec.enabled !== false;
+                return `
+                    <div class="specialty-item ${!isEnabled ? 'disabled-spec' : ''}" data-spec-id="${spec.id}">
+                        <button class="specialty-drag-handle" type="button" aria-label="اسحب لترتيب التخصص" title="اسحب لترتيب التخصص"><i class="fas fa-grip-lines"></i></button>
+                        <span class="spec-icon">${spec.icon || '🏥'}</span>
+                        <span class="spec-id">${spec.id}</span>
+                        <span class="spec-name">${spec.name_ar}</span>
+                        <span class="spec-color-preview" style="background-color:${color};"></span>
+                        <span class="text-[0.5rem] text-secondary/40">${spec.name_en || ''}</span>
+                        ${poolCount > 0 ? `<span class="text-[0.5rem] text-blue-500 dark:text-amber-400">+${poolCount}</span>` : ''}
+                        
+                        <!-- Toggle Switch -->
+                        <label class="toggle-switch-compact" title="${isEnabled ? 'إخفاء التخصص عن الجمهور' : 'إظهار التخصص للجمهور'}">
+                            <input type="checkbox" ${isEnabled ? 'checked' : ''} 
+                                   onchange="toggleSpecialtyEnabled('${spec.id}', this.checked)" />
+                            <span class="toggle-slider-compact"></span>
+                            <span class="toggle-label-compact ${isEnabled ? 'on' : 'off'}">${isEnabled ? 'ظاهر' : 'مخفي'}</span>
+                        </label>
+                        
+                        <div class="spec-actions">
+                            <button class="spec-edit-btn" onclick="openEditSpecialty('${spec.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="spec-delete-btn" onclick="deleteSpecialty('${spec.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            setupSpecialtyDragSorting();
+        }
+
+        function setupSpecialtyDragSorting() {
+            const container = document.getElementById('specialties-list');
+            if (!container) return;
+
+            container.querySelectorAll('.specialty-drag-handle').forEach(handle => {
+                handle.addEventListener('pointerdown', function(event) {
+                    if (!isAdmin || event.button !== 0) return;
+                    const source = handle.closest('.specialty-item');
+                    if (!source) return;
+
+                    event.preventDefault();
+                    const sourceId = source.dataset.specId;
+                    const originalOrder = Array.from(container.querySelectorAll('.specialty-item')).map(item => item.dataset.specId);
+                    const sourceRect = source.getBoundingClientRect();
+                    const ghost = source.cloneNode(true);
+                    ghost.classList.add('specialty-drag-ghost');
+                    ghost.style.width = sourceRect.width + 'px';
+                    ghost.style.left = sourceRect.left + 'px';
+                    ghost.style.top = sourceRect.top + 'px';
+                    document.body.appendChild(ghost);
+                    source.classList.add('sorting-source');
+
+                    function reorderWithAnimation(target, insertBefore) {
+                        const positions = new Map();
+                        container.querySelectorAll('.specialty-item').forEach(item => positions.set(item, item.getBoundingClientRect().top));
+                        container.insertBefore(source, insertBefore ? target : target.nextSibling);
+                        container.querySelectorAll('.specialty-item').forEach(item => {
+                            const previousTop = positions.get(item);
+                            const offset = previousTop === undefined ? 0 : previousTop - item.getBoundingClientRect().top;
+                            if (!offset) return;
+                            item.style.transition = 'none';
+                            item.style.transform = `translateY(${offset}px)`;
+                            requestAnimationFrame(() => {
+                                item.style.transition = 'transform 0.2s ease';
+                                item.style.transform = '';
+                            });
+                        });
+                    }
+
+                    function moveGhost(pointerEvent) {
+                        ghost.style.top = (pointerEvent.clientY - sourceRect.height / 2) + 'px';
+                        const target = document.elementFromPoint(pointerEvent.clientX, pointerEvent.clientY)?.closest('.specialty-item');
+                        if (!target || target === source || !container.contains(target)) return;
+
+                        const targetRect = target.getBoundingClientRect();
+                        if (pointerEvent.clientY < targetRect.top + targetRect.height / 2) {
+                            reorderWithAnimation(target, true);
+                        } else {
+                            reorderWithAnimation(target, false);
+                        }
+                    }
+
+                    function finishDrag() {
+                        document.removeEventListener('pointermove', moveGhost);
+                        document.removeEventListener('pointerup', finishDrag);
+                        document.removeEventListener('pointercancel', finishDrag);
+                        ghost.remove();
+                        source.classList.remove('sorting-source');
+
+                        const orderedIds = Array.from(container.querySelectorAll('.specialty-item')).map(item => item.dataset.specId);
+                        if (orderedIds.join('|') === originalOrder.join('|')) return;
+                        db.specialties = orderedIds.map(id => db.specialties.find(spec => spec.id === id)).filter(Boolean);
+                        populateSpecialtySelects();
+                        renderSpecialties();
+                        saveToGithub(false);
+                        showToast('تم تحديث ترتيب التخصصات', 'success', 1500);
+                    }
+
+                    document.addEventListener('pointermove', moveGhost);
+                    document.addEventListener('pointerup', finishDrag, { once: true });
+                    document.addEventListener('pointercancel', finishDrag, { once: true });
+                });
+            });
+        }
+
+        function openAddSpecialty() {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            currentSpecialtyEditId = null;
+            document.getElementById('specialty-modal-title').textContent = 'إضافة تخصص جديد';
+            document.getElementById('spec-id').value = '';
+            document.getElementById('spec-name-ar').value = '';
+            document.getElementById('spec-name-en').value = '';
+            document.getElementById('spec-icon').value = '';
+            document.getElementById('spec-color').value = '#3b82f6';
+            document.getElementById('spec-color-hex').textContent = '#3b82f6';
+            document.getElementById('spec-color-preview').style.backgroundColor = '#3b82f6';
+            document.getElementById('specialty-edit-id').value = '';
+            renderPoolSelection([]);
+            document.getElementById('specialty-modal').classList.add('active');
+        }
+
+        function openEditSpecialty(id) {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            const spec = db.specialties.find(s => s.id === id);
+            if (!spec) { showToast('التخصص غير موجود', 'error'); return; }
+            currentSpecialtyEditId = id;
+            document.getElementById('specialty-modal-title').textContent = 'تعديل تخصص';
+            document.getElementById('spec-id').value = spec.id;
+            document.getElementById('spec-name-ar').value = spec.name_ar || '';
+            document.getElementById('spec-name-en').value = spec.name_en || '';
+            document.getElementById('spec-icon').value = spec.icon || '';
+            const color = spec.color || '#3b82f6';
+            document.getElementById('spec-color').value = color;
+            document.getElementById('spec-color-hex').textContent = color;
+            document.getElementById('spec-color-preview').style.backgroundColor = color;
+            document.getElementById('specialty-edit-id').value = id;
+            renderPoolSelection(spec.acceptPool || []);
+            document.getElementById('specialty-modal').classList.add('active');
+        }
+
+        // Color picker live update
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorInput = document.getElementById('spec-color');
+            if (colorInput) {
+                colorInput.addEventListener('input', function() {
+                    const val = this.value;
+                    document.getElementById('spec-color-hex').textContent = val;
+                    document.getElementById('spec-color-preview').style.backgroundColor = val;
+                });
+            }
+        });
+
+        function renderPoolSelection(selected) {
+            const container = document.getElementById('spec-pool-select');
+            if (!container) return;
+            const allSpecs = db.specialties || [];
+            if (allSpecs.length === 0) {
+                container.innerHTML = '<div class="text-xs text-secondary/40">أضف تخصصات أولاً لتحديد المصادر</div>';
+                return;
+            }
+            const currentEditId = document.getElementById('specialty-edit-id').value;
+            const filteredSpecs = allSpecs.filter(s => s.id !== currentEditId);
+            
+            if (filteredSpecs.length === 0) {
+                container.innerHTML = '<div class="text-xs text-secondary/40">لا توجد تخصصات أخرى لإضافتها</div>';
+                return;
+            }
+
+            container.innerHTML = filteredSpecs.map(spec => {
+                const isChecked = selected.includes(spec.id);
+                const isEnabled = spec.enabled !== false;
+                return `
+                    <label class="pool-option ${isChecked ? 'selected' : ''}" style="${!isEnabled ? 'opacity:0.5;' : ''}">
+                        <input type="checkbox" value="${spec.id}" ${isChecked ? 'checked' : ''} />
+                        <span class="spec-icon-small">${spec.icon || '🏥'}</span>
+                        <span class="spec-label">${spec.name_ar}${!isEnabled ? ' 🔒' : ''}</span>
+                    </label>
+                `;
+            }).join('');
+        }
+
+        function getPoolSelection() {
+            const container = document.getElementById('spec-pool-select');
+            if (!container) return [];
+            const checked = container.querySelectorAll('input[type="checkbox"]:checked');
+            return Array.from(checked).map(cb => cb.value);
+        }
+
+        function saveSpecialty() {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            const id = document.getElementById('spec-id').value.trim();
+            const nameAr = document.getElementById('spec-name-ar').value.trim();
+            const nameEn = document.getElementById('spec-name-en').value.trim();
+            const icon = document.getElementById('spec-icon').value.trim() || '🏥';
+            const color = document.getElementById('spec-color').value || '#3b82f6';
+            const editId = document.getElementById('specialty-edit-id').value;
+            const acceptPool = getPoolSelection();
+
+            if (!id) { showToast('الرجاء إدخال المعرف', 'error'); return; }
+            if (!nameAr) { showToast('الرجاء إدخال الاسم بالعربية', 'error'); return; }
+
+            const exists = db.specialties.some(s => s.id === id && s.id !== editId);
+            if (exists) { showToast('هذا المعرف مستخدم بالفعل', 'error'); return; }
+
+            // Preserve enabled status if editing
+            let enabled = true;
+            if (editId) {
+                const existing = db.specialties.find(s => s.id === editId);
+                if (existing) enabled = existing.enabled !== false;
+            }
+
+            const specialty = { id, name_ar: nameAr, name_en: nameEn || nameAr, icon, color, acceptPool, enabled };
+
+            if (editId) {
+                const idx = db.specialties.findIndex(s => s.id === editId);
+                if (idx !== -1) db.specialties[idx] = specialty;
+                db.names.forEach(r => {
+                    if (r.tag === editId || r.spec === editId) {
+                        r.tag = id;
+                        r.spec = id;
+                    }
+                });
+                db.schedule.forEach(s => {
+                    if (s.specCode === editId) s.specCode = id;
+                });
+                showToast('تم تحديث التخصص بنجاح', 'success');
+            } else {
+                db.specialties.push(specialty);
+                showToast('تم إضافة التخصص بنجاح', 'success');
+            }
+
+            closeSpecialtyModal();
+            populateSpecialtySelects();
+            renderSpecialties();
+            renderResidents();
+            saveToGithub(false);
+        }
+
+        function deleteSpecialty(id) {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            const spec = db.specialties.find(s => s.id === id);
+            if (!spec) return;
+            const inUse = db.names.some(r => r.spec === id || r.tag === id);
+            if (inUse) {
+                showToast('لا يمكن حذف تخصص مستخدم من قبل مقيمين', 'error');
+                return;
+            }
+            if (!confirm(`هل أنت متأكد من حذف التخصص "${spec.name_ar}"؟`)) return;
+            db.specialties = db.specialties.filter(s => s.id !== id);
+            renderSpecialties();
+            populateSpecialtySelects();
+            saveToGithub(false);
+            showToast('تم حذف التخصص بنجاح', 'success');
+        }
+
+        function closeSpecialtyModal() {
+            document.getElementById('specialty-modal').classList.remove('active');
+        }
+
+        // ========== ADMIN PANEL (Passwords) ==========
+        function toggleAdminPanel() {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            const panel = document.getElementById('admin-panel');
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) {
+                document.getElementById('admin-pass-user').value = db.passwords?.user || '';
+                document.getElementById('admin-pass-admin').value = db.passwords?.admin || '';
+            }
+        }
+
+        function savePasswords() {
+            const u = document.getElementById('admin-pass-user').value.trim();
+            const a = document.getElementById('admin-pass-admin').value.trim();
+            if (u.length < 3 || a.length < 3) {
+                showToast('كلمة المرور يجب أن تكون 3 أحرف على الأقل', 'error');
+                return;
+            }
+            db.passwords = { user: u, admin: a };
+            clearRememberedLogin();
+            saveToGithub(false);
+            showToast('تم تحديث كلمات المرور بنجاح. سجل الدخول مرة أخرى لتفعيل التذكر.', 'success');
+        }
+
+        function openHospitalNameModal() {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            const input = document.getElementById('hospital-name-input');
+            input.value = db.hospitalName || 'Basra Teaching Hospital';
+            document.getElementById('hospital-name-modal').classList.add('active');
+            input.focus();
+            input.select();
+        }
+
+        function closeHospitalNameModal() {
+            document.getElementById('hospital-name-modal').classList.remove('active');
+        }
+
+        function toggleAddResidentPanel(forceOpen) {
+            const panel = document.getElementById('add-resident-panel');
+            const shouldOpen = forceOpen === undefined ? panel.classList.contains('hidden') : forceOpen;
+            panel.classList.toggle('hidden', !shouldOpen);
+            if (shouldOpen) {
+                document.getElementById('new-name').focus();
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        async function saveHospitalName() {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            const hospitalName = document.getElementById('hospital-name-input').value.trim();
+            if (!hospitalName) {
+                showToast('الرجاء إدخال اسم المستشفى', 'error');
+                return;
+            }
+            db.hospitalName = hospitalName;
+            applyHospitalName();
+            closeHospitalNameModal();
+            await saveToGithub(false);
+            showToast('تم حفظ اسم المستشفى', 'success');
+        }
+
+        // ========== ADMIN DATA IMPORT ==========
+        function openImportModal() {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            document.getElementById('import-file').value = '';
+            document.getElementById('import-data-text').value = '';
+            document.getElementById('import-modal').classList.add('active');
+        }
+
+        function closeImportModal() {
+            document.getElementById('import-modal').classList.remove('active');
+        }
+
+        function loadImportFile(input) {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            const file = input.files && input.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('حجم الملف يجب أن لا يتجاوز 5MB', 'error');
+                input.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('import-data-text').value = reader.result;
+            };
+            reader.onerror = function() { showToast('تعذر قراءة الملف', 'error'); };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        function normalizeImportedDatabase(data, mode) {
+            if (!data || typeof data !== 'object' || Array.isArray(data)) {
+                throw new Error('صيغة البيانات غير صالحة');
+            }
+            if (!Array.isArray(data.names)) {
+                throw new Error('يجب أن يحتوي الملف على names');
+            }
+            if (mode === 'replace' && !Array.isArray(data.schedule)) {
+                throw new Error('الاستبدال يتطلب حقل schedule أيضاً');
+            }
+
+            const names = data.names.map((item, index) => {
+                const name = String(item && (item.name || item[0]) || '').trim();
+                const spec = String(item && (item.spec || item[1]) || '').trim();
+                if (!name || !spec) throw new Error(`بيانات المقيم رقم ${index + 1} غير مكتملة`);
+                return {
+                    name,
+                    spec,
+                    phone: String(item && item.phone || ''),
+                    tag: String(item && item.tag || spec),
+                    active: item && item.active !== undefined ? Boolean(item.active) : spec !== 'RESERVE'
+                };
+            });
+
+            const schedule = (mode === 'replace' ? data.schedule : []).map((item, index) => {
+                const date = String(item && item.date || '').trim();
+                const specCode = String(item && item.specCode || '').trim();
+                const name = String(item && item.name || '').trim();
+                if (!date || !specCode || !name) throw new Error(`بيانات المناوبة رقم ${index + 1} غير مكتملة`);
+                return {
+                    date,
+                    specCode,
+                    name,
+                    VisitCount: Number.isFinite(Number(item && item.VisitCount)) ? Number(item.VisitCount) : 0,
+                    dutyTime: item && typeof item.dutyTime === 'string' ? item.dutyTime : '',
+                    dutySlot: Number.isInteger(Number(item && item.dutySlot)) ? Number(item.dutySlot) : null
+                };
+            });
+
+            const dutyGroups = {};
+            schedule.forEach(entry => {
+                const groupKey = entry.date + '|' + entry.specCode;
+                if (!dutyGroups[groupKey]) dutyGroups[groupKey] = [];
+                dutyGroups[groupKey].push(entry);
+            });
+            Object.values(dutyGroups).forEach(entries => {
+                if (entries.some(entry => entry.dutySlot === null)) {
+                    entries.forEach((entry, index) => { entry.dutySlot = index; });
+                }
+            });
+
+            const importedCodes = new Set();
+            names.forEach(resident => {
+                importedCodes.add(resident.spec);
+                importedCodes.add(resident.tag);
+            });
+            if (mode === 'replace') schedule.forEach(entry => importedCodes.add(entry.specCode));
+            const currentCodes = new Set((db.specialties || []).map(specialty => specialty.id));
+            const newSpecialtyCodes = Array.from(importedCodes)
+                .filter(code => code !== 'RESERVE' && !currentCodes.has(code))
+                .sort();
+
+            return { names, schedule, newSpecialtyCodes };
+        }
+
+        function createImportedSpecialty(code, index) {
+            const colors = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16'];
+            return {
+                id: code,
+                name_ar: code,
+                name_en: code,
+                icon: '🏥',
+                color: colors[index % colors.length],
+                acceptPool: [],
+                enabled: true
+            };
+        }
+
+        function getComparablePhone(phone) {
+            return String(phone || '').replace(/\D/g, '').replace(/^964/, '');
+        }
+
+        function mergeImportedNames(importedNames) {
+            const existingNames = new Map();
+            const existingPhones = new Map();
+            db.names.forEach((resident, index) => {
+                const nameKey = String(resident.name || '').trim().toLocaleLowerCase();
+                const phoneKey = getComparablePhone(resident.phone);
+                if (nameKey) existingNames.set(nameKey, index);
+                if (phoneKey) existingPhones.set(phoneKey, index);
+            });
+
+            let updated = 0;
+            let added = 0;
+            importedNames.forEach(resident => {
+                const nameKey = resident.name.toLocaleLowerCase();
+                const phoneKey = getComparablePhone(resident.phone);
+                const existingIndex = existingNames.has(nameKey) ? existingNames.get(nameKey) : existingPhones.get(phoneKey);
+
+                if (existingIndex !== undefined) {
+                    db.names[existingIndex] = resident;
+                    existingNames.set(nameKey, existingIndex);
+                    if (phoneKey) existingPhones.set(phoneKey, existingIndex);
+                    updated++;
+                } else {
+                    db.names.push(resident);
+                    existingNames.set(nameKey, db.names.length - 1);
+                    if (phoneKey) existingPhones.set(phoneKey, db.names.length - 1);
+                    added++;
+                }
+            });
+            return { updated, added };
+        }
+
+        function importDatabase(mode) {
+            if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
+            if (mode !== 'merge' && mode !== 'replace') return;
+            const rawData = document.getElementById('import-data-text').value.trim();
+            if (!rawData) {
+                showToast('الصق البيانات أو اختر ملفاً أولاً', 'error');
+                return;
+            }
+
+            try {
+                const importedDb = normalizeImportedDatabase(JSON.parse(rawData), mode);
+                const specialtyNotice = importedDb.newSpecialtyCodes.length > 0
+                    ? `\nسيتم إنشاء التخصصات الجديدة التالية: ${importedDb.newSpecialtyCodes.join(', ')}\nيمكنك تعديل الاسم والرمز والرمز التعبيري واللون لاحقاً.`
+                    : '';
+                const confirmationText = mode === 'merge'
+                    ? `سيتم دمج ${importedDb.names.length} مقيم بالاعتماد على الاسم أو رقم الهاتف.\nلن يتم استيراد أو تعديل المناوبات الحالية.${specialtyNotice}\n\nمتابعة؟`
+                    : `سيتم حذف جميع المقيمين الحاليين والمناوبات الحالية، ثم استبدالها بـ ${importedDb.names.length} مقيم و ${importedDb.schedule.length} مناوبة.${specialtyNotice}\n\nمتابعة؟`;
+                if (!confirm(confirmationText)) return;
+
+                const mergeResult = mode === 'merge' ? mergeImportedNames(importedDb.names) : null;
+                if (mode === 'replace') {
+                    db.names = importedDb.names;
+                    db.schedule = importedDb.schedule;
+                }
+                importedDb.newSpecialtyCodes.forEach((code, index) => {
+                    db.specialties.push(createImportedSpecialty(code, index));
+                });
+                populateSpecialtySelects();
+                renderSpecialties();
+                renderResidents();
+                closeImportModal();
+                const resultMessage = mode === 'merge'
+                    ? `تم دمج الأسماء: ${mergeResult.updated} تحديث و ${mergeResult.added} إضافة. اضغط حفظ لنشر التغييرات.`
+                    : `تم استبدال البيانات بـ ${db.names.length} مقيم و ${db.schedule.length} مناوبة. اضغط حفظ لنشر التغييرات.`;
+                showToast(resultMessage, 'success', 5000);
+            } catch (error) {
+                showToast(error.message || 'تعذر قراءة بيانات JSON', 'error');
+            }
+        }
+
+        // ========== RENDER RESIDENTS ==========
+        function renderResidents() {
+            const list = document.getElementById('resident-list');
+            const query = document.getElementById('search-db').value.toLowerCase();
+            list.innerHTML = "";
+
+            const activeRes = db.names.filter(r => 
+                r.spec !== "RESERVE" && 
+                r.name.toLowerCase().includes(query)
+            );
+            const reserveRes = db.names.filter(r => 
+                r.spec === "RESERVE" && 
+                r.name.toLowerCase().includes(query)
+            );
+
+            (db.specialties || []).forEach(spec => {
+                const residents = activeRes.filter(r => r.spec === spec.id || r.tag === spec.id);
+                if (residents.length === 0) return;
+
+                const isExpanded = query.length > 0 ? "active" : "";
+                const section = document.createElement('div');
+                section.className = "mb-2";
+                const color = spec.color || '#3b82f6';
+                const isEnabled = spec.enabled !== false;
+                const hiddenClass = !isEnabled ? 'hidden-spec' : '';
+                const hiddenBadge = !isEnabled ? '<span class="hidden-badge mr-2">مخفي</span>' : '';
+                
+                section.innerHTML = `
+                    <div class="spec-header ${hiddenClass}" onclick="toggleSection('${spec.id}')" style="border-right: 4px solid ${color};">
+                        <span>
+                            <i class="fas fa-chevron-down text-[10px] ml-2 opacity-40"></i> 
+                            ${spec.icon || '🏥'} ${spec.name_ar}
+                            ${hiddenBadge}
+                        </span>
+                        <span class="spec-count px-3 py-0.5 rounded-full text-[11px]" style="background:${color}20; color:${color};">${residents.length}</span>
+                    </div>
+                    <div id="content-${spec.id}" class="spec-content ${isExpanded}">
+                        ${residents.map((r) => {
+                            const idx = db.names.indexOf(r);
+                            return `
+                            <div class="resident-card" style="border-right: 3px solid ${color};">
+                                <div class="flex-1 cursor-pointer" onclick="openEdit(${idx})">
+                                    <div class="font-bold text-primary text-sm flex items-center gap-2 flex-wrap">
+                                        ${r.name}
+                                        <span class="badge-spec">${spec.id}</span>
+                                        <span class="badge-active"><i class="fas fa-check-circle mr-1"></i> نشط</span>
+                                    </div>
+                                    <div class="text-[11px] text-secondary phone-ltr font-mono">${r.phone || ''}</div>
+                                </div>
+                                <button onclick="deleteResident(${idx})" class="text-secondary/30 hover:text-red-500 text-xs px-2 py-1 transition">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                `;
+                list.appendChild(section);
+            });
+
+            if (reserveRes.length > 0) {
+                const isExpanded = query.length > 0 ? "active" : "";
+                const reserveSection = document.createElement('div');
+                reserveSection.className = "mb-2";
+                reserveSection.innerHTML = `
+                    <div class="spec-header" onclick="toggleSection('reserve')" style="border-right: 4px solid #94a3b8;">
+                        <span><i class="fas fa-chevron-down text-[10px] ml-2 opacity-40"></i> 📋 الاحتياط (Reserve)</span>
+                        <span class="spec-count-reserve px-3 py-0.5 rounded-full text-[11px]">${reserveRes.length}</span>
+                    </div>
+                    <div id="content-reserve" class="spec-content ${isExpanded}">
+                        ${reserveRes.map((r) => {
+                            const idx = db.names.indexOf(r);
+                            const specObj = db.specialties.find(s => s.id === r.tag);
+                            return `
+                            <div class="resident-card" style="border-right: 3px solid #94a3b8;">
+                                <div class="flex-1 cursor-pointer" onclick="openEdit(${idx})">
+                                    <div class="font-bold text-primary text-sm flex items-center gap-2 flex-wrap">
+                                        ${r.name}
+                                        <span class="badge-spec">${specObj ? specObj.name_ar : r.tag || r.spec}</span>
+                                        <span class="badge-reserve"><i class="fas fa-clock mr-1"></i> احتياط</span>
+                                    </div>
+                                    <div class="text-[11px] text-secondary phone-ltr font-mono">${r.phone || ''}</div>
+                                </div>
+                                <button onclick="deleteResident(${idx})" class="text-secondary/30 hover:text-red-500 text-xs px-2 py-1 transition">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                `;
+                list.appendChild(reserveSection);
+            }
+
+            const activeCount = db.names.filter(r => r.spec !== "RESERVE").length;
+            const totalSpecs = (db.specialties || []).length;
+            const enabledCount = (db.specialties || []).filter(s => s.enabled !== false).length;
+            document.getElementById('count-tag').innerHTML =
+                `<i class="fas fa-users mr-1"></i> ${db.names.length} مسجل · ${activeCount} نشط · ${enabledCount}/${totalSpecs} تخصص ظاهر`;
+        }
+
+        function toggleSection(id) {
+            const el = document.getElementById(`content-${id}`);
+            if (el) el.classList.toggle('active');
+        }
+
+        // ========== HELPERS ==========
+        function validatePhoneNumber(num) {
+            let clean = num.replace(/\s/g, '').trim();
+            if (!clean) return { valid: false, message: 'الرجاء إدخال رقم الهاتف' };
+            if (clean.startsWith('+964')) {
+                if (clean.length === 14 && /^\d{10}$/.test(clean.substring(4))) {
+                    return { valid: true, formatted: clean };
+                }
+                return { valid: false, message: 'رقم الهاتف يجب أن يكون 14 حرفاً مع +964 (مثال: +9647701234567)' };
+            } else {
+                if (/^\d{11}$/.test(clean)) {
+                    return { valid: true, formatted: '+964' + clean.substring(1) };
+                }
+                return { valid: false, message: 'رقم الهاتف يجب أن يكون 11 رقم (مثال: 07701234567)' };
+            }
+        }
+
+        function ensureDoctorTitle(name, specialtyId) {
+            let n = name.trim();
+            if (!n) return "";
+            if (specialtyId === "AO") return n;
+            return (n.startsWith("د.") || n.startsWith("د ")) ? n : "د. " + n;
+        }
+
+        // ========== CRUD ==========
+        function openEdit(idx) {
+            currentEditIdx = idx;
+            const r = db.names[idx];
+            document.getElementById('edit-name').value = r.name;
+            document.getElementById('edit-phone').value = r.phone || '';
+            document.getElementById('edit-spec').value = r.tag || r.spec || "NS";
+            document.getElementById('edit-active').checked = (r.spec !== "RESERVE");
+            document.getElementById('edit-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('edit-modal').classList.remove('active');
+        }
+
+        async function saveEdit() {
+            const nameVal = document.getElementById('edit-name').value;
+            const phoneVal = document.getElementById('edit-phone').value;
+            const specVal = document.getElementById('edit-spec').value;
+            const isActive = document.getElementById('edit-active').checked;
+
+            if (!nameVal.trim()) {
+                showToast('الرجاء إدخال اسم المقيم', 'error');
+                return;
+            }
+            const phoneValidation = validatePhoneNumber(phoneVal);
+            if (!phoneValidation.valid) {
+                showToast(phoneValidation.message, 'error');
+                return;
+            }
+            if (!specVal) {
+                showToast('الرجاء اختيار التخصص', 'error');
+                return;
+            }
+
+            db.names[currentEditIdx] = {
+                name: ensureDoctorTitle(nameVal, specVal),
+                phone: phoneValidation.formatted,
+                spec: isActive ? specVal : "RESERVE",
+                tag: specVal,
+                active: isActive
+            };
+            closeModal();
+            renderResidents();
+            await saveToGithub(false);
+            showToast('تم تعديل بيانات المقيم بنجاح', 'success');
+        }
+
+        async function deleteResident(idx) {
+            if (!confirm("هل أنت متأكد من حذف هذا المقيم؟")) return;
+            db.names.splice(idx, 1);
+            renderResidents();
+            await saveToGithub(false);
+            showToast('تم حذف المقيم بنجاح', 'success');
+        }
+
+        async function addResident() {
+            const nameEl = document.getElementById('new-name');
+            const phoneEl = document.getElementById('new-phone');
+            const specEl = document.getElementById('new-spec');
+            const activeEl = document.getElementById('new-active');
+            
+            const nameVal = nameEl.value.trim();
+            const phoneVal = phoneEl.value.trim();
+            const specVal = specEl.value;
+
+            if (!nameVal) {
+                showToast('الرجاء إدخال اسم المقيم', 'error');
+                nameEl.focus();
+                return;
+            }
+            const phoneValidation = validatePhoneNumber(phoneVal);
+            if (!phoneValidation.valid) {
+                showToast(phoneValidation.message, 'error');
+                phoneEl.focus();
+                return;
+            }
+            if (!specVal) {
+                showToast('الرجاء اختيار التخصص', 'error');
+                specEl.focus();
+                return;
+            }
+
+            const isActive = activeEl.checked;
+            db.names.push({
+                name: ensureDoctorTitle(nameVal, specVal),
+                spec: isActive ? specVal : "RESERVE",
+                tag: specVal,
+                phone: phoneValidation.formatted,
+                active: isActive
+            });
+            nameEl.value = "";
+            phoneEl.value = "";
+            specEl.value = "";
+            activeEl.checked = true;
+            toggleAddResidentPanel(false);
+            renderResidents();
+            await saveToGithub(false);
+            showToast('تم إضافة المقيم بنجاح', 'success');
+        }
+
+        // ========== SAVE ==========
+        async function saveToGithub(showToastMessage = true) {
+            const btn = document.getElementById('main-save-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري';
+            btn.classList.add('loading');
+
+            try {
+                db.passwords = db.passwords || {};
+                const body = {
+                    message: "Database Update 🇮🇶",
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))))
+                };
+                if (fileSha) body.sha = fileSha;
+
+                const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${GH_TOKEN}` },
+                    body: JSON.stringify(body)
+                });
+
+                if (res.ok) {
+                    const updated = await res.json();
+                    fileSha = updated.content.sha;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> تم';
+                    btn.classList.replace('loading', 'success');
+                    if (showToastMessage) showToast('تم حفظ البيانات بنجاح', 'success');
+                } else {
+                    throw new Error(await res.text());
+                }
+            } catch (e) {
+                console.error("Save error:", e);
+                btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> فشل';
+                btn.classList.replace('loading', 'error');
+                if (showToastMessage) showToast('فشل حفظ البيانات', 'error');
+            }
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> حفظ';
+                btn.className = "btn-ghost text-[10px] font-black uppercase flex items-center gap-2 px-4 py-2";
+            }, 2500);
+        }
+
+        // ========== EVENT LISTENERS ==========
+        document.getElementById('edit-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        document.getElementById('specialty-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeSpecialtyModal();
+        });
+        document.getElementById('import-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeImportModal();
+        });
+        document.getElementById('hospital-name-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeHospitalNameModal();
+        });
+
+        document.getElementById('new-name').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') addResident();
+        });
+
+        document.getElementById('remember-me').addEventListener('change', function() {
+            if (!this.checked) {
+                clearRememberedLogin();
+            } else {
+                const pwd = document.getElementById('password-input').value;
+                if (pwd) {
+                    saveRememberedLogin(pwd);
+                }
+            }
+        });
+
+        // ========== EXPOSE GLOBALLY ==========
+        window.toggleTheme = toggleTheme;
+        window.handleLogin = handleLogin;
+        window.logout = logout;
+        window.toggleAdminPanel = toggleAdminPanel;
+        window.toggleSpecialtiesPanel = toggleSpecialtiesPanel;
+        window.openAddSpecialty = openAddSpecialty;
+        window.openEditSpecialty = openEditSpecialty;
+        window.saveSpecialty = saveSpecialty;
+        window.deleteSpecialty = deleteSpecialty;
+        window.closeSpecialtyModal = closeSpecialtyModal;
+        window.savePasswords = savePasswords;
+        window.openHospitalNameModal = openHospitalNameModal;
+        window.closeHospitalNameModal = closeHospitalNameModal;
+        window.saveHospitalName = saveHospitalName;
+        window.toggleAddResidentPanel = toggleAddResidentPanel;
+        window.openImportModal = openImportModal;
+        window.closeImportModal = closeImportModal;
+        window.loadImportFile = loadImportFile;
+        window.importDatabase = importDatabase;
+        window.addResident = addResident;
+        window.openEdit = openEdit;
+        window.saveEdit = saveEdit;
+        window.deleteResident = deleteResident;
+        window.closeModal = closeModal;
+        window.saveToGithub = saveToGithub;
+        window.renderResidents = renderResidents;
+        window.toggleSection = toggleSection;
+        window.getPoolSelection = getPoolSelection;
+        window.renderPoolSelection = renderPoolSelection;
+        window.populateSpecialtySelects = populateSpecialtySelects;
+        window.renderSpecialties = renderSpecialties;
+        window.showToast = showToast;
+        window.validatePhoneNumber = validatePhoneNumber;
+        window.ensureDoctorTitle = ensureDoctorTitle;
+        window.generateUniqueColor = generateUniqueColor;
+        window.toggleSpecialtyEnabled = toggleSpecialtyEnabled;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const lockScreen = document.getElementById('lock-screen');
+                if (lockScreen && lockScreen.style.display !== 'none') {
+                    const passwordInput = document.getElementById('password-input');
+                    if (passwordInput) passwordInput.focus();
+                }
+            }, 100);
+        });
+    </script>
 </body>
 </html>
