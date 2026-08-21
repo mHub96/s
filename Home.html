@@ -1061,7 +1061,7 @@
 
     <div id="shield">
         <div class="shield-spinner"></div>
-        <span class="shield-text" data-hospital-name style="color:rgba(212,175,55,0.06);font-size:0.6rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;">Basra Teaching Hospital</span>
+        <span class="shield-text" data-hospital-name style="color:rgba(212,175,55,0.06);font-size:0.6rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;">Iraqi Teaching Hospital</span>
     </div>
 
     <div id="toast-container"></div>
@@ -1072,7 +1072,7 @@
             <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <i class="fas fa-user-md text-3xl text-white"></i>
             </div>
-            <h2 class="text-2xl font-black text-primary mb-1">🔐 <span data-hospital-name>Basra Teaching Hospital</span></h2>
+            <h2 class="text-2xl font-black text-primary mb-1">🔐 <span data-hospital-name>Iraqi Teaching Hospital</span></h2>
             <p class="text-sm text-secondary mb-6">أدخل كلمة المرور للدخول</p>
             <div class="relative">
                 <input type="password" id="password-input" placeholder="•••••"
@@ -1124,7 +1124,7 @@
             <div class="hospital-mark" aria-hidden="true"><i class="fas fa-hospital"></i></div>
             <div class="hospital-header-content">
                 <div class="hospital-eyebrow">Basra · Iraq</div>
-                <h1 id="hospital-name" data-hospital-name class="hospital-title">Basra Teaching Hospital</h1>
+                <h1 id="hospital-name" data-hospital-name class="hospital-title">Iraqi Teaching Hospital</h1>
                 <p class="hospital-subtitle">On-Call Residents · Duty Roster</p>
             </div>
             <div class="hospital-meta">
@@ -1211,7 +1211,7 @@
         const GH_TOKEN = _p.join('');
 
         const cachedHospitalName = localStorage.getItem('hospital_name_cache');
-        let db = { hospitalName: cachedHospitalName || 'Basra Teaching Hospital', names: [], schedule: [], passwords: {}, specialties: [] };
+        let db = { hospitalName: cachedHospitalName || 'Iraqi Teaching Hospital', names: [], schedule: [], passwords: {}, specialties: [] };
         let fileSha = "";
         let dataLoaded = false;
         let userRole = null;
@@ -1227,7 +1227,7 @@
         let trendingHandVisible = true;
 
         function applyHospitalName() {
-            const hospitalName = String(db.hospitalName || 'Basra Teaching Hospital').trim() || 'Basra Teaching Hospital';
+            const hospitalName = String(db.hospitalName || 'Iraqi Teaching Hospital').trim() || 'Iraqi Teaching Hospital';
             document.querySelectorAll('[data-hospital-name]').forEach(element => { element.textContent = hospitalName; });
             localStorage.setItem('hospital_name_cache', hospitalName);
             document.title = hospitalName + ' · Duty Roster 🇮🇶';
