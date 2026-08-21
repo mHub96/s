@@ -436,7 +436,7 @@
             <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
                 <i class="fas fa-user-md text-3xl text-white"></i>
             </div>
-            <h2 class="text-2xl font-black text-primary mb-1">🔐 <span data-hospital-name>Basra Teaching Hospital</span></h2>
+            <h2 class="text-2xl font-black text-primary mb-1">🔐 <span data-hospital-name>Iraqi Teaching Hospital</span></h2>
             <p class="text-sm text-secondary mb-6">أدخل كلمة المرور للدخول</p>
             <div class="relative">
                 <input type="password" id="password-input" placeholder="•••••"
@@ -682,7 +682,7 @@
 
         // ========== STATE ==========
         const cachedHospitalName = localStorage.getItem('hospital_name_cache');
-        let db = { hospitalName: cachedHospitalName || 'Basra Teaching Hospital', specialties: [], names: [], schedule: [], passwords: {} };
+        let db = { hospitalName: cachedHospitalName || 'Iraqi Teaching Hospital', specialties: [], names: [], schedule: [], passwords: {} };
         let fileSha = "";
         let currentEditIdx = null;
         let currentSpecialtyEditId = null;
@@ -694,7 +694,7 @@
         const REMEMBER_TIMESTAMP_KEY = 'admin_remember_timestamp';
 
         function applyHospitalName() {
-            const hospitalName = String(db.hospitalName || 'Basra Teaching Hospital').trim() || 'Basra Teaching Hospital';
+            const hospitalName = String(db.hospitalName || 'Iraqi Teaching Hospital').trim() || 'Iraqi Teaching Hospital';
             document.querySelectorAll('[data-hospital-name]').forEach(element => { element.textContent = hospitalName; });
             localStorage.setItem('hospital_name_cache', hospitalName);
             document.title = hospitalName + ' · نظام المقيمين';
@@ -856,7 +856,7 @@
             }));
             db.schedule = content.schedule || [];
             db.passwords = content.passwords || {};
-            db.hospitalName = String(content.hospitalName || 'Basra Teaching Hospital').trim();
+            db.hospitalName = String(content.hospitalName || 'Iraqi Teaching Hospital').trim();
             applyHospitalName();
             db.specialties = (content.specialties || []).map(s => ({
                 ...s,
@@ -1380,7 +1380,7 @@
         function openHospitalNameModal() {
             if (!isAdmin) { showToast('غير مصرح لك بهذا الإجراء', 'error'); return; }
             const input = document.getElementById('hospital-name-input');
-            input.value = db.hospitalName || 'Basra Teaching Hospital';
+            input.value = db.hospitalName || 'Iraqi Teaching Hospital';
             document.getElementById('hospital-name-modal').classList.add('active');
             input.focus();
             input.select();
