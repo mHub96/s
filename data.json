@@ -103,15 +103,6 @@
       "enabled": true
     },
     {
-      "id": "ZZ",
-      "name_ar": "الجراحة الخارقة للطبيعة",
-      "name_en": "SUPERNATURAL SURGERY",
-      "icon": "😎",
-      "color": "#fbbf24",
-      "acceptPool": [],
-      "enabled": false
-    },
-    {
       "id": "G",
       "name_ar": "النسائية و التوليد",
       "name_en": "Gynecology",
