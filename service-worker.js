@@ -5,7 +5,6 @@ const APP_SHELL = [
   './admin.html',
   './index.html',
   './s.html',
-  './s2.html',
   './manifest.webmanifest',
   './pwa.js',
   './pwa-icon.svg'
