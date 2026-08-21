@@ -1,699 +1,1441 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HOSPITAL SCHEDULER 🇮🇶</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>تسجيل الخفراء · المستشفى التعليمي</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        /* ----- design system ----- */
-        :root {
-            --bg: #0f1217;
-            --card: #181c22;
-            --card-hover: #1f252d;
-            --border-subtle: rgba(255, 255, 255, 0.06);
-            --border-focus: rgba(255, 255, 255, 0.15);
-            --text-primary: #eef2f6;
-            --text-secondary: #9aa8b9;
-            --text-muted: #5d6f83;
-            --column-width: 290px;
-            --nav-h: 72px;
-            --radius-card: 2rem;
-            --radius-input: 1.2rem;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* track accent colors – kept but refined */
-        .track-NS { --spec-color: #fbbf24; } .track-CT { --spec-color: #f87171; }
-        .track-GS { --spec-color: #34d399; } .track-US { --spec-color: #60a5fa; }
-        .track-ENT { --spec-color: #a78bfa; } .track-H { --spec-color: #fb7185; }
-        .track-D { --spec-color: #94a3b8; } .track-OP { --spec-color: #fb923c; }
-        .track-ICU { --spec-color: #2dd4bf; } .track-R { --spec-color: #818cf8; }
-        .track-ON { --spec-color: #f472b6; }
-
-        /* base */
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--text-secondary);
-            margin: 0;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            letter-spacing: 0.01em;
-        }
-
-        /* ----- navigation ----- */
-        .nav-bar {
-            height: var(--nav-h);
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #12161c;
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-subtle);
-            flex-shrink: 0;
-            position: relative;
-            z-index: 50;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-brand h1 {
-            font-weight: 700;
-            font-size: 1.2rem;
-            letter-spacing: -0.02em;
-            color: white;
-            background: linear-gradient(135deg, #f0f4ff 0%, #b7c9e2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-brand span {
-            font-size: 1.4rem;
-            line-height: 1;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .month-picker {
-            background: #1e2630;
-            border: 1px solid var(--border-subtle);
-            color: #d4dce8;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-weight: 600;
-            font-size: 0.8rem;
-            letter-spacing: 0.02em;
-            transition: 0.2s ease;
-            cursor: pointer;
-        }
-
-        .month-picker:focus {
-            outline: none;
-            border-color: var(--spec-color, #60a5fa);
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
-        }
-
-        .sync-btn {
-            background: white;
-            color: #0b0e11;
-            padding: 0.5rem 1.4rem;
-            border-radius: 2rem;
-            font-weight: 700;
-            font-size: 0.7rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            border: none;
-            transition: 0.15s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            cursor: pointer;
-        }
-
-        .sync-btn:hover {
-            transform: scale(0.97);
-            background: #f0f3f8;
-        }
-
-        .sync-btn:active {
-            transform: scale(0.94);
-        }
-
-        /* ----- board container ----- */
-        .board-container {
-            flex-grow: 1;
-            display: flex;
-            gap: 1.5rem;
-            padding: 1.5rem 2rem 3rem 2rem;
-            overflow-x: auto;
-            overflow-y: hidden;
-            align-items: flex-start;
-            box-sizing: border-box;
-            height: calc(100vh - var(--nav-h));
-            scroll-behavior: smooth;
-        }
-
-        .board-container::-webkit-scrollbar {
-            height: 6px;
-        }
-        .board-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .board-container::-webkit-scrollbar-thumb {
-            background: #2d3745;
-            border-radius: 20px;
-        }
-
-        /* ----- specialty track card ----- */
-        .specialty-track {
-            flex: 0 0 var(--column-width);
-            background: var(--card);
-            border-radius: var(--radius-card);
-            display: flex;
-            flex-direction: column;
-            max-height: 94%;
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02);
-            transition: border-color 0.2s, box-shadow 0.2s;
-            overflow: hidden;
-            backdrop-filter: blur(2px);
-        }
-
-        .specialty-track:hover {
-            border-color: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.9), 0 0 20px -8px var(--spec-color);
-        }
-
-        .track-header {
-            padding: 1rem 1.2rem 0.8rem;
-            text-align: center;
-            flex-shrink: 0;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
-            border-bottom: 3px solid var(--spec-color);
-        }
-
-        .track-header h2 {
-            color: var(--spec-color);
-            font-weight: 700;
-            font-size: 0.7rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin: 0;
-            opacity: 0.9;
-        }
-
-        /* ----- days list ----- */
-        .days-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0.75rem 0.75rem 1.5rem;
-            scrollbar-width: thin;
-            scrollbar-color: #2d3745 transparent;
-        }
-
-        .days-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        .days-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .days-list::-webkit-scrollbar-thumb {
-            background: #2d3745;
-            border-radius: 20px;
-        }
-
-        /* ----- day box ----- */
-        .day-box {
-            position: relative;
-            background: rgba(255, 255, 255, 0.02);
-            margin-bottom: 0.5rem;
-            border-radius: 1.2rem;
-            padding: 0.3rem 0.3rem 0.3rem 0.3rem;
-            border: 1px solid transparent;
-            transition: background 0.15s, border-color 0.15s;
-        }
-
-        .day-box:focus-within {
-            border-color: var(--spec-color);
-            background: rgba(255, 255, 255, 0.04);
-            box-shadow: 0 0 0 1px var(--spec-color);
-        }
-
-        .day-box.weekend {
-            background: rgba(255, 255, 255, 0.04);
-            border-left: 3px solid var(--spec-color);
-            border-radius: 1.2rem 0.3rem 0.3rem 1.2rem;
-        }
-
-        .day-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.55rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            color: var(--text-muted);
-            padding: 0.15rem 0.7rem 0.15rem 0.7rem;
-            text-transform: uppercase;
-        }
-
-        /* ----- input wrapper & ghost ----- */
-        .input-wrapper {
-            position: relative;
-            width: 100%;
-            direction: rtl;
-            text-align: right;
-        }
-
-        .cell-input,
-        .ghost-text {
-            width: 100%;
             font-family: 'IBM Plex Sans Arabic', 'Inter', sans-serif;
-            font-size: 0.9rem;
-            padding: 0.6rem 0.9rem;
-            line-height: 1.3;
-            text-align: right;
-            box-sizing: border-box;
-            white-space: pre;
-            margin: 0;
-            border: none;
+            background: #f0f4f8;
+            color: #1a2332;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark {
+            background: #0b0e12;
+            color: #e8edf5;
+        }
+
+        /* ===== TOAST NOTIFICATIONS - TOP CENTER ===== */
+        #toast-container {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 92%;
+            max-width: 440px;
+            pointer-events: none;
+        }
+
+        .toast-item {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 14px;
             font-weight: 600;
-            border-radius: 1rem;
-        }
-
-        .cell-input {
-            background: transparent;
-            outline: none;
-            color: #f0f4fc;
-            position: relative;
-            z-index: 10;
+            font-size: 0.9rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            transform: translateY(-30px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: auto;
             direction: rtl;
-            caret-color: var(--spec-color, #60a5fa);
+            text-align: right;
         }
 
-        .cell-input::placeholder {
-            color: rgba(255, 255, 255, 0.08);
-            font-weight: 400;
+        .toast-item.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-item.hide {
+            transform: translateY(-30px);
+            opacity: 0;
+        }
+
+        .toast-item.success {
+            background: #10b981;
+        }
+        .toast-item.error {
+            background: #ef4444;
+        }
+        .toast-item.info {
+            background: #3b82f6;
+        }
+
+        .toast-item .toast-close {
+            margin-right: auto;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+        .toast-item .toast-close:hover {
+            color: white;
+        }
+
+        /* ===== LOCK SCREEN ===== */
+        #lock-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: #f0f4f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: opacity 0.4s;
+        }
+        body.dark #lock-screen {
+            background: #0b0e12;
+        }
+        #lock-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        body.session-checking #lock-screen {
+            visibility: hidden;
+        }
+
+        .lock-box {
+            background: white;
+            border-radius: 32px;
+            padding: 36px 28px 32px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+        body.dark .lock-box {
+            background: #141a24;
+            border-color: #2a3346;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .lock-box .icon-circle {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(37,99,235,0.25);
+        }
+        body.dark .lock-box .icon-circle {
+            background: linear-gradient(135deg, #d4af37, #b8942e);
+            box-shadow: 0 8px 30px rgba(212,175,55,0.25);
+        }
+        .lock-box .icon-circle i {
+            font-size: 2.2rem;
+            color: white;
+        }
+
+        .lock-box h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .lock-box .subtitle {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        body.dark .lock-box .subtitle {
+            color: #94a3b8;
+        }
+
+        .lock-input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 1rem;
+            font-weight: 500;
+            outline: none;
+            transition: border 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+        body.dark .lock-input {
+            background: #0f151e;
+            border-color: #2a3346;
+            color: #e8edf5;
+        }
+        .lock-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
+        }
+        body.dark .lock-input:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 12px;
+            font-family: inherit;
+            box-shadow: 0 8px 24px rgba(37,99,235,0.25);
+        }
+        body.dark .btn-login {
+            background: linear-gradient(135deg, #d4af37, #b8942e);
+            box-shadow: 0 8px 24px rgba(212,175,55,0.25);
+            color: #0b0e12;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+        }
+        .btn-login:active {
+            transform: scale(0.97);
+        }
+        .btn-login:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .lock-error {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            min-height: 24px;
+        }
+
+        .remember-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+            color: #64748b;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        body.dark .remember-wrap {
+            color: #94a3b8;
+        }
+        .remember-wrap input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #2563eb;
+            cursor: pointer;
+        }
+        body.dark .remember-wrap input[type="checkbox"] {
+            accent-color: #d4af37;
+        }
+
+        .lock-footer {
+            margin-top: 20px;
+            font-size: 0.6rem;
+            color: #94a3b8;
+            opacity: 0.5;
+        }
+
+        /* ===== MAIN APP ===== */
+        #main-app {
+            display: none;
+            width: 100%;
+            max-width: 480px;
+            animation: fadeUp 0.5s ease;
+        }
+        #main-app.visible {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .app-card {
+            background: white;
+            border-radius: 28px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        body.dark .app-card {
+            background: #141a24;
+            border-color: #2a3346;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .app-header h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .app-header h1 i {
+            color: #2563eb;
+        }
+        body.dark .app-header h1 i {
+            color: #d4af37;
+        }
+
+        .header-btns {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            color: #475569;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+        }
+        body.dark .btn-icon {
+            background: #0f151e;
+            border-color: #2a3346;
+            color: #94a3b8;
+        }
+        .btn-icon:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+        body.dark .btn-icon:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+
+        .btn-logout {
+            padding: 6px 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: transparent;
+            color: #64748b;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        body.dark .btn-logout {
+            border-color: #2a3346;
+            color: #94a3b8;
+        }
+        .btn-logout:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        body.dark .btn-logout:hover {
+            background: rgba(239,68,68,0.15);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+        body.dark .form-group label {
+            color: #94a3b8;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 1rem;
+            font-weight: 500;
+            outline: none;
+            transition: border 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 16px center;
+            cursor: pointer;
+            color: #1a2332;
+        }
+        body.dark .form-select {
+            background: #0f151e;
+            border-color: #2a3346;
+            color: #e8edf5;
+        }
+        .form-select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+        }
+        body.dark .form-select:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.12);
+        }
+
+        .input-wrap {
+            position: relative;
         }
 
         .ghost-text {
             position: absolute;
             top: 0;
             right: 0;
-            color: rgba(255, 255, 255, 0.12);
+            width: 100%;
+            height: 100%;
+            padding: 14px 18px;
             z-index: 5;
             pointer-events: none;
-            height: 100%;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            direction: rtl;
-            background: transparent;
             font-weight: 500;
+            font-size: 1rem;
+            font-family: inherit;
+            direction: rtl;
+            overflow: hidden;
+            white-space: nowrap;
         }
-
-        .ghost-offset {
+        .ghost-text .offset {
             color: transparent;
-            visibility: hidden;
-            white-space: pre;
+        }
+        .ghost-text .suggestion {
+            color: rgba(0, 0, 0, 0.2);
+        }
+        .ghost-text .suggestion-bright {
+            color: rgba(0, 0, 0, 0.35);
+        }
+        body.dark .ghost-text .suggestion {
+            color: rgba(255, 255, 255, 0.2);
+        }
+        body.dark .ghost-text .suggestion-bright {
+            color: rgba(255, 255, 255, 0.4);
         }
 
-        .prefilled {
-            color: var(--spec-color) !important;
-            font-weight: 700;
+        .input-text {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 1rem;
+            font-weight: 500;
+            outline: none;
+            transition: border 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+            position: relative;
+            z-index: 10;
+            direction: rtl;
+            color: #1a2332;
+        }
+        body.dark .input-text {
+            background: #0f151e;
+            border-color: #2a3346;
+            color: #e8edf5;
+        }
+        .input-text:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+        }
+        body.dark .input-text:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.12);
+        }
+        .input-text::placeholder {
+            color: #94a3b8;
         }
 
-        .new-entry {
-            color: #ffffff !important;
-            font-weight: 700;
-        }
-
-        /* dropdown arrow */
         .dropdown-arrow {
             position: absolute;
-            left: 10px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 0.5rem;
-            color: #4b5b70;
+            z-index: 20;
+            color: #94a3b8;
             cursor: pointer;
-            z-index: 25;
-            padding: 6px 8px;
-            border-radius: 2rem;
-            transition: 0.1s ease;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(4px);
+            padding: 6px 10px;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.04);
+            font-size: 0.5rem;
+            transition: 0.2s;
             line-height: 1;
         }
-
         .dropdown-arrow:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #b0c4dd;
+            background: rgba(0,0,0,0.08);
+            color: #475569;
+        }
+        body.dark .dropdown-arrow {
+            color: #5d6f83;
+        }
+        body.dark .dropdown-arrow:hover {
+            background: rgba(255,255,255,0.05);
+            color: #94a3b8;
         }
 
-        /* custom menu */
-        .custom-menu {
+        .dropdown-menu {
             position: absolute;
-            top: calc(100% + 6px);
+            top: calc(100% + 4px);
             right: 0;
             width: 100%;
             max-height: 200px;
             overflow-y: auto;
-            background: #1e2632;
-            border: 1px solid var(--spec-color, #60a5fa);
-            border-radius: 1.2rem;
-            z-index: 1000;
+            background: white;
+            border: 2px solid #2563eb;
+            border-radius: 14px;
+            z-index: 100;
             display: none;
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            padding: 0.3rem 0;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+            padding: 4px 0;
         }
-
-        .custom-menu div {
-            padding: 0.7rem 1rem;
-            font-size: 0.8rem;
-            text-align: right;
+        body.dark .dropdown-menu {
+            background: #141a24;
+            border-color: #d4af37;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+        }
+        .dropdown-menu div {
+            padding: 10px 16px;
             cursor: pointer;
-            color: #c8d4e3;
+            color: #1a2332;
             font-weight: 500;
-            transition: 0.1s ease;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            transition: 0.15s;
+            border-bottom: 1px solid #f1f5f9;
         }
-
-        .custom-menu div:hover {
-            background: var(--spec-color, #60a5fa);
-            color: #0b0e11;
+        body.dark .dropdown-menu div {
+            color: #e8edf5;
+            border-color: #1e2632;
         }
-
-        .custom-menu::-webkit-scrollbar {
+        .dropdown-menu div:last-child {
+            border-bottom: none;
+        }
+        .dropdown-menu div:hover,
+        .dropdown-menu div.selected {
+            background: #2563eb;
+            color: white;
+        }
+        body.dark .dropdown-menu div:hover,
+        body.dark .dropdown-menu div.selected {
+            background: #d4af37;
+            color: #0b0e12;
+        }
+        .dropdown-menu::-webkit-scrollbar {
             width: 4px;
         }
-        .custom-menu::-webkit-scrollbar-thumb {
-            background: #3f4d62;
+        .dropdown-menu::-webkit-scrollbar-thumb {
+            background: #94a3b8;
             border-radius: 20px;
         }
 
-        /* loading state */
-        .loading-active {
-            opacity: 0.6 !important;
-            pointer-events: none !important;
-            cursor: wait !important;
+        .info-box {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        body.dark .info-box {
+            background: #0f151e;
+            border-color: #2a3346;
+        }
+        .info-box .label {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        body.dark .info-box .label {
+            color: #5d6f83;
+        }
+        .info-box .value {
+            font-weight: 700;
         }
 
-        /* small responsive tweaks */
-        @media (max-width: 640px) {
-            .nav-bar {
-                padding: 0 1rem;
-                flex-wrap: wrap;
-                height: auto;
-                min-height: var(--nav-h);
-                gap: 0.5rem;
-            }
-            .nav-brand h1 {
-                font-size: 0.9rem;
-            }
-            .board-container {
-                padding: 1rem 0.75rem 2rem;
-                gap: 1rem;
-            }
-            :root {
-                --column-width: 250px;
-                --nav-h: 80px;
-            }
+        .btn-update {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            margin-top: 8px;
+            font-family: inherit;
+            box-shadow: 0 8px 24px rgba(37,99,235,0.2);
+        }
+        body.dark .btn-update {
+            background: linear-gradient(135deg, #d4af37, #b8942e);
+            box-shadow: 0 8px 24px rgba(212,175,55,0.2);
+            color: #0b0e12;
+        }
+        .btn-update:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+        .btn-update:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+        .btn-update:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-msg {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            min-height: 24px;
+            color: #64748b;
+        }
+        body.dark .status-msg {
+            color: #94a3b8;
+        }
+
+        /* Success animation for the card */
+        .card-success {
+            border-color: #10b981 !important;
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.15), 0 8px 32px rgba(16,185,129,0.1) !important;
+        }
+        body.dark .card-success {
+            border-color: #10b981 !important;
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.1), 0 8px 32px rgba(0,0,0,0.4) !important;
+        }
+
+        .footer-credit {
+            text-align: center;
+            font-size: 0.6rem;
+            color: #94a3b8;
+            margin-top: 20px;
+            padding-top: 14px;
+            border-top: 1px solid #e2e8f0;
+            opacity: 0.5;
+        }
+        body.dark .footer-credit {
+            border-color: #2a3346;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 420px) {
+            body { padding: 10px; }
+            .app-card { padding: 16px; }
+            .lock-box { padding: 28px 18px 24px; }
+            .app-header h1 { font-size: 1.1rem; }
+            .toast-item { font-size: 0.8rem; padding: 12px 16px; }
         }
     </style>
 </head>
 <body>
+    <script>
+        (function() {
+            if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+            const timestamp = Number(localStorage.getItem('duty_signup_session_ts'));
+            const hasRememberedSession = localStorage.getItem('duty_signup_session') === 'authenticated' &&
+                localStorage.getItem('duty_signup_remember_token') && timestamp &&
+                Date.now() - timestamp <= 7 * 24 * 60 * 60 * 1000;
+            if (hasRememberedSession) document.body.classList.add('session-checking');
+        })();
+    </script>
 
-    <div id="app-wrapper">
-        <div class="nav-bar">
-            <div class="nav-brand">
-                <h1>Teaching Hosp. Scheduler</h1>
-                <span>🇮🇶</span>
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toast-container"></div>
+
+    <!-- ===== LOCK SCREEN ===== -->
+    <div id="lock-screen">
+        <div class="lock-box">
+            <div class="icon-circle">
+                <i class="fas fa-calendar-check"></i>
             </div>
-            <div class="nav-actions">
-                <input type="month" id="month-picker" class="month-picker">
-                <button onclick="saveToGithub()" id="sync-btn" class="sync-btn">Sync Schedule</button>
+            <h2>🔐 تسجيل الخفراء</h2>
+            <p class="subtitle"><span data-hospital-name>Basra Teaching Hospital</span> · أدخل كلمة المرور للدخول</p>
+            <div>
+                <input type="password" id="password-input" class="lock-input" placeholder="•••••" maxlength="20">
+                <button id="login-btn" class="btn-login" onclick="handleLogin()">
+                    <i class="fas fa-arrow-left ml-2"></i> دخول
+                </button>
+                <p id="lock-error" class="lock-error"></p>
             </div>
+            <label class="remember-wrap">
+                <input type="checkbox" id="remember-me" checked />
+                تذكرني
+            </label>
+            <div class="lock-footer">All rights reserved for Dr. Mohammed Riyadh</div>
         </div>
-        <div class="board-container" id="board" onscroll="closeAllMenus()"></div>
     </div>
 
-<script>
-    // ----- CONFIGURATION -----
-    const CONFIG = {
-        user: "mHub96",
-        repo: "s",
-        path: "data.json"
-    };
+    <!-- ===== MAIN APP ===== -->
+    <div id="main-app">
+        <div class="app-card" id="app-card">
+            <!-- Header -->
+            <div class="app-header">
+                <h1><i class="fas fa-pen-to-square"></i> تسجيل الخفراء</h1>
+                <div class="header-btns">
+                    <button class="btn-icon" onclick="toggleTheme()" aria-label="Toggle theme">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
+                    <button class="btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt ml-1"></i> خروج
+                    </button>
+                </div>
+            </div>
 
-    const t1 = "ghp_dAUtsFhTH";
-    const t2 = "a2KeJQOsxsC";
-    const t3 = "Ct1vz8z1Z63";
-    const t4 = "AmsjS";
-    const GH_TOKEN = t1 + t2 + t3 + t4;
+            <!-- Specialty -->
+            <div class="form-group">
+                <label for="spec-select">اختر التخصص</label>
+                <select id="spec-select" class="form-select" onchange="onSpecialtyChange()">
+                    <option value="">-- اختر التخصص --</option>
+                </select>
+            </div>
 
-    let db = { names: [], schedule: [] };
-    let fileSha = "";
-    let nameData = {};
+            <!-- Name Section -->
+            <div id="name-section" style="display:none;">
+                <div class="form-group">
+                    <label for="name-input">اسم المقيم</label>
+                    <div class="input-wrap">
+                        <div class="ghost-text" id="ghost-text"></div>
+                        <input type="text" id="name-input" class="input-text"
+                               placeholder="ابتدأ بكتابة الاسم..."
+                               oninput="handleNameInput()"
+                               onkeydown="handleNameKeys(event)"
+                               onfocus="closeMenu()"
+                               onblur="setTimeout(closeMenu, 300)"
+                               autocomplete="off" />
+                        <span class="dropdown-arrow" onclick="toggleMenu(event)">▼</span>
+                        <div class="dropdown-menu" id="name-menu"></div>
+                    </div>
+                </div>
 
-    const specialties = [
-        { id: "NS", name: "Neurosurgery" }, { id: "CT", name: "Cardiothoracic" },
-        { id: "GS", name: "General Surg" }, { id: "US", name: "Urosurgery" },
-        { id: "ENT", name: "ENT" }, //{ id: "H", name: "Cardiology" },//
-        { id: "D", name: "Death Certs" }, { id: "OP", name: "OT Anaesth" },
-        { id: "ICU", name: "ICU Anaesth" }, { id: "R", name: "Radiology" },
-        { id: "ON", name: "Oncology" }
-    ];
+                <div class="info-box">
+                    <span class="label">المقيم الحالي:</span>
+                    <span class="value" id="current-holder">—</span>
+                </div>
 
-    // ----- INIT -----
-    window.onload = async () => {
-        const now = new Date();
-        const nextMonthDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-        const picker = document.getElementById('month-picker');
-        if (picker) {
-            picker.value = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}`;
-            picker.onchange = refreshView;
+                <button id="update-btn" class="btn-update" onclick="updateDuty()" disabled>
+                    <i class="fas fa-save ml-2"></i> تحديث الخفير
+                </button>
+            </div>
+
+            <div id="status-msg" class="status-msg"></div>
+        </div>
+
+        <div class="footer-credit">All rights reserved for Dr. Mohammed Riyadh</div>
+    </div>
+
+    <script>
+        // ============================================================
+        // CONFIG
+        // ============================================================
+        const CONFIG = {
+            user: "mHub96",
+            repo: "BTH",
+            path: "update/data.json"
+        };
+        const _p = ["ghp_", "dAUtsFhTH", "a2KeJQO", "sxsCCt1v", "z8z1Z63Am", "sjS"];
+        const GH_TOKEN = _p.join('');
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        const cachedHospitalName = localStorage.getItem('hospital_name_cache');
+        let db = { hospitalName: cachedHospitalName || 'Basra Teaching Hospital', names: [], schedule: [], passwords: {}, specialties: [] };
+        let fileSha = "";
+        let dataLoaded = false;
+        let currentResidents = [];
+        let isAutoLoginAttempted = false;
+        let isAutoLoginSuccess = false; // Track if auto-login already showed a toast
+
+        function applyHospitalName() {
+            const hospitalName = String(db.hospitalName || 'Basra Teaching Hospital').trim() || 'Basra Teaching Hospital';
+            document.querySelectorAll('[data-hospital-name]').forEach(element => { element.textContent = hospitalName; });
+            localStorage.setItem('hospital_name_cache', hospitalName);
+            document.title = hospitalName + ' · تسجيل الخفراء';
         }
-        await init();
-    };
 
-    window.onclick = (e) => {
-        if (!e.target.classList.contains('dropdown-arrow') && !e.target.closest('.custom-menu')) {
-            closeAllMenus();
+        applyHospitalName();
+
+        const STORAGE_KEY = 'duty_signup_session';
+        const REMEMBER_TOKEN_KEY = 'duty_signup_remember_token';
+
+        // ============================================================
+        // THEME
+        // ============================================================
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.className = document.body.classList.contains('dark') ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
         }
-    };
 
-    function closeAllMenus() {
-        document.querySelectorAll('.custom-menu').forEach(x => x.style.display = 'none');
-    }
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark');
+            document.getElementById('theme-icon').className = 'fas fa-sun';
+        }
 
-    // ----- LOAD DATA -----
-    async function init() {
-        const wrapper = document.getElementById('app-wrapper');
-        if (wrapper) wrapper.classList.add('loading-active');
+        // ============================================================
+        // TOAST - TOP CENTER
+        // ============================================================
+        let toastTimeout = null;
 
-        try {
-            const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
-                headers: {
-                    "Authorization": `token ${GH_TOKEN}`,
-                    "Accept": "application/vnd.github.v3+json"
-                }
+        function showToast(message, type = 'info', duration = 3000) {
+            // Clear any existing toast timeout to prevent stacking
+            if (toastTimeout) {
+                clearTimeout(toastTimeout);
+                toastTimeout = null;
+            }
+
+            const container = document.getElementById('toast-container');
+            
+            // Remove any existing toast that might be showing
+            const existingToasts = container.querySelectorAll('.toast-item');
+            existingToasts.forEach(t => t.remove());
+
+            const toast = document.createElement('div');
+            toast.className = `toast-item ${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
             });
 
-            if (res.ok) {
-                const data = await res.json();
-                fileSha = data.sha;
-                db = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
-                db.names = (db.names || []).map(item => {
-                    if (Array.isArray(item)) return { name: item[0], spec: item[1] || "NS", phone: "" };
-                    return item;
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+                toast.classList.add('hide');
+                setTimeout(() => {
+                    if (toast.parentElement) toast.remove();
+                    toastTimeout = null;
+                }, 400);
+            }, duration);
+
+            toast.querySelector('.toast-close').addEventListener('click', () => {
+                if (toastTimeout) {
+                    clearTimeout(toastTimeout);
+                    toastTimeout = null;
+                }
+                toast.classList.remove('show');
+                toast.classList.add('hide');
+                setTimeout(() => {
+                    if (toast.parentElement) toast.remove();
+                }, 400);
+            });
+        }
+
+        // ============================================================
+        // SESSION
+        // ============================================================
+        function saveSession() {
+            if (document.getElementById('remember-me').checked) {
+                localStorage.setItem(STORAGE_KEY, 'authenticated');
+                localStorage.setItem(STORAGE_KEY + '_ts', Date.now().toString());
+                const pwd = document.getElementById('password-input').value;
+                if (pwd) localStorage.setItem(REMEMBER_TOKEN_KEY, btoa(pwd));
+            } else {
+                localStorage.removeItem(STORAGE_KEY);
+                localStorage.removeItem(STORAGE_KEY + '_ts');
+                localStorage.removeItem(REMEMBER_TOKEN_KEY);
+            }
+        }
+
+        function checkSession() {
+            const session = localStorage.getItem(STORAGE_KEY);
+            if (!session) return false;
+            const ts = localStorage.getItem(STORAGE_KEY + '_ts');
+            if (ts && (Date.now() - parseInt(ts)) / (1000 * 60 * 60 * 24) > 7) {
+                clearSession();
+                return false;
+            }
+            return session === 'authenticated';
+        }
+
+        function clearSession() {
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(STORAGE_KEY + '_ts');
+            localStorage.removeItem(REMEMBER_TOKEN_KEY);
+        }
+
+        function logout() {
+            clearSession();
+            isAutoLoginSuccess = false;
+            document.body.classList.remove('session-checking');
+            document.getElementById('lock-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.remove('visible');
+            document.getElementById('password-input').value = '';
+            document.getElementById('password-input').focus();
+            showToast('تم تسجيل الخروج', 'info');
+        }
+
+        // ============================================================
+        // LOGIN
+        // ============================================================
+        async function handleLogin() {
+            const input = document.getElementById('password-input');
+            const err = document.getElementById('lock-error');
+            const pwd = input.value.trim();
+
+            if (!pwd) {
+                err.textContent = '❌ الرجاء إدخال كلمة المرور';
+                input.focus();
+                setTimeout(() => err.textContent = '', 2500);
+                return;
+            }
+
+            err.textContent = '⏳ جاري التحقق...';
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
+                    headers: { "Authorization": `token ${GH_TOKEN}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    fileSha = data.sha;
+                    const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+                    db = content;
+                    applyHospitalName();
+                    db.specialties = (db.specialties || []).map(s => ({
+                        ...s,
+                        enabled: s.enabled !== undefined ? s.enabled : true
+                    }));
+
+                    const userPass = db.passwords?.user || "12345";
+                    const adminPass = db.passwords?.admin || "123";
+
+                    if (pwd === adminPass || pwd === userPass) {
+                        err.textContent = '';
+                        loginSuccess(false); // false = not auto-login
+                    } else {
+                        err.textContent = '❌ كلمة المرور غير صحيحة';
+                        input.value = '';
+                        input.focus();
+                        setTimeout(() => err.textContent = '', 2500);
+                    }
+                } else {
+                    err.textContent = '❌ خطأ في الاتصال';
+                    setTimeout(() => err.textContent = '', 2500);
+                }
+            } catch (e) {
+                console.error(e);
+                err.textContent = '❌ خطأ في الاتصال';
+                setTimeout(() => err.textContent = '', 2500);
+            }
+        }
+
+        function loginSuccess(isAuto) {
+            dataLoaded = true;
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.add('visible');
+            document.body.classList.remove('session-checking');
+            saveSession();
+            populateSpecialties();
+
+            // Only show toast if it's NOT auto-login, or if auto-login hasn't shown one yet
+            if (!isAuto || !isAutoLoginSuccess) {
+                if (isAuto) {
+                    isAutoLoginSuccess = true;
+                }
+                showToast('تم تسجيل الدخول بنجاح', 'success');
+            }
+            
+            // Reset the auto-login flag after successful login
+            if (isAuto) {
+                isAutoLoginSuccess = true;
+            }
+        }
+
+        // ============================================================
+        // AUTO LOGIN - FIXED: Only shows toast once
+        // ============================================================
+        (function() {
+            const token = localStorage.getItem(REMEMBER_TOKEN_KEY);
+            if (checkSession() && token && !isAutoLoginAttempted) {
+                isAutoLoginAttempted = true;
+                try {
+                    const pwd = atob(token);
+                    // Set the password in the input field
+                    document.getElementById('password-input').value = pwd;
+                    // Perform auto-login with a flag
+                    performAutoLogin(pwd);
+                } catch (e) {
+                    console.error("Auto-login decode error:", e);
+                }
+            }
+        })();
+
+        async function performAutoLogin(pwd) {
+            try {
+                const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}?t=${Date.now()}`, {
+                    headers: { "Authorization": `token ${GH_TOKEN}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    fileSha = data.sha;
+                    const content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\s/g, '')))));
+                    db = content;
+                    applyHospitalName();
+                    db.specialties = (db.specialties || []).map(s => ({
+                        ...s,
+                        enabled: s.enabled !== undefined ? s.enabled : true
+                    }));
+
+                    const userPass = db.passwords?.user || "12345";
+                    const adminPass = db.passwords?.admin || "123";
+
+                    if (pwd === adminPass || pwd === userPass) {
+                        // Auto-login success - show toast only once
+                        loginSuccess(true);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.error("Auto-login error:", e);
+            }
+
+            // If auto-login fails, show lock screen
+            clearSession();
+            document.body.classList.remove('session-checking');
+            document.getElementById('lock-screen').classList.remove('hidden');
+            document.getElementById('password-input').focus();
+        }
+
+        // ============================================================
+        // SPECIALTIES
+        // ============================================================
+        function populateSpecialties() {
+            const select = document.getElementById('spec-select');
+            select.innerHTML = '<option value="">-- اختر التخصص --</option>';
+            (db.specialties || []).filter(s => s.enabled !== false).forEach(spec => {
+                const opt = document.createElement('option');
+                opt.value = spec.id;
+                opt.textContent = `${spec.icon || '🏥'} ${spec.name_ar}`;
+                select.appendChild(opt);
+            });
+        }
+
+        function onSpecialtyChange() {
+            const specId = document.getElementById('spec-select').value;
+            const section = document.getElementById('name-section');
+            const input = document.getElementById('name-input');
+            const ghost = document.getElementById('ghost-text');
+            const holder = document.getElementById('current-holder');
+            const btn = document.getElementById('update-btn');
+            const msg = document.getElementById('status-msg');
+            const card = document.getElementById('app-card');
+
+            // Remove success class if present
+            card.classList.remove('card-success');
+
+            if (!specId) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            input.value = '';
+            ghost.innerHTML = '';
+            ghost.removeAttribute('data-full');
+            btn.disabled = true;
+            msg.textContent = '';
+            closeMenu();
+
+            const specObj = db.specialties?.find(s => s.id === specId);
+            const acceptPool = specObj?.acceptPool || [];
+
+            if (specId === "OP" || specId === "ICU" || specId === "GA") {
+                currentResidents = (db.names || []).filter(n => n.spec === "A");
+            } else if (specId === "D") {
+                currentResidents = acceptPool.length > 0 ?
+                    (db.names || []).filter(n => acceptPool.includes(n.spec)) :
+                    (db.names || []).slice();
+            } else {
+                currentResidents = acceptPool.length > 0 ?
+                    (db.names || []).filter(n => acceptPool.includes(n.spec)) :
+                    (db.names || []).filter(n => n.spec === specId);
+            }
+
+            const today = getMedicalDate();
+            const entry = (db.schedule || []).find(s => s.specCode === specId && s.date === today);
+            if (entry) {
+                holder.textContent = entry.name || '—';
+                holder.style.color = '#2563eb';
+            } else {
+                holder.textContent = 'لا يوجد خفير اليوم';
+                holder.style.color = '#94a3b8';
+            }
+
+            input.focus();
+        }
+
+        // ============================================================
+        // NAME INPUT
+        // ============================================================
+        function handleNameInput() {
+            const input = document.getElementById('name-input');
+            const ghost = document.getElementById('ghost-text');
+            const val = input.value;
+            const btn = document.getElementById('update-btn');
+            const menu = document.getElementById('name-menu');
+
+            ghost.innerHTML = '';
+            ghost.removeAttribute('data-full');
+            btn.disabled = true;
+
+            if (!val.trim()) {
+                menu.style.display = 'none';
+                return;
+            }
+
+            const valClean = val.toLowerCase().replace(/^د\.?\s*/, '');
+            const matches = currentResidents.filter(n => {
+                const nClean = n.name.toLowerCase().replace(/^د\.?\s*/, '');
+                return nClean.startsWith(valClean) || n.name.toLowerCase().startsWith(val.toLowerCase());
+            });
+            const partials = currentResidents.filter(n => {
+                const nClean = n.name.toLowerCase().replace(/^د\.?\s*/, '');
+                return nClean.includes(valClean) && !nClean.startsWith(valClean);
+            });
+
+            const all = [...matches, ...partials];
+
+            if (all.length > 0) {
+                const match = all[0];
+                ghost.setAttribute('data-full', match.name);
+                let display = match.name;
+                if (!val.startsWith('د.') && !val.startsWith('د ')) {
+                    display = display.replace(/^د\.?\s*/, '');
+                }
+
+                if (display.toLowerCase().startsWith(val.toLowerCase())) {
+                    ghost.innerHTML = `<span class="offset">${val}</span><span class="suggestion-bright">${display.substring(val.length)}</span>`;
+                } else if (display.toLowerCase().includes(valClean)) {
+                    const idx = display.toLowerCase().indexOf(valClean);
+                    ghost.innerHTML = `<span class="suggestion">${display.substring(0, idx)}</span><span class="suggestion-bright">${display.substring(idx, idx + valClean.length)}</span><span class="suggestion">${display.substring(idx + valClean.length)}</span>`;
+                } else {
+                    ghost.innerHTML = `<span class="suggestion">${display}</span>`;
+                }
+                btn.disabled = false;
+            }
+
+            if (all.length > 0 && document.activeElement === input) {
+                menu.innerHTML = all.map(n =>
+                    `<div onclick="selectName('${n.name.replace(/'/g, "\\'")}')">${n.name}</div>`
+                ).join('');
+                menu.style.display = 'block';
+            } else {
+                menu.style.display = 'none';
+            }
+        }
+
+        function handleNameKeys(e) {
+            const ghost = document.getElementById('ghost-text');
+            const full = ghost.getAttribute('data-full');
+            const menu = document.getElementById('name-menu');
+            const items = menu.querySelectorAll('div');
+
+            if (e.key === "Tab" && full) {
+                e.preventDefault();
+                selectName(full);
+            }
+
+            if (e.key === "Enter") {
+                const selected = menu.querySelector('div.selected');
+                if (selected) {
+                    e.preventDefault();
+                    selectName(selected.textContent);
+                } else if (full) {
+                    e.preventDefault();
+                    selectName(full);
+                }
+            }
+
+            if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+                if (items.length > 0) {
+                    e.preventDefault();
+                    let idx = -1;
+                    items.forEach((item, i) => {
+                        if (item.classList.contains('selected')) {
+                            idx = i;
+                            item.classList.remove('selected');
+                        }
+                    });
+                    idx = e.key === "ArrowDown" ? Math.min(idx + 1, items.length - 1) : Math.max(idx - 1, 0);
+                    if (idx >= 0) {
+                        items[idx].classList.add('selected');
+                        items[idx].scrollIntoView({ block: 'nearest' });
+                    }
+                }
+            }
+        }
+
+        function toggleMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('name-menu');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+                return;
+            }
+
+            const val = document.getElementById('name-input').value.trim().toLowerCase().replace(/^د\.?\s*/, '');
+            let matches = currentResidents;
+            if (val) {
+                matches = currentResidents.filter(n => {
+                    const nClean = n.name.toLowerCase().replace(/^د\.?\s*/, '');
+                    return nClean.includes(val) || n.name.toLowerCase().includes(val);
                 });
             }
-            updateNameLookup();
-            refreshView();
-        } catch (e) { console.error("Init Error", e); }
 
-        if (wrapper) wrapper.classList.remove('loading-active');
-    }
-
-    function updateNameLookup() {
-        nameData = {};
-        const residents = db.names || [];
-        specialties.forEach(s => {
-            if (s.id === "OP" || s.id === "ICU") {
-                nameData[s.id] = residents.filter(x => x.spec === "A").map(x => x.name);
-            } else if (s.id === "D") {
-                nameData[s.id] = residents.map(x => x.name);
+            if (matches.length === 0) {
+                menu.innerHTML = '<div style="color:#94a3b8;font-size:0.8rem;text-align:center;padding:12px;">لا يوجد مقيمين</div>';
             } else {
-                nameData[s.id] = residents.filter(x => x.spec === s.id).map(x => x.name);
+                menu.innerHTML = matches.map(n =>
+                    `<div onclick="selectName('${n.name.replace(/'/g, "\\'")}')">${n.name}</div>`
+                ).join('');
             }
+            menu.style.display = 'block';
+        }
+
+        function selectName(name) {
+            document.getElementById('name-input').value = name;
+            document.getElementById('ghost-text').innerHTML = '';
+            document.getElementById('ghost-text').removeAttribute('data-full');
+            document.getElementById('update-btn').disabled = false;
+            document.getElementById('name-menu').style.display = 'none';
+            document.querySelectorAll('#name-menu div').forEach(el => el.classList.remove('selected'));
+            document.getElementById('name-input').focus();
+            handleNameInput();
+        }
+
+        function closeMenu() {
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
+            document.querySelectorAll('#name-menu div').forEach(el => el.classList.remove('selected'));
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.input-wrap')) closeMenu();
         });
-    }
 
-    function refreshView() {
-        generateBoard();
-        renderData();
-    }
+        // ============================================================
+        // RESET TO START
+        // ============================================================
+        function resetToStart() {
+            const select = document.getElementById('spec-select');
+            const section = document.getElementById('name-section');
+            const input = document.getElementById('name-input');
+            const ghost = document.getElementById('ghost-text');
+            const btn = document.getElementById('update-btn');
+            const msg = document.getElementById('status-msg');
+            const card = document.getElementById('app-card');
 
-    // ----- BUILD BOARD -----
-    function generateBoard() {
-        const picker = document.getElementById('month-picker');
-        if (!picker) return;
-        const [yr, mon] = picker.value.split('-').map(Number);
-        const days = new Date(yr, mon, 0).getDate();
-        const board = document.getElementById('board');
-        board.innerHTML = "";
+            select.value = '';
+            section.style.display = 'none';
+            input.value = '';
+            ghost.innerHTML = '';
+            ghost.removeAttribute('data-full');
+            btn.disabled = true;
+            msg.textContent = '';
+            closeMenu();
+            card.classList.remove('card-success');
 
-        specialties.forEach(spec => {
-            const track = document.createElement('div');
-            track.className = `specialty-track track-${spec.id}`;
-            let html = `<div class="track-header"><h2>${spec.name}</h2></div><div class="days-list">`;
-            for (let d = 1; d <= days; d++) {
-                const dateObj = new Date(yr, mon - 1, d);
-                const dayName = new Intl.DateTimeFormat('ar-IQ', { weekday: 'short' }).format(dateObj);
-                const dateFull = `${String(d).padStart(2, '0')}/${String(mon).padStart(2, '0')}/${yr}`;
-                const uid = `${d}-${spec.id}`;
-                const isWeekend = (dateObj.getDay() === 5 || dateObj.getDay() === 6);
-                html += `
-                    <div class="day-box ${isWeekend ? 'weekend' : ''}">
-                        <div class="day-label"><span>${dateFull.substring(0,5)}</span><span>${dayName}</span></div>
-                        <div class="input-wrapper" onclick="event.stopPropagation()">
-                            <div class="ghost-text" id="ghost-${uid}"></div>
-                            <input type="text" class="cell-input" id="input-${uid}"
-                                onfocus="closeAllMenus()"
-                                oninput="handleAC(this, '${spec.id}', '${uid}')"
-                                onkeydown="handleKeys(event, this, '${uid}')"
-                                onblur="handleBlur('${uid}')"
-                                data-date="${dateFull}" data-spec="${spec.id}" autocomplete="off" placeholder=" ">
-                            <span class="dropdown-arrow" onclick="toggleMenu(event, '${uid}', '${spec.id}')">▼</span>
-                            <div class="custom-menu" id="menu-${uid}"></div>
-                        </div>
-                    </div>`;
+            select.focus();
+        }
+
+        // ============================================================
+        // UPDATE DUTY
+        // ============================================================
+        async function updateDuty() {
+            const specId = document.getElementById('spec-select').value;
+            const name = document.getElementById('name-input').value.trim();
+            const btn = document.getElementById('update-btn');
+            const msg = document.getElementById('status-msg');
+            const card = document.getElementById('app-card');
+
+            if (!specId || !name) {
+                showToast('الرجاء اختيار التخصص والاسم', 'error');
+                return;
             }
-            track.innerHTML = html + `</div>`;
-            board.appendChild(track);
-        });
-    }
 
-    function renderData() {
-        const picker = document.getElementById('month-picker');
-        if (!picker) return;
-        const [yr, mon] = picker.value.split('-');
-        (db.schedule || []).forEach(row => {
-            if (row.date && row.date.endsWith(`${mon}/${yr}`)) {
-                const day = parseInt(row.date.split('/')[0]);
-                const el = document.getElementById(`input-${day}-${row.specCode}`);
-                if (el) { el.value = row.name; el.classList.add('prefilled'); }
+            if (!currentResidents.some(n => n.name === name)) {
+                showToast('هذا المقيم غير موجود في هذا التخصص', 'error');
+                return;
             }
-        });
-    }
 
-    // ----- INPUT LOGIC (autocomplete, ghost, menu) -----
-    function handleAC(el, sid, uid) {
-        const ghost = document.getElementById(`ghost-${uid}`);
-        const val = el.value;
-        ghost.innerHTML = "";
-        ghost.removeAttribute('data-full');
-        el.classList.remove('prefilled');
-        if (!val.trim()) { el.classList.remove('new-entry'); return; }
-        el.classList.add('new-entry');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-pulse ml-2"></i> جاري التحديث...';
 
-        if (nameData[sid]) {
-            const match = nameData[sid].find(n => {
-                const nClean = n.toLowerCase().replace(/^د\.\s*/, "").trim();
-                const valClean = val.toLowerCase().replace(/^د\.\s*/, "").trim();
-                return n.toLowerCase().startsWith(val.toLowerCase()) || nClean.startsWith(valClean);
+            const today = getMedicalDate();
+            const ts = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+            db.schedule = (db.schedule || []).filter(s => !(s.specCode === specId && s.date === today));
+            db.schedule.push({
+                date: today,
+                specCode: specId,
+                name: name,
+                timestamp: ts,
+                VisitCount: 0
             });
-            if (match) {
-                ghost.setAttribute('data-full', match);
-                let display = val.startsWith("د.") ? match : match.replace(/^د\.\s*/, "");
-                if (display.toLowerCase().startsWith(val.toLowerCase())) {
-                    ghost.innerHTML = `<span class="ghost-offset">${val}</span><span>${display.substring(val.length)}</span>`;
-                } else { ghost.innerText = display; }
+
+            try {
+                const dataToSave = {
+                    hospitalName: db.hospitalName || 'Basra Teaching Hospital',
+                    names: db.names || [],
+                    schedule: db.schedule || [],
+                    passwords: db.passwords || {},
+                    specialties: db.specialties || []
+                };
+
+                const body = {
+                    message: `Duty update: ${specId} → ${name}`,
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(dataToSave, null, 2)))),
+                    sha: fileSha
+                };
+
+                const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${GH_TOKEN}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    fileSha = data.content.sha;
+
+                    msg.innerHTML = `<span style="color:#10b981;">✅ تم تحديث الخفير إلى <strong>${name}</strong></span>`;
+                    showToast(`تم تحديث الخفير إلى ${name}`, 'success');
+                    card.classList.add('card-success');
+
+                    setTimeout(() => {
+                        resetToStart();
+                    }, 1500);
+
+                } else {
+                    throw new Error('Save failed');
+                }
+            } catch (e) {
+                console.error(e);
+                msg.innerHTML = `<span style="color:#ef4444;">❌ فشل تحديث الخفير</span>`;
+                showToast('فشل تحديث الخفير', 'error');
+                btn.disabled = false;
             }
-        }
-    }
 
-    function handleKeys(e, el, uid) {
-        const ghost = document.getElementById(`ghost-${uid}`);
-        const full = ghost.getAttribute('data-full');
-        if (e.key === "Enter") {
-            e.preventDefault();
-            if (full) { el.value = full; el.classList.add('new-entry'); ghost.innerHTML = ""; }
-            const [d, sid] = uid.split('-');
-            const nextEl = document.getElementById(`input-${parseInt(d) + 1}-${sid}`);
-            if (nextEl) { nextEl.focus(); nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-            else el.blur();
+            btn.innerHTML = '<i class="fas fa-save ml-2"></i> تحديث الخفير';
         }
-    }
 
-    function toggleMenu(e, uid, sid) {
-        e.stopPropagation();
-        const m = document.getElementById(`menu-${uid}`);
-        const open = m.style.display === "block";
-        closeAllMenus();
-        if (!open) {
-            m.innerHTML = (nameData[sid] || []).map(n => `<div onmousedown="selectName('${uid}', '${n}')">${n}</div>`).join('');
-            m.style.display = "block";
+        // ============================================================
+        // HELPERS
+        // ============================================================
+        function getMedicalDate() {
+            const now = new Date();
+            if (now.getHours() < 8) now.setDate(now.getDate() - 1);
+            return `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
         }
-    }
 
-    function selectName(uid, name) {
-        const i = document.getElementById(`input-${uid}`);
-        if (i) {
-            i.value = name;
-            i.classList.add('new-entry');
-            const g = document.getElementById(`ghost-${uid}`);
-            if (g) g.innerHTML = "";
-        }
-        closeAllMenus();
-    }
-
-    function handleBlur(uid) {
-        setTimeout(() => {
-            const g = document.getElementById(`ghost-${uid}`);
-            const input = document.getElementById(`input-${uid}`);
-            if (g && g.getAttribute('data-full') && input && input.value !== "") {
-                input.value = g.getAttribute('data-full');
-                input.classList.add('new-entry');
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const lock = document.getElementById('lock-screen');
+                if (!lock.classList.contains('hidden')) {
+                    e.preventDefault();
+                    handleLogin();
+                }
             }
-            if (g) g.innerHTML = "";
-        }, 250);
-    }
+            if (e.key === 'Escape') closeMenu();
+        });
 
-    // ----- SAVE TO GITHUB -----
-    async function saveToGithub() {
-        const btn = document.getElementById('sync-btn');
-        const oldText = btn.innerText;
-        btn.innerText = "Syncing…";
+        // ============================================================
+        // EXPOSE
+        // ============================================================
+        window.toggleTheme = toggleTheme;
+        window.handleLogin = handleLogin;
+        window.logout = logout;
+        window.onSpecialtyChange = onSpecialtyChange;
+        window.handleNameInput = handleNameInput;
+        window.handleNameKeys = handleNameKeys;
+        window.toggleMenu = toggleMenu;
+        window.selectName = selectName;
+        window.updateDuty = updateDuty;
+        window.closeMenu = closeMenu;
+        window.showToast = showToast;
+        window.resetToStart = resetToStart;
 
-        const inputs = Array.from(document.querySelectorAll('.cell-input')).filter(i => i.value.trim() !== "");
-        const currentData = inputs.map(i => ({
-            date: i.dataset.date,
-            specCode: i.dataset.spec,
-            name: i.value.trim()
-        }));
-
-        const picker = document.getElementById('month-picker');
-        const [yr, mon] = picker.value.split('-');
-        db.schedule = [
-            ...(db.schedule || []).filter(r => !r.date || !r.date.endsWith(`${mon}/${yr}`)),
-            ...currentData
-        ];
-
-        try {
-            const body = {
-                message: "Sync Schedule 🇮🇶",
-                content: btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2)))),
-                sha: fileSha
-            };
-            const res = await fetch(`https://api.github.com/repos/${CONFIG.user}/${CONFIG.repo}/contents/${CONFIG.path}`, {
-                method: "PUT",
-                headers: {
-                    "Authorization": `token ${GH_TOKEN}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            });
-            if (res.ok) {
-                const update = await res.json();
-                fileSha = update.content.sha;
-                btn.innerText = "Synced ✅";
-            } else { btn.innerText = "Sync Error ❌"; }
-        } catch (e) { btn.innerText = "Error"; }
-        setTimeout(() => btn.innerText = oldText, 2000);
-    }
-</script>
+        // ============================================================
+        // INIT
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            if (checkSession()) {
+                const token = localStorage.getItem(REMEMBER_TOKEN_KEY);
+                if (token) {
+                    try {
+                        const pwd = atob(token);
+                        document.getElementById('password-input').value = pwd;
+                        // The auto-login IIFE will handle the rest
+                    } catch (e) {}
+                }
+            } else {
+                document.getElementById('password-input').focus();
+            }
+        });
+    </script>
 </body>
 </html>
