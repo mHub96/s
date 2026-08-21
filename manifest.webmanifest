@@ -1,0 +1,24 @@
+{
+  "name": "Iraqi Teaching Hospital",
+  "short_name": "Duty Roster",
+  "description": "Hospital duty roster and resident management system.",
+  "start_url": "Home.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0e12",
+  "theme_color": "#0f766e",
+  "icons": [
+    {
+      "src": "pwa-icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "pwa-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
