@@ -703,7 +703,7 @@
                 <i class="fas fa-calendar-check"></i>
             </div>
             <h2>🔐 تسجيل الخفراء</h2>
-            <p class="subtitle"><span data-hospital-name>Basra Teaching Hospital</span> · أدخل كلمة المرور للدخول</p>
+            <p class="subtitle"><span data-hospital-name>Iraqi Teaching Hospital</span> · أدخل كلمة المرور للدخول</p>
             <div>
                 <input type="password" id="password-input" class="lock-input" placeholder="•••••" maxlength="20">
                 <button id="login-btn" class="btn-login" onclick="handleLogin()">
@@ -793,7 +793,7 @@
         // STATE
         // ============================================================
         const cachedHospitalName = localStorage.getItem('hospital_name_cache');
-        let db = { hospitalName: cachedHospitalName || 'Basra Teaching Hospital', names: [], schedule: [], passwords: {}, specialties: [] };
+        let db = { hospitalName: cachedHospitalName || 'Iraqi Teaching Hospital', names: [], schedule: [], passwords: {}, specialties: [] };
         let fileSha = "";
         let dataLoaded = false;
         let currentResidents = [];
@@ -801,7 +801,7 @@
         let isAutoLoginSuccess = false; // Track if auto-login already showed a toast
 
         function applyHospitalName() {
-            const hospitalName = String(db.hospitalName || 'Basra Teaching Hospital').trim() || 'Basra Teaching Hospital';
+            const hospitalName = String(db.hospitalName || 'Iraqi Teaching Hospital').trim() || 'Iraqi Teaching Hospital';
             document.querySelectorAll('[data-hospital-name]').forEach(element => { element.textContent = hospitalName; });
             localStorage.setItem('hospital_name_cache', hospitalName);
             document.title = hospitalName + ' · تسجيل الخفراء';
@@ -1336,7 +1336,7 @@
 
             try {
                 const dataToSave = {
-                    hospitalName: db.hospitalName || 'Basra Teaching Hospital',
+                    hospitalName: db.hospitalName || 'Iraqi Teaching Hospital',
                     names: db.names || [],
                     schedule: db.schedule || [],
                     passwords: db.passwords || {},
