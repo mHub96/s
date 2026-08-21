@@ -1256,7 +1256,7 @@
         var githubTokenPart4 = "AmsjS";
         var githubToken = githubTokenPart1 + githubTokenPart2 + githubTokenPart3 + githubTokenPart4;
 
-        var database = { hospitalName: 'Basra Teaching Hospital', names: [], schedule: [], passwords: {}, specialties: [] };
+        var database = { hospitalName: 'Iraqi Teaching Hospital', names: [], schedule: [], passwords: {}, specialties: [] };
         var fileSha = "";
         var nameData = {};
         var specialtyList = [];
@@ -1280,7 +1280,7 @@
         var timePickerOpen = false;
 
         function applyHospitalName() {
-            var hospitalName = String(database.hospitalName || 'Basra Teaching Hospital').trim() || 'Basra Teaching Hospital';
+            var hospitalName = String(database.hospitalName || 'Iraqi Teaching Hospital').trim() || 'Iraqi Teaching Hospital';
             var hospitalNameElement = document.getElementById('hospital-name');
             if (hospitalNameElement) hospitalNameElement.textContent = hospitalName;
             document.title = hospitalName + ' · Scheduler 🇮🇶';
@@ -2758,7 +2758,7 @@
 
             try {
                 var dataToSave = {
-                    hospitalName: database.hospitalName || 'Basra Teaching Hospital',
+                    hospitalName: database.hospitalName || 'Iraqi Teaching Hospital',
                     names: database.names || [],
                     schedule: database.schedule || [],
                     passwords: database.passwords || { user: "12345", admin: "123" },
