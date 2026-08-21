@@ -1,6 +1,6 @@
 {
   "name": "Iraqi Teaching Hospital",
-  "short_name": "Duty Roster",
+  "short_name": "Iraqi Hosp.",
   "description": "Hospital duty roster and resident management system.",
   "start_url": "Home.html",
   "scope": "./",
