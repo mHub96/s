@@ -15661,14 +15661,6 @@
       "dutySlot": 0
     },
     {
-      "date": "22/08/2026",
-      "specCode": "D",
-      "name": "د. ضرغام عامر حسان",
-      "VisitCount": 1,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "23/08/2026",
       "specCode": "D",
       "name": "د. اسعد حسن فرحان",
@@ -16817,6 +16809,13 @@
       "specCode": "R",
       "name": "د. منار رحيم عبد",
       "timestamp": "08:46",
+      "VisitCount": 0
+    },
+    {
+      "date": "22/08/2026",
+      "specCode": "D",
+      "name": "د. فاطمة خليل",
+      "timestamp": "16:08",
       "VisitCount": 0
     }
   ],
