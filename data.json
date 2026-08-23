@@ -16149,14 +16149,6 @@
       "dutySlot": 0
     },
     {
-      "date": "23/08/2026",
-      "specCode": "ICU",
-      "name": "د. زينب عبد الرزاق",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "24/08/2026",
       "specCode": "ICU",
       "name": "د. نور عبد المطلب",
@@ -16815,6 +16807,13 @@
       "specCode": "R",
       "name": "د. زينب سلمان سعيد",
       "timestamp": "09:19",
+      "VisitCount": 0
+    },
+    {
+      "date": "23/08/2026",
+      "specCode": "ICU",
+      "name": "د. ايات فيصل",
+      "timestamp": "10:01",
       "VisitCount": 0
     }
   ],
