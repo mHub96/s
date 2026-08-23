@@ -965,117 +965,11 @@
         }
         body.dark .top-action-btn.reset { background: rgba(220,38,38,0.15); border-color: rgba(220,38,38,0.2); color: #fca5a5; }
 
-        /* ===== FLYING PANEL (popup) - TALLER ===== */
-        .fly-panel-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            padding: 1.5rem;
-        }
-        .fly-panel-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .fly-panel {
-            background: #ffffff;
-            border-radius: 2rem;
-            max-width: 920px;
-            width: 100%;
-            max-height: 92vh;
-            min-height: 70vh;
-            height: 85vh;
-            overflow: hidden;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.35);
-            transform: scale(0.92) translateY(30px);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
-        }
-        body.dark .fly-panel {
-            background: #141c2a;
-            border: 1px solid rgba(212,175,55,0.08);
-        }
-        .fly-panel-overlay.active .fly-panel {
-            transform: scale(1) translateY(0);
-        }
-        .fly-panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.8rem 1.2rem;
-            border-bottom: 1px solid rgba(128,128,128,0.08);
-            flex-shrink: 0;
-        }
-        .fly-panel-header h3 {
-            font-weight: 800;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .fly-panel-header .close-fly {
-            background: none;
-            border: none;
-            font-size: 1.4rem;
-            cursor: pointer;
-            opacity: 0.4;
-            transition: all 0.3s ease;
-            padding: 0.3rem;
-            border-radius: 50%;
-            line-height: 1;
-        }
-        .fly-panel-header .close-fly:hover {
-            opacity: 0.8;
-            background: rgba(128,128,128,0.08);
-        }
-        .fly-panel-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0;
-            min-height: 400px;
-            position: relative;
-            height: 100%;
-        }
-        .fly-panel-body iframe {
-            width: 100%;
-            height: 100%;
-            min-height: 450px;
-            border: none;
-            display: block;
-            background: #fff;
-        }
-        body.dark .fly-panel-body iframe { background: #0b0e12; }
-        .fly-panel-body .fly-loading {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            opacity: 0.3;
-            gap: 0.8rem;
-            flex-direction: column;
-        }
-        .fly-panel-body .fly-loading i { font-size: 2rem; animation: spin 1s linear infinite; }
-
         @media (max-width: 500px) {
             .nav-row { gap: 0.2rem 0.5rem; padding: 0.3rem 0.4rem; }
             .nav-btn { font-size: 0.6rem; padding: 0.25rem 0.6rem; }
             .nav-btn i { font-size: 0.7rem; }
             .nav-row .sep { height: 20px; }
-            .fly-panel { max-width: 100%; border-radius: 1.2rem; height: 90vh; min-height: 60vh; }
-            .fly-panel-body iframe { min-height: 300px; }
-        }
-        @media (min-width: 768px) {
-            .fly-panel { max-height: 90vh; height: 85vh; }
         }
     </style>
 </head>
@@ -1157,23 +1051,23 @@
             </div>
         </header>
 
-        <!-- ===== NAV ROW (no container, grouped with separators) ===== -->
+        <!-- ===== NAV ROW – simple same‑tab redirects ===== -->
         <div class="nav-row">
-            <!-- All Hospitals → opens in same page (no redirect, just location.href) -->
-            <a href="https://mhub96.github.io/H/" class="nav-btn disabled" aria-disabled="true" onclick="event.preventDefault(); showToast('⛔ صفحة المستشفيات غير متاحة حالياً', 'info');">
+            <!-- All Hospitals → disabled (soon) -->
+            <a href="#" class="nav-btn disabled" onclick="event.preventDefault(); showToast('⛔ صفحة المستشفيات غير متاحة حالياً', 'info');">
                 <i class="fas fa-hospital"></i>
                 <span>All Hospitals</span>
                 <span class="badge disabled-badge">soon</span>
             </a>
             <span class="sep"></span>
-            <!-- Rotation Heroes → opens in flying panel -->
-            <a href="#" class="nav-btn" onclick="openFlyPanel('https://khafarat-alsadr.netlify.app/', 'Rotation Heroes', 'fa-user-md'); return false;">
+            <!-- Rotation Heroes → same tab -->
+            <a href="https://khafarat-alsadr.netlify.app/" class="nav-btn">
                 <i class="fas fa-user-md"></i>
                 <span>Rotation Heroes</span>
             </a>
             <span class="sep"></span>
-            <!-- Duty Exchange → opens in flying panel -->
-            <a href="#" class="nav-btn" onclick="openFlyPanel('https://mhub96.github.io/s/', 'Duty Exchange', 'fa-exchange-alt'); return false;">
+            <!-- Duty Exchange → same tab -->
+            <a href="https://mhub96.github.io/s/" class="nav-btn">
                 <i class="fas fa-exchange-alt"></i>
                 <span>Duty Exchange</span>
             </a>
@@ -1240,20 +1134,6 @@
         </div>
     </div>
 
-    <!-- ===== FLYING PANEL ===== -->
-    <div id="fly-panel-overlay" class="fly-panel-overlay" onclick="if(event.target===this) closeFlyPanel()">
-        <div class="fly-panel">
-            <div class="fly-panel-header">
-                <h3 id="fly-panel-title"><i class="fas fa-globe"></i> Loading...</h3>
-                <button class="close-fly" onclick="closeFlyPanel()"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="fly-panel-body" id="fly-panel-body">
-                <div class="fly-loading"><i class="fas fa-spinner"></i> جاري التحميل...</div>
-                <iframe id="fly-iframe" src="about:blank"></iframe>
-            </div>
-        </div>
-    </div>
-
     <div id="confetti-container" class="confetti-container"></div>
 
     <script>
@@ -1291,55 +1171,6 @@
             document.title = hospitalName + ' · Duty Roster 🇮🇶';
         }
         applyHospitalName();
-
-        // ================================================================
-        // FLYING PANEL
-        // ================================================================
-        function openFlyPanel(url, title, icon) {
-            const overlay = document.getElementById('fly-panel-overlay');
-            const iframe = document.getElementById('fly-iframe');
-            const titleEl = document.getElementById('fly-panel-title');
-            const loading = overlay.querySelector('.fly-loading');
-            
-            titleEl.innerHTML = `<i class="${icon || 'fa-globe'}"></i> ${title}`;
-            iframe.src = url;
-            loading.style.display = 'flex';
-            iframe.style.opacity = '0';
-            
-            overlay.classList.add('active');
-            
-            iframe.onload = function() {
-                loading.style.display = 'none';
-                iframe.style.opacity = '1';
-            };
-            // fallback: hide loading after 8s
-            setTimeout(() => {
-                loading.style.display = 'none';
-                iframe.style.opacity = '1';
-            }, 8000);
-            
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeFlyPanel() {
-            const overlay = document.getElementById('fly-panel-overlay');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-            // clear iframe src after transition to stop loading
-            setTimeout(() => {
-                const iframe = document.getElementById('fly-iframe');
-                iframe.src = 'about:blank';
-            }, 400);
-        }
-
-        // Close on Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeFlyPanel();
-                closeTrendingModal();
-                closeResetModal();
-            }
-        });
 
         // ================================================================
         // SPECIALTY MAPS (stub – will be built from data)
@@ -2208,8 +2039,6 @@
         window.toggleSpecialtyTimer = toggleSpecialtyTimer;
         window.handleTrendingClick = handleTrendingClick;
         window.triggerConfetti = triggerConfetti;
-        window.openFlyPanel = openFlyPanel;
-        window.closeFlyPanel = closeFlyPanel;
     </script>
     <script src="pwa.js"></script>
 </body>
