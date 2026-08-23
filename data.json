@@ -15189,14 +15189,6 @@
       "dutySlot": 0
     },
     {
-      "date": "23/08/2026",
-      "specCode": "US",
-      "name": "د. ضرغام عامر حسان",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "24/08/2026",
       "specCode": "US",
       "name": "د. مرتضى امين عبدالخضر",
@@ -16814,6 +16806,13 @@
       "specCode": "ICU",
       "name": "د. ايات فيصل",
       "timestamp": "10:01",
+      "VisitCount": 0
+    },
+    {
+      "date": "23/08/2026",
+      "specCode": "US",
+      "name": "د. عذراء صبيح بدر",
+      "timestamp": "15:36",
       "VisitCount": 0
     }
   ],
