@@ -15909,14 +15909,6 @@
       "dutySlot": 0
     },
     {
-      "date": "24/08/2026",
-      "specCode": "OP",
-      "name": "د. ايات فيصل",
-      "VisitCount": 1,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "25/08/2026",
       "specCode": "OP",
       "name": "د. سماء علي",
@@ -16814,6 +16806,13 @@
       "name": "د. عذراء صبيح بدر",
       "timestamp": "15:36",
       "VisitCount": 1
+    },
+    {
+      "date": "24/08/2026",
+      "specCode": "OP",
+      "name": "د. زينب عبد الرزاق",
+      "timestamp": "10:46",
+      "VisitCount": 0
     }
   ],
   "passwords": {
