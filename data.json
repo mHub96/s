@@ -14949,14 +14949,6 @@
       "dutySlot": 0
     },
     {
-      "date": "24/08/2026",
-      "specCode": "GS",
-      "name": "د. سعيد جندي لهمود",
-      "VisitCount": 1,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "25/08/2026",
       "specCode": "GS",
       "name": "د. احمد الراوي",
@@ -16811,6 +16803,13 @@
       "specCode": "R",
       "name": "د. زينب جبار محسن",
       "timestamp": "11:37"
+    },
+    {
+      "date": "24/08/2026",
+      "specCode": "GS",
+      "name": "د. رافع احمد عاشور",
+      "timestamp": "12:42",
+      "VisitCount": 0
     }
   ],
   "passwords": {
