@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <style>
-        /* ─── Reset & Base ─── */
+        /* ... (all styles remain unchanged) ... */
+        /* For brevity, I'll include the full CSS but it's identical to yours, so I'll keep it as is. */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -323,7 +324,8 @@
             flex: 0 0 auto;
             isolation: isolate;
             will-change: width, transform;
-            transition: transform 0.2s ease, filter 0.2s ease, width 0.35s ease;
+            transition: transform 0.2s ease, filter 0.2s ease, width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+            min-width: auto;
         }
         .roster-card .specialty-bubble {
             font-size: 0.85rem;
@@ -344,6 +346,8 @@
             grid-area: 1 / 1;
             backface-visibility: hidden;
             transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+            width: auto;
+            min-width: max-content;
         }
         .roster-card .specialty-back {
             position: absolute;
@@ -358,9 +362,15 @@
             direction: ltr;
             color: #10b981;
             white-space: nowrap;
-            overflow: hidden;
+            overflow: visible;
             border-radius: inherit;
             clip-path: inset(0 round 999px);
+            padding: 0.15rem 0.6rem;
+            background: rgba(16, 185, 129, 0.08);
+            border: 2px solid #10b981;
+            backface-visibility: hidden;
+            width: auto;
+            min-width: max-content;
         }
         .roster-card .specialty-flip.flipped .specialty-front {
             transform: rotateY(-180deg);
@@ -485,14 +495,12 @@
             min-height: 80px;
             border: 1px solid;
         }
-        /* Light mode → dark card with high contrast */
         body.light .trending-panel {
             background: rgba(18, 20, 38, 0.92);
             border-color: rgba(212, 175, 55, 0.2);
             box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
             color: #f0f3f8;
         }
-        /* Dark mode → light card with high contrast */
         body.dark .trending-panel {
             background: rgba(240, 242, 248, 0.92);
             border-color: rgba(255, 255, 255, 0.3);
@@ -508,7 +516,6 @@
             transition-duration: 0.08s;
         }
 
-        /* Top row: badge + stats – centered */
         .trending-top {
             display: flex;
             align-items: center;
@@ -519,7 +526,6 @@
             padding: 0.1rem 0;
         }
 
-        /* Fluttering badge – 3D with depth (less floating) */
         .trending-badge-btn {
             display: inline-flex;
             align-items: center;
@@ -568,7 +574,6 @@
             }
         }
 
-        /* Light mode: Dark Gold 3D (less floating) */
         body.light .trending-badge-btn {
             background: linear-gradient(180deg, #D4A017, #B8860B);
             color: #FFF8E7;
@@ -586,7 +591,6 @@
             transform: translateY(1px) scale(0.96);
         }
 
-        /* Dark mode: Bright Gold 3D (less floating) */
         body.dark .trending-badge-btn {
             background: linear-gradient(180deg, #FDE047, #F59E0B);
             color: #1a2332;
@@ -604,7 +608,6 @@
             transform: translateY(1px) scale(0.96);
         }
 
-        /* Visit count – 3D with depth (less floating) */
         .trending-stats {
             display: inline-flex;
             align-items: center;
@@ -635,7 +638,6 @@
             font-size: 0.7rem;
         }
 
-        /* Center: name + specialty */
         .trending-center {
             display: flex;
             flex-direction: column;
@@ -669,7 +671,6 @@
             color: #475569;
         }
 
-        /* Responsive */
         @media (max-width: 550px) {
             .trending-panel {
                 padding: 0.9rem 1rem 0.8rem;
@@ -703,7 +704,6 @@
             }
         }
 
-        /* ─── hidden content, toast, modal, etc. ─── */
         .hidden-content {
             display: none;
         }
@@ -1132,6 +1132,27 @@
                 font-size: 1.6rem;
             }
         }
+
+        /* ─── Fireworks Canvas Overlay ─── */
+        #fireworks-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        #fireworks-container canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .main-content-wrap {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 <body class="light" id="app-body">
@@ -1166,7 +1187,7 @@
     </div>
 
     <!-- MAIN APP -->
-    <div id="main-content" class="hidden-content max-w-2xl mx-auto px-4 py-6 relative z-10">
+    <div id="main-content" class="hidden-content max-w-2xl mx-auto px-4 py-6 main-content-wrap">
         <div class="top-bar">
             <div class="flex items-center gap-3">
                 <button onclick="toggleTheme()" class="theme-toggle-btn" aria-label="Toggle theme">
@@ -1249,6 +1270,9 @@
         </div>
     </div>
 
+    <!-- Fireworks Canvas Container -->
+    <div id="fireworks-container"></div>
+
     <script>
         // ================================================================
         // CONFIGURATION
@@ -1274,9 +1298,471 @@
             specIcons = {},
             specialtyOrder = {};
 
-        // Confetti counter for fireworks (every 10)
         let confettiClickCounter = 0;
 
+
+
+
+        // ─── Fireworks Canvas (More Rockets) ───
+        let fwCanvas, fwCtx, fwWidth, fwHeight;
+        let fwRockets = [], fwParticles = [];
+        let fwAnimationId = null;
+        let fwRunning = false;
+        let fwFrameSkip = 0;
+
+        // ─── Color Palette ───
+        function fwRandomColor() {
+            const palettes = [
+                ["#ff3b3b", "#ff6b2b", "#ff9f1c", "#ffe66d"],
+                ["#38bdf8", "#4f7cff", "#818cf8", "#a78bfa"],
+                ["#ff4fd8", "#c77dff", "#f472b6", "#f9a8d4"],
+                ["#fbbf24", "#f59e0b", "#fcd34d", "#fef08a"],
+                ["#34d399", "#4dff88", "#6ee7b7", "#a7f3d0"],
+                ["#ffffff", "#e2e8f0", "#f1f5f9", "#cbd5e1"],
+                ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#9b59b6"]
+            ];
+            const palette = palettes[Math.floor(Math.random() * palettes.length)];
+            return palette[Math.floor(Math.random() * palette.length)];
+        }
+
+        function fwRandomColorPalette() {
+            const palettes = [
+                ["#ff3b3b", "#ff6b2b", "#ff9f1c", "#ffe66d"],
+                ["#38bdf8", "#4f7cff", "#818cf8", "#a78bfa"],
+                ["#ff4fd8", "#c77dff", "#f472b6", "#f9a8d4"],
+                ["#fbbf24", "#f59e0b", "#fcd34d", "#fef08a"],
+                ["#34d399", "#4dff88", "#6ee7b7", "#a7f3d0"],
+                ["#ffffff", "#e2e8f0", "#f1f5f9", "#cbd5e1"],
+                ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#9b59b6"]
+            ];
+            return palettes[Math.floor(Math.random() * palettes.length)];
+        }
+
+        function hexToRGBA(hex, alpha) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        // ─── Particle ───
+        class FwParticle {
+            constructor(x, y, vx, vy, color, flash = false, palette = null) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.color = color;
+                this.palette = palette || [color];
+                this.life = 1;
+                this.decay = flash ? 0.025 + Math.random() * 0.035 : 0.004 + Math.random() * 0.007;
+                this.gravity = flash ? 0.005 : 0.018 + Math.random() * 0.012;
+                this.size = flash ? 2.5 + Math.random() * 4 : 0.65 + Math.random() * 1.7;
+                this.flash = flash;
+                this.brightness = flash ? 1 : 0.65 + Math.random() * 0.35;
+                this.trailLength = flash ? 2 : 5 + Math.floor(Math.random() * 8);
+                this.trail = [];
+                this.flicker = 0.85 + Math.random() * 0.15;
+                this.spark = Math.random() < 0.18;
+                this.wind = (Math.random() - 0.5) * 0.003;
+                if (!flash && palette && palette.length > 1) {
+                    this.secondaryColor = palette[Math.floor(Math.random() * palette.length)];
+                } else {
+                    this.secondaryColor = color;
+                }
+                this.glowIntensity = 0.3 + Math.random() * 0.5;
+                this.sizeVariation = 0.8 + Math.random() * 0.4;
+            }
+
+            update() {
+                this.trail.push({ x: this.x, y: this.y });
+                if (this.trail.length > this.trailLength) this.trail.shift();
+                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                const drag = speed > 4 ? 0.985 : 0.978;
+                this.vx *= drag;
+                this.vy *= drag;
+                this.vy += this.gravity;
+                this.vx += this.wind;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.flicker = 0.82 + Math.random() * 0.18;
+                let decay = this.decay;
+                if (this.spark) decay *= 1.35;
+                this.life -= decay;
+            }
+
+            draw(ctx) {
+                if (this.life <= 0) return;
+                const alpha = this.life * this.brightness * this.flicker;
+                for (let i = 0; i < this.trail.length; i++) {
+                    const p = this.trail[i];
+                    const progress = i / this.trail.length;
+                    const trailAlpha = progress * progress * this.life * this.brightness * 0.65;
+                    if (trailAlpha <= 0.01) continue;
+                    const radius = this.size * (0.15 + progress * 0.55);
+                    const trailColor = i % 2 === 0 ? this.color : this.secondaryColor;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = hexToRGBA(trailColor, trailAlpha);
+                    ctx.fill();
+                }
+                const particleAlpha = this.life * this.brightness * this.flicker;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = hexToRGBA(this.color, particleAlpha * 0.08);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
+                ctx.shadowBlur = this.flash ? 30 : 7 + this.life * 8;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = hexToRGBA(this.secondaryColor, particleAlpha);
+                ctx.fill();
+                if (!this.flash && this.life > 0.45) {
+                    const coreAlpha = Math.min(1, this.life * 1.4) * this.brightness * 0.85;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size * 0.35, 0, Math.PI * 2);
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = `rgba(255,255,255,${coreAlpha})`;
+                    ctx.fill();
+                }
+                ctx.shadowBlur = 0;
+            }
+
+            isDead() {
+                return this.life <= 0 || this.y > fwHeight + 100 || this.x < -100 || this.x > fwWidth + 100;
+            }
+        }
+
+        // ─── Rocket ───
+        class FwRocket {
+            constructor(x) {
+                this.x = x || (0.02 + Math.random() * 0.96) * fwWidth;
+                this.y = fwHeight + 10 + Math.random() * 60;
+                this.targetY = (0.06 + Math.random() * 0.45) * fwHeight;
+                this.speed = 5 + Math.random() * 4;
+                this.color = fwRandomColor();
+                this.palette = fwRandomColorPalette();
+                this.trail = [];
+                this.exploded = false;
+                this.drift = (Math.random() - 0.5) * 0.4;
+                this.explosionType = Math.random();
+                this.curve = (Math.random() - 0.5) * 0.02;
+            }
+
+            update() {
+                this.trail.push({ x: this.x, y: this.y });
+                if (this.trail.length > 16) this.trail.shift();
+                this.x += this.drift + Math.sin(this.y * 0.01) * this.curve;
+                this.y -= this.speed;
+                this.speed *= 0.997;
+                if (this.y <= this.targetY) {
+                    this.explode();
+                    this.exploded = true;
+                }
+            }
+
+            explode() {
+                // Particles per rocket: 40-80 (kept light)
+                const count = 50 + Math.floor(Math.random() * 50);
+                const type = this.explosionType;
+
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    let speed;
+
+                    if (type < 0.1) {
+                        speed = 3 + Math.random() * 2;
+                    } else if (type < 0.25) {
+                        const r = Math.random();
+                        speed = r < 0.5 ? 4 + Math.random() * 3 : 1.5 + Math.random() * 2;
+                    } else if (type < 0.4) {
+                        const clusterAngle = Math.floor(Math.random() * 8) * (Math.PI / 4);
+                        const spread = 0.3 + Math.random() * 0.5;
+                        const a = clusterAngle + (Math.random() - 0.5) * spread;
+                        speed = 2.5 + Math.random() * 3.5;
+                        const s = speed;
+                        fwParticles.push(new FwParticle(
+                            this.x, this.y,
+                            Math.cos(a) * s,
+                            Math.sin(a) * s,
+                            this.palette[Math.floor(Math.random() * this.palette.length)],
+                            false,
+                            this.palette
+                        ));
+                        continue;
+                    } else {
+                        speed = Math.pow(Math.random(), 0.6) * (1.2 + Math.random() * 4.5);
+                    }
+
+                    const color = this.palette[Math.floor(Math.random() * this.palette.length)];
+                    fwParticles.push(new FwParticle(
+                        this.x, this.y,
+                        Math.cos(angle) * speed,
+                        Math.sin(angle) * speed,
+                        color,
+                        false,
+                        this.palette
+                    ));
+                }
+
+                // Flash particles: 6-12
+                for (let i = 0; i < 6 + Math.floor(Math.random() * 6); i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 0.5 + Math.random() * 2;
+                    fwParticles.push(new FwParticle(
+                        this.x, this.y,
+                        Math.cos(angle) * speed,
+                        Math.sin(angle) * speed,
+                        "#ffffff",
+                        true
+                    ));
+                }
+
+                // Secondary twinkles: 12-20
+                for (let i = 0; i < 12 + Math.floor(Math.random() * 8); i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 1 + Math.random() * 2;
+                    const color = this.palette[Math.floor(Math.random() * this.palette.length)];
+                    fwParticles.push(new FwParticle(
+                        this.x, this.y,
+                        Math.cos(angle) * speed,
+                        Math.sin(angle) * speed,
+                        color,
+                        false,
+                        this.palette
+                    ));
+                }
+            }
+
+            draw(ctx) {
+                for (let i = 0; i < this.trail.length; i++) {
+                    const p = this.trail[i];
+                    const alpha = i / this.trail.length;
+                    const radius = 1.5 * alpha * 0.8;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+                    const trailColor = i % 3 === 0 ? this.color : "#ffffff";
+                    ctx.fillStyle = hexToRGBA(trailColor, alpha * 0.5);
+                    ctx.fill();
+                }
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
+                ctx.shadowBlur = 18;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = "#ffffff";
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 8, 0, Math.PI * 2);
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = hexToRGBA(this.color, 0.15);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        // ─── Fireworks Engine ───
+        function initFireworksCanvas() {
+            const container = document.getElementById('fireworks-container');
+            if (!container) return;
+            const existing = container.querySelector('canvas');
+            if (existing) existing.remove();
+            const canvas = document.createElement('canvas');
+            canvas.id = 'fwCanvas';
+            container.appendChild(canvas);
+            fwCanvas = canvas;
+            fwCtx = canvas.getContext('2d');
+            resizeFireworksCanvas();
+            window.addEventListener('resize', resizeFireworksCanvas);
+        }
+
+        function resizeFireworksCanvas() {
+            if (!fwCanvas) return;
+            const dpr = window.devicePixelRatio || 1;
+            fwWidth = window.innerWidth;
+            fwHeight = window.innerHeight;
+            fwCanvas.width = fwWidth * dpr;
+            fwCanvas.height = fwHeight * dpr;
+            fwCanvas.style.width = fwWidth + 'px';
+            fwCanvas.style.height = fwHeight + 'px';
+            fwCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function fwLaunchRocket(x) {
+            if (!fwRunning) return;
+            fwRockets.push(new FwRocket(x));
+        }
+
+        function fwLaunchBurst(count) {
+            for (let i = 0; i < count; i++) {
+                const delay = i * (300 + Math.random() * 600);
+                setTimeout(() => {
+                    if (!fwRunning) return;
+                    const x = 0.02 + Math.random() * 0.96;
+                    fwLaunchRocket(x * fwWidth);
+                }, delay);
+            }
+        }
+
+        function fwAnimate() {
+            if (!fwRunning) return;
+            fwCtx.clearRect(0, 0, fwWidth, fwHeight);
+
+            for (let i = fwRockets.length - 1; i >= 0; i--) {
+                const r = fwRockets[i];
+                r.update();
+                r.draw(fwCtx);
+                if (r.exploded) fwRockets.splice(i, 1);
+            }
+
+            for (let i = fwParticles.length - 1; i >= 0; i--) {
+                const p = fwParticles[i];
+                p.update();
+                p.draw(fwCtx);
+                if (p.isDead()) fwParticles.splice(i, 1);
+            }
+
+            fwAnimationId = requestAnimationFrame(fwAnimate);
+        }
+
+        function startFireworks() {
+            if (fwRunning) return;
+            fwRunning = true;
+            fwRockets = [];
+            fwParticles = [];
+            if (fwCtx) fwCtx.clearRect(0, 0, fwWidth, fwHeight);
+            if (fwAnimationId) cancelAnimationFrame(fwAnimationId);
+            fwAnimate();
+        }
+
+        function stopFireworks() {
+            fwRunning = false;
+            if (fwAnimationId) {
+                cancelAnimationFrame(fwAnimationId);
+                fwAnimationId = null;
+            }
+            if (fwCtx) fwCtx.clearRect(0, 0, fwWidth, fwHeight);
+            fwRockets = [];
+            fwParticles = [];
+        }
+
+        function triggerFireworks() {
+            if (!fwCanvas) initFireworksCanvas();
+            startFireworks();
+            // More rockets: 12-24 (was 4-12)
+            const count = 20 + Math.floor(Math.random() * 20);
+            fwLaunchBurst(count);
+            showToast('✨ !Fireworks', 'info', 2500);
+
+            const checkInterval = setInterval(() => {
+                if (fwRockets.length === 0 && fwParticles.length === 0) {
+                    clearInterval(checkInterval);
+                    stopFireworks();
+                }
+            }, 500);
+
+            setTimeout(() => {
+                clearInterval(checkInterval);
+                stopFireworks();
+            }, 25000);
+        }
+
+
+
+
+
+
+
+
+        // ================================================================
+        // SPECIALTY BUBBLE FIX – proper horizontal expansion
+        // ================================================================
+        function measureNaturalWidth(element) {
+            const clone = element.cloneNode(true);
+            clone.style.cssText = `
+                position: fixed !important;
+                left: -9999px !important;
+                top: -9999px !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                transform: none !important;
+                width: auto !important;
+                height: auto !important;
+                min-width: max-content !important;
+                max-width: none !important;
+                overflow: visible !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 0.35rem !important;
+                padding: 0.15rem 0.6rem !important;
+                border-radius: 100px !important;
+                border: 2px solid #10b981 !important;
+                background: rgba(16,185,129,0.08) !important;
+                white-space: nowrap !important;
+                pointer-events: none !important;
+                z-index: 99999 !important;
+            `;
+            document.body.appendChild(clone);
+            const width = clone.getBoundingClientRect().width;
+            document.body.removeChild(clone);
+            return width;
+        }
+
+        function setSpecialtyTimerState(button, flipped) {
+            const front = button.querySelector('.specialty-front');
+            const back = button.querySelector('.specialty-back');
+            if (!front || !back) return;
+
+            clearTimeout(Number(button.dataset.flipTimeout));
+
+            let targetWidth;
+            if (flipped) {
+                const backContent = back.cloneNode(true);
+                targetWidth = measureNaturalWidth(backContent);
+            } else {
+                const frontContent = front.cloneNode(true);
+                targetWidth = measureNaturalWidth(frontContent);
+            }
+
+            targetWidth = Math.max(targetWidth, 40);
+            const currentHeight = front.getBoundingClientRect().height || 30;
+
+            button.style.height = currentHeight + 'px';
+            button.style.width = targetWidth + 'px';
+            button.style.minWidth = targetWidth + 'px';
+
+            requestAnimationFrame(() => {
+                button.classList.toggle('flipped', flipped);
+                button.style.width = targetWidth + 'px';
+                button.style.minWidth = targetWidth + 'px';
+            });
+
+            if (flipped) {
+                button.dataset.flipTimeout = String(setTimeout(() => setSpecialtyTimerState(button, false), 2000));
+            } else {
+                delete button.dataset.flipTimeout;
+                setTimeout(() => {
+                    if (!button.classList.contains('flipped')) {
+                        button.style.width = '';
+                        button.style.minWidth = '';
+                        button.style.height = '';
+                    }
+                }, 460);
+            }
+        }
+
+        function toggleSpecialtyTimer(button) {
+            const wasFlipped = button.classList.contains('flipped');
+            document.querySelectorAll('.specialty-flip.flipped').forEach(el => {
+                if (el !== button) setSpecialtyTimerState(el, false);
+            });
+            setSpecialtyTimerState(button, !wasFlipped);
+        }
+
+        // ================================================================
+        // SPECIALTY MAPS
+        // ================================================================
         function buildSpecialtyMaps(specialties) {
             specNames = {};
             specIcons = {};
@@ -1327,6 +1813,7 @@
             if (btnRotation) btnRotation.classList.remove('locked');
             if (btnExchange) btnExchange.classList.remove('locked');
         }
+
         if (hospitalSymbol) {
             hospitalSymbol.addEventListener('click', function(event) {
                 if (symbolUnlocked) return;
@@ -1343,7 +1830,7 @@
                 } else if (symbolClickCount > 5) {
                     resetSecretClickCounter();
                 } else {
-                    clickResetTimer = setTimeout(function() { resetSecretClickCounter(); }, 300);
+                    clickResetTimer = setTimeout(function() { resetSecretClickCounter(); }, 500);
                 }
             });
         }
@@ -1765,7 +2252,7 @@
         }
 
         // ================================================================
-        // CONFETTI & FIREWORKS – FULL 360° EXPLOSION
+        // CONFETTI (for regular clicks)
         // ================================================================
         function fireConfettiFromPosition(clientX, clientY) {
             try {
@@ -1778,7 +2265,6 @@
                 const clampedX = Math.min(Math.max(x, 0.05), 0.95);
                 const clampedY = Math.min(Math.max(y, 0.05), 0.95);
 
-                // Main confetti burst – extra particles
                 confetti({
                     particleCount: 60,
                     spread: 65,
@@ -1789,7 +2275,6 @@
                     colors: ['#fbbf24', '#f59e0b', '#dc2626', '#f97316', '#fcd34d', '#ffffff', '#a855f7']
                 });
 
-                // Secondary smaller burst for extra delight
                 setTimeout(() => {
                     confetti({
                         particleCount: 30,
@@ -1802,89 +2287,12 @@
                     });
                 }, 80);
 
-                // Increment counter and trigger fireworks every 10 confetti bursts
                 confettiClickCounter++;
                 if (confettiClickCounter % 10 === 0) {
                     triggerFireworks();
                 }
             } catch (e) {
                 console.warn('Confetti error:', e);
-            }
-        }
-
-        function triggerFireworks() {
-            try {
-                if (typeof confetti !== 'function') return;
-
-                // Number of light rockets: 10-30
-                const rocketCount = 10 + Math.floor(Math.random() * 21);
-
-                for (let i = 0; i < rocketCount; i++) {
-                    const delay = i * (150 + Math.random() * 200);
-                    setTimeout(() => {
-                        const xOrigin = 0.05 + Math.random() * 0.9;
-                        const yOrigin = 0.85 + Math.random() * 0.15;
-                        // Random explosion height near top
-                        const explosionY = 0.08 + Math.random() * 0.37;
-                        const explosionX = Math.min(Math.max(xOrigin + (Math.random() - 0.5) * 0.3, 0.02), 0.98);
-
-                        // ── LASER TRAIL (glowing line) ──
-                        confetti({
-                            particleCount: 15,
-                            spread: 4,
-                            origin: { x: xOrigin, y: yOrigin },
-                            startVelocity: 60 + Math.random() * 30,
-                            ticks: 60 + Math.floor(Math.random() * 30),
-                            zIndex: 1,
-                            colors: ['#ffffff', '#fcd34d', '#f59e0b'],
-                            gravity: 0.08,
-                            scalar: 0.15 + Math.random() * 0.15,
-                            drift: 0.02,
-                            shapes: ['circle']
-                        });
-
-                        // ── FULL 360° LIGHT EXPLOSION ──
-                        setTimeout(() => {
-                            // Primary burst: spread 360 (full circle) with many particles
-                            confetti({
-                                particleCount: 120 + Math.floor(Math.random() * 80),
-                                spread: 360, // FULL 360°
-                                origin: { x: explosionX, y: explosionY },
-                                startVelocity: 6 + Math.random() * 10, // slow and floaty
-                                ticks: 200 + Math.floor(Math.random() * 100),
-                                zIndex: 1,
-                                colors: [
-                                    '#ffffff', '#fef08a', '#fcd34d', '#f59e0b',
-                                    '#dc2626', '#ea580c', '#b91c1c', '#f97316'
-                                ],
-                                gravity: 0.03,
-                                scalar: 0.25 + Math.random() * 0.4,
-                                drift: 0.02,
-                                shapes: ['circle']
-                            });
-
-                            // Secondary glitter burst – also full spread
-                            setTimeout(() => {
-                                confetti({
-                                    particleCount: 60 + Math.floor(Math.random() * 50),
-                                    spread: 360,
-                                    origin: { x: explosionX + 0.02, y: explosionY - 0.02 },
-                                    startVelocity: 4 + Math.random() * 6,
-                                    ticks: 150,
-                                    zIndex: 1,
-                                    colors: ['#ffffff', '#fcd34d', '#fef08a', '#f59e0b'],
-                                    gravity: 0.01,
-                                    scalar: 0.1 + Math.random() * 0.15,
-                                    drift: 0.01,
-                                    shapes: ['circle']
-                                });
-                            }, 80 + Math.random() * 120);
-                        }, 250 + Math.random() * 200);
-                    }, delay);
-                }
-                showToast('✨ Light Show!', 'info', 2500);
-            } catch (e) {
-                console.warn('Fireworks error:', e);
             }
         }
 
@@ -1897,16 +2305,14 @@
             if (trending) {
                 container.innerHTML = `
                     <div class="trending-panel" id="trendingPanel">
-                        <!-- Top row: Badge + Stats (centered) -->
                         <div class="trending-top">
                             <button class="trending-badge-btn" id="trendingBadgeBtn" title="اضغط لعرض لوحة المتصدرين">
-                                <i class="fas fa-crown"></i> TRENDING!
+                                <i class="fas fa-crown"></i> !TRENDING
                             </button>
                             <span class="trending-stats">
                                 <i class="fas fa-eye"></i> ${trending.VisitCount || 0}
                             </span>
                         </div>
-                        <!-- Center: name + specialty -->
                         <div class="trending-center">
                             <div class="trending-name">${trending.name}</div>
                             <div class="trending-spec">${trending.icon} ${trending.specName}</div>
@@ -1914,11 +2320,9 @@
                     </div>
                 `;
 
-                // ── Attach events ──
                 const panel = document.getElementById('trendingPanel');
                 const badge = document.getElementById('trendingBadgeBtn');
 
-                // Badge click → leaderboards + stop flutter
                 if (badge) {
                     badge.addEventListener('click', function(e) {
                         e.stopPropagation();
@@ -1931,7 +2335,6 @@
                     });
                 }
 
-                // Panel click → confetti from click position (if not on badge)
                 if (panel) {
                     panel.addEventListener('click', function(e) {
                         if (badge && (e.target === badge || badge.contains(e.target))) {
@@ -2068,36 +2471,6 @@
                 if (remaining < 0) remaining = 0;
                 wrapper.classList.toggle('crimson', remaining < 60 && remaining > 0);
             });
-        }
-
-        function toggleSpecialtyTimer(button) {
-            const wasFlipped = button.classList.contains('flipped');
-            document.querySelectorAll('.specialty-flip.flipped').forEach(el => {
-                if (el !== button) setSpecialtyTimerState(el, false);
-            });
-            setSpecialtyTimerState(button, !wasFlipped);
-        }
-
-        function setSpecialtyTimerState(button, flipped) {
-            const front = button.querySelector('.specialty-front');
-            const back = button.querySelector('.specialty-back');
-            if (!front || !back) return;
-            clearTimeout(Number(button.dataset.flipTimeout));
-            const currentWidth = button.getBoundingClientRect().width;
-            const targetWidth = (flipped ? back : front).getBoundingClientRect().width;
-            button.style.height = front.getBoundingClientRect().height + 'px';
-            button.style.width = currentWidth + 'px';
-            requestAnimationFrame(() => {
-                button.classList.toggle('flipped', flipped);
-                button.style.width = targetWidth + 'px';
-            });
-            if (flipped) {
-                button.dataset.flipTimeout = String(setTimeout(() => setSpecialtyTimerState(button, false), 2000));
-            } else {
-                delete button.dataset.flipTimeout;
-                setTimeout(() => { if (!button.classList.contains('flipped')) { button.style.width = '';
-                        button.style.height = ''; } }, 360);
-            }
         }
 
         // ================================================================
@@ -2316,9 +2689,26 @@
         }
 
         // ================================================================
+        // FIX: ENTER KEY TRIGGERS LOGIN
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password-input');
+            if (passwordInput) {
+                passwordInput.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        handleLogin();
+                    }
+                });
+            }
+        });
+
+        // ================================================================
         // INIT
         // ================================================================
         window.onload = async function() {
+            initFireworksCanvas();
+
             if (checkSession()) {
                 const token = localStorage.getItem(REMEMBER_TOKEN_KEY);
                 if (token) { try { const pwd = atob(token);
@@ -2386,8 +2776,10 @@
         window.showToast = showToast;
         window.updateCountdowns = updateCountdowns;
         window.toggleSpecialtyTimer = toggleSpecialtyTimer;
+        window.setSpecialtyTimerState = setSpecialtyTimerState;
         window.fireConfettiFromPosition = fireConfettiFromPosition;
         window.triggerFireworks = triggerFireworks;
+        window.fwLaunchBurst = fwLaunchBurst;
     </script>
 </body>
 </html>
