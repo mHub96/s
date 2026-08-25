@@ -2615,50 +2615,49 @@
             });
         }
 
-        function generateAndCopyReport() {
-            const currentResidents = getAllCurrentResidents();
-            if (currentResidents.length === 0) { showToast('لا يوجد مقيمين في الخدمة حالياً', 'error'); return; }
-            const formattedDate = getFormattedDate();
-            let report =
-                `🏥 *المقيمين في الخدمة*\n📅 *${formattedDate}*\n⏰ *${getCurrentTimeString()}*\n📍 مستشفى البصرة التعليمي — البصرة\n\n`;
-            currentResidents.forEach(res => {
-                const hours = Math.floor(res.remainingMinutes / 60);
-                const minutes = Math.floor(res.remainingMinutes % 60);
-                const timeLeft = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-                let timeSlot = "طوال اليوم",
-                    dayIndicator = "";
-                if (res.dutyTime) {
-                    const parsed = parseDutyTime(res.dutyTime);
-                    if (parsed) {
-                        let start = parsed.start,
-                            end = parsed.end;
-                        const isCrossDay = end <= start;
-                        if (isCrossDay) { end = end + TOTAL_MINUTES;
-                            dayIndicator = "(اليوم - الغد)"; }
-                        timeSlot = `${minutesToTimeStr(start)} - ${minutesToTimeStr(end)}`;
-                    }
+function generateAndCopyReport() {
+    const currentResidents = getAllCurrentResidents();
+    if (currentResidents.length === 0) { showToast('لا يوجد مقيمين في الخدمة حالياً', 'error'); return; }
+    const formattedDate = getFormattedDate();
+    let report =
+        `🏥 *المقيمين في الخدمة*\n📅 *${formattedDate}*\n⏰ *${getCurrentTimeString()}*\n📍 مستشفى البصرة التعليمي — البصرة\n\n`;
+    currentResidents.forEach(res => {
+        // ─── Duty Duration (brought back) ───
+        let timeSlot = "طوال اليوم";
+        let dayIndicator = "";
+        if (res.dutyTime) {
+            const parsed = parseDutyTime(res.dutyTime);
+            if (parsed) {
+                let start = parsed.start;
+                let end = parsed.end;
+                const isCrossDay = end <= start;
+                if (isCrossDay) { 
+                    end = end + TOTAL_MINUTES;
+                    dayIndicator = "(اليوم - الغد)";
                 }
-                const specs = res.specs.map(s => `${s.icon} ${s.name}`).join(' + ');
-                const visitInfo = res.visitCount > 0 ? `👁️ ${res.visitCount} تفاعل` : '';
-                report +=
-                    `*${specs}*\n👨‍⚕️ *${res.name}*\n🕐 ${timeSlot} ${dayIndicator}\n⏳ الوقت المتبقي: *${timeLeft}*\n${visitInfo ? visitInfo+'\n' : ''}☎️ _${res.phone}_\n┈┈┈┈┈┈┈┈┈┈┈┈┈\n\n`;
-            });
-            report += `\nhttps://mhub96.github.io/BTH/Home`;
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(report).then(() => {
-                    const btn = document.getElementById('report-btn');
-                    const originalText = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Copied!';
-                    btn.style.borderColor = '#10b981';
-                    btn.style.color = '#10b981';
-                    setTimeout(() => { btn.innerHTML = originalText;
-                        btn.style.borderColor = '';
-                        btn.style.color = ''; }, 3000);
-                    showToast('تم نسخ التقرير إلى الحافظة', 'success');
-                }).catch(() => fallbackCopy(report));
-            } else { fallbackCopy(report); }
+                timeSlot = `${minutesToTimeStr(start)} - ${minutesToTimeStr(end)}`;
+            }
         }
 
+        const specs = res.specs.map(s => `${s.icon} ${s.name}`).join(' + ');
+        report +=
+            `*${specs}*\n👨‍⚕️ *${res.name}*\n🕐 ${timeSlot} ${dayIndicator}\n☎️ _${res.phone}_\n┈┈┈┈┈┈┈┈┈┈┈┈┈\n\n`;
+    });
+    report += `\nhttps://mhub96.github.io/BTH/Home`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(report).then(() => {
+            const btn = document.getElementById('report-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> Copied!';
+            btn.style.borderColor = '#10b981';
+            btn.style.color = '#10b981';
+            setTimeout(() => { btn.innerHTML = originalText;
+                btn.style.borderColor = '';
+                btn.style.color = ''; }, 3000);
+            showToast('تم نسخ التقرير إلى الحافظة', 'success');
+        }).catch(() => fallbackCopy(report));
+    } else { fallbackCopy(report); }
+}
         function fallbackCopy(text) {
             const textArea = document.createElement('textarea');
             textArea.value = text;
