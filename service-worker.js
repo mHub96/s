@@ -1,5 +1,5 @@
 // service-worker.js - Dynamic versioning with your file list
-const CACHE_VERSION = 'v1.0.1'; // ⚠️ CHANGE THIS NUMBER (e.g., to v2.0.2) EVERY TIME YOU UPDATE YOUR APP
+const CACHE_VERSION = 'v1.0.2'; // ⚠️ CHANGE THIS NUMBER (e.g., to v2.0.2) EVERY TIME YOU UPDATE YOUR APP
 const CACHE_NAME = `iraqi-teaching-hospital-${CACHE_VERSION}`;
 
 const APP_SHELL = [
