@@ -2394,10 +2394,10 @@
                     </button>`;
                 }).join('');
                 let cardStatusHtml = '';
-                if (isTrending) {
-                    cardStatusHtml =
-                        `<span class="card-status"><span class="status-trending"><i class="fas fa-fire"></i></span><span class="status-separator">|</span><span><i class="fas fa-eye"></i> ${resident.visitCount}</span></span>`;
-                } else if (resident.visitCount > 0) {
+		if (isTrending) {
+   		     cardStatusHtml =
+    		    `<span class="card-status"><i class="fas fa-eye"></i> ${resident.visitCount}</span>`;
+		} else if (resident.visitCount > 0) {
                     cardStatusHtml =
                         `<span class="card-status"><i class="fas fa-eye"></i><span>${resident.visitCount}</span></span>`;
                 } else {
