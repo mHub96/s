@@ -1,23 +1,24 @@
-// pwa.js - with automatic update detection
 (() => {
   let deferredInstallPrompt = null;
 
-  // Register the service worker with a cache-busting parameter
+  // Register the service worker WITHOUT a changing parameter
   if ('serviceWorker' in navigator) {
-    const swUrl = './service-worker.js?v=' + Date.now();
-    navigator.serviceWorker.register(swUrl)
+    navigator.serviceWorker.register('./service-worker.js')
       .then(registration => {
         console.log('Service Worker registered successfully');
 
-        // Check for updates immediately
+        // Check for updates on load (but only if there's actually a new version)
+        // This will not show the prompt unless the CACHE_VERSION changed.
         registration.update();
 
         // Listen for a new service worker installing
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           newWorker.addEventListener('statechange', () => {
+            // Only show the prompt if:
+            // 1. The new worker is installed (state === 'installed')
+            // 2. There was a previous controller (meaning this is an update, not a first install)
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // New version is ready — notify the user
               showUpdatePrompt();
             }
           });
@@ -30,18 +31,20 @@
 
   // Show a friendly prompt to reload
   function showUpdatePrompt() {
-    // Try using your existing Toast function if available
+    // Use a flag to avoid showing the toast more than once per session
+    if (window._updatePromptShown) return;
+    window._updatePromptShown = true;
+
     if (typeof showToast === 'function') {
       showToast('🔄 New version available. Reload to update.', 'info', 6000);
     } else {
-      // Fallback: browser confirm dialog
       if (confirm('A new version of this app is available. Refresh now?')) {
         window.location.reload();
       }
     }
   }
 
-  // ----- Install Button (unchanged from your original) -----
+  // ----- Install Button (unchanged) -----
   function addInstallButton() {
     if (document.getElementById('pwa-install-button')) return;
     const button = document.createElement('button');
@@ -73,11 +76,11 @@
     }
   });
 
-  // On page load, check for updates again
+  // On page load, check for updates (without forcing a re-install)
   window.addEventListener('load', () => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then(registration => {
-        registration.update();
+        registration.update(); // Safe – only checks if there's a new version on the server
       });
     }
   });
