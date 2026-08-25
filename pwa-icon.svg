@@ -1,6 +1,335 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#0b0e12"/>
-  <path d="M256 76c-98 0-178 80-178 178s80 178 178 178 178-80 178-178S354 76 256 76z" fill="#0f766e"/>
-  <path d="M224 150h64v74h74v64h-74v74h-64v-74h-74v-64h74z" fill="#f8fafc"/>
-  <path d="M128 386h256" stroke="#d4af37" stroke-width="18" stroke-linecap="round"/>
+
+  <defs>
+
+    <!-- Subtle depth -->
+    <filter id="shadow"
+            x="-30%"
+            y="-30%"
+            width="160%"
+            height="160%">
+      <feDropShadow
+        dx="0"
+        dy="7"
+        stdDeviation="7"
+        flood-color="#000000"
+        flood-opacity="0.8"/>
+    </filter>
+
+  </defs>
+
+
+  <!-- =====================================================
+       BACKGROUND
+       ===================================================== -->
+
+  <rect
+    width="512"
+    height="512"
+    rx="112"
+    fill="#07090B"/>
+
+
+  <!-- =====================================================
+       MAIN CLOCK
+       ===================================================== -->
+
+  <g filter="url(#shadow)">
+
+    <!-- Outer gold bezel -->
+    <circle
+      cx="256"
+      cy="218"
+      r="194"
+      fill="#0B0D0F"
+      stroke="#D4AF37"
+      stroke-width="15"/>
+
+    <!-- Inner bezel -->
+    <circle
+      cx="256"
+      cy="218"
+      r="177"
+      fill="none"
+      stroke="#8F7626"
+      stroke-width="3"/>
+
+
+    <!-- =================================================
+         CLOCK TICKS
+         ================================================= -->
+
+    <g
+      stroke="#D4AF37"
+      stroke-linecap="round"
+      stroke-width="5">
+
+      <!-- 12 -->
+      <line x1="256" y1="39" x2="256" y2="54"/>
+
+      <!-- 1 -->
+      <line x1="345.5" y1="63" x2="338" y2="76"/>
+
+      <!-- 2 -->
+      <line x1="410" y1="128" x2="397" y2="135"/>
+
+      <!-- 3 -->
+      <line x1="435" y1="218" x2="420" y2="218"/>
+
+      <!-- 4 -->
+      <line x1="410" y1="308" x2="397" y2="301"/>
+
+      <!-- 5 -->
+      <line x1="345.5" y1="373" x2="338" y2="360"/>
+
+      <!-- 6 -->
+      <line x1="256" y1="397" x2="256" y2="382"/>
+
+      <!-- 7 -->
+      <line x1="166.5" y1="373" x2="174" y2="360"/>
+
+      <!-- 8 -->
+      <line x1="102" y1="308" x2="115" y2="301"/>
+
+      <!-- 9 -->
+      <line x1="77" y1="218" x2="92" y2="218"/>
+
+      <!-- 10 -->
+      <line x1="102" y1="128" x2="115" y2="135"/>
+
+      <!-- 11 -->
+      <line x1="166.5" y1="63" x2="174" y2="76"/>
+
+    </g>
+
+
+    <!-- =================================================
+         HOSPITAL BUILDING
+         ================================================= -->
+
+    <!-- Building body -->
+    <path
+      d="
+        M132 320
+        V183
+        L256 113
+        L380 183
+        V320
+        Z"
+      fill="#080A0C"
+      stroke="#D4AF37"
+      stroke-width="8"
+      stroke-linejoin="round"/>
+
+
+    <!-- Hospital roof -->
+    <path
+      d="
+        M116 185
+        L256 105
+        L396 185"
+      fill="none"
+      stroke="#F0D36A"
+      stroke-width="9"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+
+
+    <!-- =================================================
+         CENTRAL HOSPITAL TOWER
+         ================================================= -->
+
+    <path
+      d="
+        M201 320
+        V139
+        H311
+        V320
+        Z"
+      fill="#080A0C"
+      stroke="#D4AF37"
+      stroke-width="8"/>
+
+
+    <!-- =================================================
+         MEDICAL CROSS
+         ================================================= -->
+
+    <path
+      d="
+        M243 121
+        H269
+        V147
+        H295
+        V173
+        H269
+        V199
+        H243
+        V173
+        H217
+        V147
+        H243
+        Z"
+      fill="#F8F6EE"/>
+
+
+    <!-- =================================================
+         HOSPITAL WINDOWS
+         ================================================= -->
+
+    <g fill="#D4AF37">
+
+      <!-- Left wing -->
+      <rect
+        x="151"
+        y="205"
+        width="25"
+        height="36"
+        rx="2"/>
+
+      <rect
+        x="151"
+        y="263"
+        width="25"
+        height="36"
+        rx="2"/>
+
+      <!-- Right wing -->
+      <rect
+        x="336"
+        y="205"
+        width="25"
+        height="36"
+        rx="2"/>
+
+      <rect
+        x="336"
+        y="263"
+        width="25"
+        height="36"
+        rx="2"/>
+
+    </g>
+
+
+    <!-- =================================================
+         CENTRAL ENTRANCE
+         ================================================= -->
+
+    <path
+      d="
+        M228 320
+        V246
+        C228 224 284 224 284 246
+        V320
+        Z"
+      fill="#D4AF37"/>
+
+    <path
+      d="
+        M239 320
+        V249
+        C239 236 273 236 273 249
+        V320
+        Z"
+      fill="#080A0C"/>
+
+
+    <!-- =================================================
+         CLOCK HANDS
+         ================================================= -->
+
+    <!-- Hour hand -->
+    <path
+      d="
+        M256 218
+        L256 151"
+      stroke="#F8F6EE"
+      stroke-width="11"
+      stroke-linecap="round"/>
+
+    <!-- Minute hand -->
+    <path
+      d="
+        M256 218
+        L306 190"
+      stroke="#D4AF37"
+      stroke-width="8"
+      stroke-linecap="round"/>
+
+    <!-- Centre pin -->
+    <circle
+      cx="256"
+      cy="218"
+      r="12"
+      fill="#F8F6EE"/>
+
+    <circle
+      cx="256"
+      cy="218"
+      r="5"
+      fill="#D4AF37"/>
+
+
+    <!-- =================================================
+         24H MARKER
+         ================================================= -->
+
+    <text
+      x="256"
+      y="355"
+      text-anchor="middle"
+      fill="#D4AF37"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="19"
+      font-weight="700"
+      letter-spacing="3">
+      24H
+    </text>
+
+
+    <!-- =================================================
+         LOWER CLOCK ACCENT
+         ================================================= -->
+
+    <path
+      d="M184 378 H328"
+      stroke="#D4AF37"
+      stroke-width="5"
+      stroke-linecap="round"/>
+
+  </g>
+
+
+  <!-- =====================================================
+       HOSPITAL NAME
+       ===================================================== -->
+
+  <text
+    x="256"
+    y="459"
+    text-anchor="middle"
+    fill="#D4AF37"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="31"
+    font-weight="700"
+    letter-spacing="1.5">
+    IRAQI HOSPITAL
+  </text>
+
+
+  <!-- =====================================================
+       OUTER PWA BORDER
+       ===================================================== -->
+
+  <rect
+    x="7"
+    y="7"
+    width="498"
+    height="498"
+    rx="106"
+    fill="none"
+    stroke="#D4AF37"
+    stroke-width="5"/>
+
 </svg>
