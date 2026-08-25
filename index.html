@@ -308,12 +308,26 @@
             flex-wrap: wrap;
             gap: 8px;
         }
+
+        .app-header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-header .header-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .app-header h1 {
             font-size: 1.3rem;
             font-weight: 800;
             display: flex;
             align-items: center;
             gap: 8px;
+            /* This will be centered naturally due to flex space-between */
         }
         .app-header h1 i {
             color: #2563eb;
@@ -322,10 +336,17 @@
             color: #d4af37;
         }
 
-        .header-btns {
-            display: flex;
-            gap: 6px;
-            align-items: center;
+        /* Hide h1 on very small screens to avoid clutter, but keep it */
+        @media (max-width: 400px) {
+            .app-header h1 {
+                font-size: 1rem;
+            }
+            .app-header .header-right .btn-home span {
+                display: none;
+            }
+            .app-header .header-right .btn-home i {
+                margin: 0;
+            }
         }
 
         .btn-icon {
@@ -356,8 +377,9 @@
             color: #d4af37;
         }
 
+        /* ---- SECLUDED LOGOUT BUTTON (on the left) ---- */
         .btn-logout {
-            padding: 6px 16px;
+            padding: 6px 14px;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
             background: transparent;
@@ -367,6 +389,10 @@
             cursor: pointer;
             transition: all 0.2s;
             font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
         }
         body.dark .btn-logout {
             border-color: #2a3346;
@@ -381,6 +407,39 @@
             background: rgba(239,68,68,0.15);
             border-color: #ef4444;
             color: #ef4444;
+        }
+
+        /* ---- HOME BUTTON (on the right group) ---- */
+        .btn-home {
+            padding: 6px 14px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: transparent;
+            color: #64748b;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        body.dark .btn-home {
+            border-color: #2a3346;
+            color: #94a3b8;
+        }
+        .btn-home:hover {
+            background: #dbeafe;
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+        body.dark .btn-home:hover {
+            background: rgba(37,99,235,0.15);
+            border-color: #2563eb;
+            color: #93c5fd;
         }
 
         .form-group {
@@ -724,14 +783,21 @@
         <div class="app-card" id="app-card">
             <!-- Header -->
             <div class="app-header">
+                <div class="header-left">
+                    <button class="btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> خروج
+                    </button>
+                </div>
+
                 <h1><i class="fas fa-pen-to-square"></i> تسجيل الخفراء</h1>
-                <div class="header-btns">
+
+                <div class="header-right">
                     <button class="btn-icon" onclick="toggleTheme()" aria-label="Toggle theme">
                         <i class="fas fa-moon" id="theme-icon"></i>
                     </button>
-                    <button class="btn-logout" onclick="logout()">
-                        <i class="fas fa-sign-out-alt ml-1"></i> خروج
-                    </button>
+                    <a href="https://mhub96.github.io/s/Home" class="btn-home">
+                        <i class="fas fa-home"></i> <span>الخفراء</span>
+                    </a>
                 </div>
             </div>
 
@@ -798,7 +864,7 @@
         let dataLoaded = false;
         let currentResidents = [];
         let isAutoLoginAttempted = false;
-        let isAutoLoginSuccess = false; // Track if auto-login already showed a toast
+        let isAutoLoginSuccess = false;
 
         function applyHospitalName() {
             const hospitalName = String(db.hospitalName || 'Iraqi Teaching Hospital').trim() || 'Iraqi Teaching Hospital';
@@ -833,15 +899,12 @@
         let toastTimeout = null;
 
         function showToast(message, type = 'info', duration = 3000) {
-            // Clear any existing toast timeout to prevent stacking
             if (toastTimeout) {
                 clearTimeout(toastTimeout);
                 toastTimeout = null;
             }
 
             const container = document.getElementById('toast-container');
-            
-            // Remove any existing toast that might be showing
             const existingToasts = container.querySelectorAll('.toast-item');
             existingToasts.forEach(t => t.remove());
 
@@ -962,7 +1025,7 @@
 
                     if (pwd === adminPass || pwd === userPass) {
                         err.textContent = '';
-                        loginSuccess(false); // false = not auto-login
+                        loginSuccess(false);
                     } else {
                         err.textContent = '❌ كلمة المرور غير صحيحة';
                         input.value = '';
@@ -988,22 +1051,20 @@
             saveSession();
             populateSpecialties();
 
-            // Only show toast if it's NOT auto-login, or if auto-login hasn't shown one yet
             if (!isAuto || !isAutoLoginSuccess) {
                 if (isAuto) {
                     isAutoLoginSuccess = true;
                 }
                 showToast('تم تسجيل الدخول بنجاح', 'success');
             }
-            
-            // Reset the auto-login flag after successful login
+
             if (isAuto) {
                 isAutoLoginSuccess = true;
             }
         }
 
         // ============================================================
-        // AUTO LOGIN - FIXED: Only shows toast once
+        // AUTO LOGIN
         // ============================================================
         (function() {
             const token = localStorage.getItem(REMEMBER_TOKEN_KEY);
@@ -1011,9 +1072,7 @@
                 isAutoLoginAttempted = true;
                 try {
                     const pwd = atob(token);
-                    // Set the password in the input field
                     document.getElementById('password-input').value = pwd;
-                    // Perform auto-login with a flag
                     performAutoLogin(pwd);
                 } catch (e) {
                     console.error("Auto-login decode error:", e);
@@ -1042,7 +1101,6 @@
                     const adminPass = db.passwords?.admin || "123";
 
                     if (pwd === adminPass || pwd === userPass) {
-                        // Auto-login success - show toast only once
                         loginSuccess(true);
                         return;
                     }
@@ -1051,7 +1109,6 @@
                 console.error("Auto-login error:", e);
             }
 
-            // If auto-login fails, show lock screen
             clearSession();
             document.body.classList.remove('session-checking');
             document.getElementById('lock-screen').classList.remove('hidden');
@@ -1082,7 +1139,6 @@
             const msg = document.getElementById('status-msg');
             const card = document.getElementById('app-card');
 
-            // Remove success class if present
             card.classList.remove('card-success');
 
             if (!specId) {
@@ -1429,7 +1485,6 @@
                     try {
                         const pwd = atob(token);
                         document.getElementById('password-input').value = pwd;
-                        // The auto-login IIFE will handle the rest
                     } catch (e) {}
                 }
             } else {
