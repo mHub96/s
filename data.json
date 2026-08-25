@@ -14477,14 +14477,6 @@
       "dutySlot": 0
     },
     {
-      "date": "25/08/2026",
-      "specCode": "NS",
-      "name": "د. عبدالرحمن صفاء صالح",
-      "VisitCount": 1,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "26/08/2026",
       "specCode": "NS",
       "name": "د. اسعد حسن فرحان",
@@ -16810,6 +16802,13 @@
       "specCode": "GS",
       "name": "د. سعيد جندي لهمود",
       "timestamp": "13:02",
+      "VisitCount": 0
+    },
+    {
+      "date": "25/08/2026",
+      "specCode": "NS",
+      "name": "د. عبدالرحمن صفاء صالح",
+      "timestamp": "08:26",
       "VisitCount": 0
     }
   ],
