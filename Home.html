@@ -33,15 +33,6 @@
         body.light .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
         body.dark .glass-card { background: rgba(16,22,34,0.82); backdrop-filter: blur(14px); border: 1px solid rgba(212,175,55,0.12); box-shadow: 0 8px 32px rgba(0,0,0,0.6); }
         
-        .header-3d {
-            font-family: 'Playfair Display', serif;
-            font-weight: 900;
-            font-size: 2.2rem;
-            text-align: center;
-            text-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        @media (min-width: 640px) { .header-3d { font-size: 2.8rem; } }
-
         .hospital-header {
             display: flex;
             flex-direction: column;
@@ -134,17 +125,13 @@
             padding: 0.2rem 0;
         }
         
-        /* ============================================================
-           CARD DESIGN - With Integrated Timer Ribbon
-           ============================================================ */
+        /* --- Main Card --- */
         .roster-card-wrapper {
             position: relative;
             max-width: 480px;
             margin: 0 auto;
             width: 100%;
         }
-        
-        /* --- Main Card --- */
         .roster-card {
             border-radius: 1.5rem;
             padding: 0;
@@ -169,153 +156,14 @@
         }
         body.light .roster-card { background: rgba(255,255,255,0.95); border-color: rgba(200,210,220,0.3); }
         body.dark .roster-card { background: rgba(12,18,30,0.92); border-color: rgba(212,175,55,0.06); box-shadow: 12px 12px 28px rgba(0,0,0,0.7), -10px -10px 24px rgba(255,255,255,0.02), 0 5px 0 rgba(0,0,0,0.5), 0 0 50px rgba(212,175,55,0.01), inset 0 1px 0 rgba(255,255,255,0.02); }
-        
         .roster-card:hover {
             transform: perspective(600px) translateY(-4px) scale(1.01) rotateX(1.5deg) rotateY(1.5deg);
             border-color: rgba(212,175,55,0.15);
-        }
-        body.dark .roster-card:hover {
-            border-color: rgba(212,175,55,0.15);
-            box-shadow: 16px 16px 36px rgba(0,0,0,0.8), -12px -12px 28px rgba(255,255,255,0.03), 0 7px 0 rgba(0,0,0,0.5), 0 0 70px rgba(212,175,55,0.04), 0 0 100px rgba(212,175,55,0.01), inset 0 1px 0 rgba(255,255,255,0.03);
-            transform: perspective(600px) translateY(-4px) scale(1.01) rotateX(1.5deg) rotateY(1.5deg);
         }
         .roster-card:active {
             transform: perspective(600px) translateY(4px) scale(0.97) rotateX(0) rotateY(0) !important;
             box-shadow: 4px 4px 10px rgba(0,0,0,0.04), -3px -3px 10px rgba(255,255,255,0.5), 0 1px 0 rgba(0,0,0,0.01) !important;
             transition-duration: 0.08s;
-        }
-        
-        /* --- TRENDING CARD STYLE (Golden border/glow) --- */
-        .roster-card-wrapper.trending .roster-card {
-            border-color: #fbbf24 !important;
-            box-shadow: 0 0 40px rgba(251,191,36,0.2), inset 0 0 40px rgba(251,191,36,0.03) !important;
-        }
-        body.dark .roster-card-wrapper.trending .roster-card {
-            box-shadow: 0 0 50px rgba(251,191,36,0.25), inset 0 0 40px rgba(251,191,36,0.03) !important;
-        }
-        .roster-card-wrapper.trending .roster-card .timer-ribbon {
-            background: rgba(251,191,36,0.08);
-            border-bottom: 1px solid rgba(251,191,36,0.12);
-        }
-        .roster-card-wrapper.trending .roster-card .status-badge .badge-trending {
-            color: #fbbf24 !important;
-        }
-        
-        /* --- CRIMSON + TRENDING (both can apply) --- */
-        .roster-card-wrapper.trending.crimson .roster-card {
-            border-color: #dc2626 !important;
-            box-shadow: 0 0 40px rgba(220,38,38,0.25), 0 0 40px rgba(251,191,36,0.1), inset 0 0 40px rgba(220,38,38,0.05) !important;
-            animation: pulse-crimson-trending 1.5s ease-in-out infinite;
-        }
-        @keyframes pulse-crimson-trending {
-            0%, 100% { border-color: #dc2626; box-shadow: 0 0 40px rgba(220,38,38,0.25), 0 0 40px rgba(251,191,36,0.1); }
-            50% { border-color: #ef4444; box-shadow: 0 0 60px rgba(220,38,38,0.35), 0 0 40px rgba(251,191,36,0.15); }
-        }
-        .roster-card-wrapper.trending.crimson .roster-card .timer-ribbon {
-            background: rgba(220,38,38,0.1);
-            border-bottom: 1px solid rgba(220,38,38,0.15);
-        }
-        .roster-card-wrapper.trending.crimson .roster-card .timer-ribbon .countdown-timer {
-            color: #dc2626;
-            font-size: 1.6rem;
-            animation: timer-pulse 0.8s ease-in-out infinite;
-        }
-        .roster-card-wrapper.trending.crimson .roster-card .timer-ribbon .ribbon-label { color: #dc2626; opacity: 0.7; }
-        
-        /* --- Crimson Card (without trending) --- */
-        .roster-card-wrapper.crimson:not(.trending) .roster-card {
-            border-color: #dc2626 !important;
-            box-shadow: 0 0 30px rgba(220,38,38,0.25), inset 0 0 30px rgba(220,38,38,0.05) !important;
-            animation: pulse-crimson 1.5s ease-in-out infinite;
-        }
-        body.dark .roster-card-wrapper.crimson:not(.trending) .roster-card {
-            box-shadow: 0 0 40px rgba(220,38,38,0.3), inset 0 0 30px rgba(220,38,38,0.05) !important;
-        }
-        @keyframes pulse-crimson {
-            0%, 100% { border-color: #dc2626; }
-            50% { border-color: #ef4444; box-shadow: 0 0 50px rgba(220,38,38,0.35), inset 0 0 30px rgba(220,38,38,0.05) !important; }
-        }
-        .roster-card-wrapper.crimson:not(.trending) .roster-card .timer-ribbon {
-            background: rgba(220,38,38,0.1);
-            border-bottom: 1px solid rgba(220,38,38,0.15);
-        }
-        .roster-card-wrapper.crimson:not(.trending) .roster-card .timer-ribbon .countdown-timer {
-            color: #dc2626;
-            font-size: 1.6rem;
-            animation: timer-pulse 0.8s ease-in-out infinite;
-        }
-        .roster-card-wrapper.crimson:not(.trending) .roster-card .timer-ribbon .ribbon-label { color: #dc2626; opacity: 0.7; }
-        
-        /* --- TIMER RIBBON (Integrated inside card, top section) --- */
-        .roster-card .timer-ribbon {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.1rem;
-            padding: 0.3rem 1rem;
-            background: rgba(16,185,129,0.08);
-            border-bottom: 1px solid rgba(16,185,129,0.1);
-            min-height: 36px;
-            flex-shrink: 0;
-            border-radius: 1.5rem 1.5rem 0 0;
-            position: relative;
-        }
-        body.light .roster-card .timer-ribbon {
-            background: rgba(16,185,129,0.06);
-            border-bottom: 1px solid rgba(16,185,129,0.08);
-        }
-        .roster-card .timer-ribbon .ribbon-label {
-            font-size: 0.5rem;
-            font-weight: 600;
-            opacity: 0.5;
-            letter-spacing: 0.05em;
-        }
-        .roster-card .timer-ribbon .countdown-timer {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 800;
-            font-size: 1.4rem;
-            color: #10b981;
-            direction: ltr;
-            letter-spacing: 0.05em;
-            line-height: 1.2;
-        }
-        .roster-card .ribbon-status {
-            position: absolute;
-            top: 0.4rem;
-            left: 0.55rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3rem;
-            min-height: 1.25rem;
-            padding: 0.12rem 0.45rem;
-            border: 1px solid rgba(16,185,129,0.2);
-            border-radius: 100px;
-            background: rgba(16,185,129,0.1);
-            color: #10b981;
-            font-size: 0.58rem;
-            font-weight: 800;
-            line-height: 1;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 12px rgba(16,185,129,0.08);
-        }
-        .roster-card .ribbon-status i { font-size: 0.55rem; }
-        .roster-card .ribbon-status .ribbon-trending {
-            color: #fbbf24;
-            text-shadow: 0 0 12px rgba(251,191,36,0.35);
-        }
-        .roster-card .ribbon-status .ribbon-separator { opacity: 0.35; }
-        .roster-card .ribbon-status.muted { opacity: 0.35; }
-        .roster-card-wrapper.trending .roster-card .ribbon-status {
-            border-color: rgba(251,191,36,0.28);
-            background: rgba(251,191,36,0.1);
-            color: #fbbf24;
-        }
-        .roster-card-wrapper.crimson .roster-card .ribbon-status {
-            border-color: rgba(220,38,38,0.25);
-            background: rgba(220,38,38,0.1);
-            color: #dc2626;
         }
         
         /* --- Card Body --- */
@@ -351,12 +199,11 @@
         }
         .roster-card .card-status i { font-size: 0.55rem; }
         .roster-card .card-status .status-trending { color: #fbbf24; text-shadow: 0 0 12px rgba(251,191,36,0.35); }
-        .roster-card .card-status .status-separator { opacity: 0.35; }
         .roster-card .card-status.muted { opacity: 0.35; }
         .roster-card-wrapper.trending .roster-card .card-status { border-color: rgba(251,191,36,0.28); background: rgba(251,191,36,0.1); color: #fbbf24; }
         .roster-card-wrapper.crimson .roster-card .card-status { border-color: rgba(220,38,38,0.25); background: rgba(220,38,38,0.1); color: #dc2626; }
         
-        /* --- Specialty Bubbles (LARGER) --- */
+        /* --- Specialty Bubbles --- */
         .roster-card .specialty-bubbles {
             display: flex;
             flex-wrap: wrap;
@@ -387,9 +234,9 @@
             filter: drop-shadow(0 6px 8px rgba(0,0,0,0.16));
         }
         .roster-card .specialty-bubble {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
-            padding: 0.25rem 1.2rem;
+            padding: 0.15rem 0.6rem;
             border-radius: 100px;
             display: flex;
             align-items: center;
@@ -399,7 +246,7 @@
             border-color: rgba(212,175,55,0.12);
             color: #d4af37;
             line-height: 1.4;
-            height: 2rem;
+            height: 1.7rem;
             white-space: nowrap;
             overflow: hidden;
             grid-area: 1 / 1;
@@ -454,7 +301,6 @@
             border-color: #f59e0b !important;
             box-shadow: 0 0 20px rgba(251,191,36,0.2);
         }
-        /* Earliest-ending specialty in a multi-specialty card: breathing glow around the bubble, not the bubble itself */
         .roster-card .specialty-flip.specialty-bubble-critical {
             position: relative;
             z-index: 1;
@@ -476,7 +322,6 @@
             margin-bottom: 1rem;
         }
         
-        /* --- Resident Name --- */
         .roster-card .resident-name {
             font-weight: 800;
             font-size: 1.5rem;
@@ -489,8 +334,6 @@
         }
         body.light .roster-card .resident-name { color: #1a2332; }
         body.dark .roster-card .resident-name { color: #f0f3f8; }
-        
-        /* --- Phone Number --- */
         .roster-card .resident-phone {
             font-size: 0.85rem;
             font-weight: 600;
@@ -501,8 +344,6 @@
             margin-bottom: 0.05rem;
             letter-spacing: 0.05em;
         }
-        
-        /* --- Divider --- */
         .roster-card .divider {
             width: 50%;
             height: 1px;
@@ -511,8 +352,6 @@
             border-radius: 10px;
         }
         body.light .roster-card .divider { background: rgba(0,0,0,0.06); }
-        
-        /* --- Action Buttons --- */
         .roster-card .card-actions {
             display: flex;
             gap: 0.5rem;
@@ -547,18 +386,14 @@
             box-shadow: 4px 4px 10px rgba(0,0,0,0.5), -3px -3px 8px rgba(255,255,255,0.02), 0 1px 0 rgba(0,0,0,0.3); 
             border: 1px solid rgba(255,255,255,0.02); 
         }
-        .roster-card .action-btn-sm .btn-icon { font-size: 0.75rem; }
         .roster-card .action-btn-sm.call { color: #2563eb; }
         body.dark .roster-card .action-btn-sm.call { color: #60a5fa; }
         .roster-card .action-btn-sm.call:hover { background: rgba(37,99,235,0.08); }
-        body.dark .roster-card .action-btn-sm.call:hover { background: rgba(96,165,250,0.08); }
         .roster-card .action-btn-sm.wa { color: #059669; }
         body.dark .roster-card .action-btn-sm.wa { color: #34d399; }
         .roster-card .action-btn-sm.wa:hover { background: rgba(5,150,105,0.08); }
-        body.dark .roster-card .action-btn-sm.wa:hover { background: rgba(52,211,153,0.08); }
         .roster-card .action-btn-sm.opacity-40 { opacity: 0.25; cursor: default; pointer-events: none; }
         
-        /* --- NO RESIDENT CARD --- */
         .no-resident-card {
             padding: 1.5rem;
             text-align: center;
@@ -570,7 +405,6 @@
             justify-content: center;
         }
         .no-resident-card .icon { font-size: 2rem; margin-bottom: 0.3rem; }
-        .no-resident-card .label { font-size: 0.7rem; font-weight: 600; }
         
         .counter-badge {
             font-size: 0.65rem;
@@ -742,37 +576,7 @@
             text-align: center;
             margin-top: 0.2rem;
         }
-        .report-btn {
-            border-radius: 1.2rem;
-            padding: 0.6rem 1.8rem;
-            font-size: 0.7rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid;
-            background: #2563eb;
-            border-color: #1d4ed8;
-            color: white;
-        }
-        .trending-btn {
-            border-radius: 1.2rem;
-            padding: 0.6rem 1.8rem;
-            font-size: 0.7rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid;
-            background: #f59e0b;
-            border-color: #d97706;
-            color: white;
-        }
-        body.dark .trending-btn { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.2); color: #fbbf24; }
+        
         .admin-reset-btn {
             background: #dc2626;
             color: white;
@@ -853,9 +657,6 @@
         .btn-ghost:hover { background: rgba(255,255,255,0.8); }
         body.dark .btn-ghost:hover { background: rgba(212,175,55,0.08); border-color: rgba(212,175,55,0.25); }
 
-        /* ============================================================
-           TRENDING & LEADERBOARD STYLES
-           ============================================================ */
         .trending-fire-border {
             position: relative;
             border-radius: 1.5rem;
@@ -946,7 +747,6 @@
             90% { transform: translateY(-50%) translateX(0) scale(1); }
         }
 
-        /* --- STEP CHART (Leaderboard) --- */
         .step-chart-wrapper {
             border-radius: 1.2rem;
             padding: 0.5rem 0.5rem 0.6rem;
@@ -1055,6 +855,122 @@
             pointer-events: none;
             z-index: 9998;
         }
+
+        /* ===== NAV ROW ===== */
+        .nav-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem 0.9rem;
+            padding: 0.4rem 0.6rem;
+            margin: 0.2rem auto 0.8rem auto;
+            max-width: 700px;
+            border-radius: 2.5rem;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        .nav-row .sep {
+            width: 1px;
+            height: 26px;
+            background: rgba(128,128,128,0.15);
+            flex-shrink: 0;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent;
+            cursor: pointer;
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(2px);
+            color: #1a2332;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        body.dark .nav-btn {
+            background: rgba(255,255,255,0.04);
+            color: #e8edf5;
+            border-color: rgba(255,255,255,0.04);
+        }
+        .nav-btn i { font-size: 0.8rem; opacity: 0.7; transition: all 0.3s ease; }
+        .nav-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            background: rgba(255,255,255,0.5);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+            border-color: rgba(212,175,55,0.12);
+        }
+        body.dark .nav-btn:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(212,175,55,0.12);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .nav-btn:active { transform: scale(0.96); transition-duration: 0.08s; }
+        .nav-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(0.3);
+        }
+        .nav-btn .badge {
+            background: rgba(16,185,129,0.1);
+            padding: 0.05rem 0.5rem;
+            border-radius: 100px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            color: #0f766e;
+        }
+        body.dark .nav-btn .badge { background: rgba(212,175,55,0.08); color: #d4af37; }
+        .nav-btn .badge.disabled-badge { background: rgba(128,128,128,0.08); color: #6b7280; }
+
+        /* top action buttons */
+        .top-action-btn {
+            border-radius: 1.2rem;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid;
+            background: #4f46e5;
+            border-color: #4338ca;
+            color: white;
+        }
+        body.dark .top-action-btn { background: rgba(79,70,229,0.15); border-color: rgba(79,70,229,0.25); color: #a5b4fc; }
+        .top-action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(79,70,229,0.2); }
+        body.dark .top-action-btn:hover { background: rgba(79,70,229,0.2); }
+        .top-action-btn.leader {
+            background: #d97706;
+            border-color: #b45309;
+            color: white;
+        }
+        body.dark .top-action-btn.leader { background: rgba(217,119,6,0.15); border-color: rgba(217,119,6,0.2); color: #fcd34d; }
+        .top-action-btn.report {
+            background: #2563eb;
+            border-color: #1d4ed8;
+            color: white;
+        }
+        body.dark .top-action-btn.report { background: rgba(37,99,235,0.15); border-color: rgba(37,99,235,0.2); color: #93c5fd; }
+        .top-action-btn.reset {
+            background: #dc2626;
+            border-color: #b91c1c;
+            color: white;
+        }
+        body.dark .top-action-btn.reset { background: rgba(220,38,38,0.15); border-color: rgba(220,38,38,0.2); color: #fca5a5; }
+
+        @media (max-width: 500px) {
+            .nav-row { gap: 0.2rem 0.5rem; padding: 0.3rem 0.4rem; }
+            .nav-btn { font-size: 0.6rem; padding: 0.25rem 0.6rem; }
+            .nav-btn i { font-size: 0.7rem; }
+            .nav-row .sep { height: 20px; }
+        }
     </style>
 </head>
 <body class="light" id="app-body">
@@ -1108,13 +1024,13 @@
             </div>
             <div class="spacer"></div>
             <div class="flex items-center gap-2">
-                <button onclick="showTrendingModal()" class="trending-btn text-xs px-4 py-2">
-                    <i class="fas fa-trophy"></i> لوحة المتصدرين
+                <button onclick="showTrendingModal()" class="top-action-btn leader">
+                    <i class="fas fa-trophy"></i> Leaderboard
                 </button>
-                <button onclick="generateAndCopyReport()" id="report-btn" class="report-btn text-xs px-4 py-2">
+                <button onclick="generateAndCopyReport()" id="report-btn" class="top-action-btn report">
                     <i class="fas fa-file-alt"></i> Report
                 </button>
-                <button id="admin-reset-btn" onclick="showResetModal()" class="admin-reset-btn hidden">
+                <button id="admin-reset-btn" onclick="showResetModal()" class="top-action-btn reset hidden">
                     <i class="fas fa-sync-alt"></i> Reset
                 </button>
             </div>
@@ -1135,10 +1051,32 @@
             </div>
         </header>
 
+        <!-- ===== NAV ROW – simple same‑tab redirects ===== -->
+        <div class="nav-row">
+            <!-- All Hospitals → disabled (soon) -->
+            <a href="#" class="nav-btn disabled" onclick="event.preventDefault(); showToast('⛔ صفحة المستشفيات غير متاحة حالياً', 'info');">
+                <i class="fas fa-hospital"></i>
+                <span>All Hospitals</span>
+                <span class="badge disabled-badge">soon</span>
+            </a>
+            <span class="sep"></span>
+            <!-- Rotation Heroes → same tab -->
+            <a href="https://khafarat-alsadr.netlify.app/" class="nav-btn">
+                <i class="fas fa-user-md"></i>
+                <span>Rotation Heroes</span>
+            </a>
+            <span class="sep"></span>
+            <!-- Duty Exchange → same tab -->
+            <a href="https://mhub96.github.io/s/" class="nav-btn">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Duty Exchange</span>
+            </a>
+        </div>
+
         <!-- TRENDING CARD -->
         <div id="trending-container" class="mb-4"></div>
 
-        <!-- ROSTER GRID - Vertical Layout -->
+        <!-- ROSTER GRID -->
         <div id="roster-container" class="roster-grid"></div>
 
         <div class="footer-credit text-secondary">All rights reserved for Dr. Mohammed Riyadh</div>
@@ -1232,11 +1170,10 @@
             localStorage.setItem('hospital_name_cache', hospitalName);
             document.title = hospitalName + ' · Duty Roster 🇮🇶';
         }
-
         applyHospitalName();
 
         // ================================================================
-        // DYNAMIC SPECIALTY MAPS
+        // SPECIALTY MAPS (stub – will be built from data)
         // ================================================================
         let specNames = {};
         let specIcons = {};
@@ -1254,13 +1191,8 @@
             });
         }
 
-        function getSpecName(code) {
-            return specNames[code] || code;
-        }
-
-        function getSpecIcon(code) {
-            return specIcons[code] || "🏥";
-        }
+        function getSpecName(code) { return specNames[code] || code; }
+        function getSpecIcon(code) { return specIcons[code] || "🏥"; }
 
         // ================================================================
         // TIME UTILITIES
@@ -1328,20 +1260,16 @@
         }
 
         // ================================================================
-        // GET CURRENT ON-DUTY RESIDENT FOR EACH SPECIALTY
+        // GET CURRENT RESIDENTS
         // ================================================================
         function getCurrentResidentForSpecialty(specCode) {
             const targetDate = getMedicalDate();
             const currentMin = getCurrentMinutes();
-            
             const todayEntries = (db.schedule || []).filter(s => s.date === targetDate && s.specCode === specCode);
-            
             if (todayEntries.length === 0) return null;
-
             for (const entry of todayEntries) {
                 let dutyTime = entry.dutyTime;
                 let timeData = null;
-                
                 if (!dutyTime) {
                     const entriesForDay = (db.schedule || []).filter(s => s.date === targetDate && s.specCode === specCode);
                     if (entriesForDay.length === 1) {
@@ -1350,65 +1278,40 @@
                         const slotIdx = entry.dutySlot || 0;
                         const numSlots = entriesForDay.length;
                         const slotDuration = TOTAL_MINUTES / numSlots;
-                        timeData = {
-                            start: slotIdx * slotDuration,
-                            end: (slotIdx + 1) * slotDuration
-                        };
+                        timeData = { start: slotIdx * slotDuration, end: (slotIdx + 1) * slotDuration };
                     }
                 } else {
                     timeData = parseDutyTime(dutyTime);
                 }
-                
                 if (!timeData) continue;
-                
                 let start = timeData.start;
                 let end = timeData.end;
-                
                 if (end <= start) {
-                    if (currentMin >= start || currentMin < end) {
-                        return entry;
-                    }
+                    if (currentMin >= start || currentMin < end) return entry;
                 } else {
-                    if (currentMin >= start && currentMin < end) {
-                        return entry;
-                    }
+                    if (currentMin >= start && currentMin < end) return entry;
                 }
             }
-
             return null;
         }
 
-        // ================================================================
-        // GET ALL CURRENT RESIDENTS WITH MULTIPLE SPECIALTIES
-        // ================================================================
         function getAllCurrentResidents() {
             const resultMap = {};
-            
             const allSpecs = new Set();
             const today = getMedicalDate();
-            (db.schedule || []).forEach(s => {
-                if (s.date === today) {
-                    allSpecs.add(s.specCode);
-                }
-            });
-            
+            (db.schedule || []).forEach(s => { if (s.date === today) allSpecs.add(s.specCode); });
             (db.specialties || []).forEach(spec => {
                 if (spec.enabled !== false) {
                     const hasEntry = (db.schedule || []).some(s => s.specCode === spec.id && s.date === today);
-                    if (hasEntry) {
-                        allSpecs.add(spec.id);
-                    }
+                    if (hasEntry) allSpecs.add(spec.id);
                 }
             });
-            
             for (const specCode of allSpecs) {
                 const resident = getCurrentResidentForSpecialty(specCode);
                 if (resident) {
                     const key = resident.name;
-
                     let dutyTime = resident.dutyTime;
                     let timeData = null;
-
                     if (!dutyTime) {
                         const entriesForDay = (db.schedule || []).filter(s => s.date === today && s.specCode === specCode);
                         if (entriesForDay.length === 1) {
@@ -1417,34 +1320,24 @@
                             const slotIdx = resident.dutySlot || 0;
                             const numSlots = entriesForDay.length;
                             const slotDuration = TOTAL_MINUTES / numSlots;
-                            timeData = {
-                                start: slotIdx * slotDuration,
-                                end: (slotIdx + 1) * slotDuration
-                            };
+                            timeData = { start: slotIdx * slotDuration, end: (slotIdx + 1) * slotDuration };
                         }
                     } else {
                         timeData = parseDutyTime(dutyTime);
                     }
-
-                    let startMin = 0;
-                    let endMin = TOTAL_MINUTES;
+                    let startMin = 0, endMin = TOTAL_MINUTES;
                     if (timeData) {
                         startMin = timeData.start;
                         endMin = timeData.end;
                         if (endMin <= startMin) endMin = endMin + TOTAL_MINUTES;
                     }
-
                     const currentMin = getCurrentMinutes();
                     let remainingMinutes = Math.max(0, endMin - currentMin);
                     if (remainingMinutes > TOTAL_MINUTES) remainingMinutes = TOTAL_MINUTES;
-
                     if (!resultMap[key]) {
                         const phone = db.names.find(n => n.name === resident.name)?.phone || "رقم غير متوفر";
-
-                        // Get visit count for today for this resident
                         const visitEntries = (db.schedule || []).filter(s => s.date === today && s.name === resident.name);
                         const totalVisits = visitEntries.reduce((sum, entry) => sum + (entry.VisitCount || 0), 0);
-
                         resultMap[key] = {
                             name: resident.name,
                             phone: phone,
@@ -1458,12 +1351,9 @@
                             visitCount: totalVisits
                         };
                     }
-
                     const specName = getSpecName(specCode);
                     const icon = getSpecIcon(specCode);
                     resultMap[key].specs.push({ code: specCode, name: specName, icon: icon, endMin: endMin, remainingMinutes: remainingMinutes });
-
-                    // The specialty ending soonest drives the card's main timer
                     if (endMin < resultMap[key].endMin) {
                         resultMap[key].dutyTime = dutyTime;
                         resultMap[key].startMin = startMin;
@@ -1473,8 +1363,6 @@
                     }
                 }
             }
-            
-            // Sort specs within each resident
             for (const key in resultMap) {
                 resultMap[key].specs.sort((a, b) => {
                     const aOrder = specialtyOrder[a.code] ?? Number.MAX_SAFE_INTEGER;
@@ -1482,64 +1370,37 @@
                     return aOrder - bOrder || a.name.localeCompare(b.name);
                 });
             }
-            
-            // Convert to array and sort by the first specialty's saved admin order
             const result = Object.values(resultMap);
             result.sort((a, b) => {
                 const aOrder = specialtyOrder[a.specs[0]?.code] ?? Number.MAX_SAFE_INTEGER;
                 const bOrder = specialtyOrder[b.specs[0]?.code] ?? Number.MAX_SAFE_INTEGER;
-                const aSpec = a.specs[0]?.name || '';
-                const bSpec = b.specs[0]?.name || '';
-                return aOrder - bOrder || aSpec.localeCompare(bSpec);
+                return aOrder - bOrder;
             });
-            
             return result;
         }
 
-        // ================================================================
-        // GET TRENDING RESIDENT FOR TODAY (most visits)
-        // ================================================================
         function getTrendingResidentForToday() {
             const targetDate = getMedicalDate();
             const todayEntries = (db.schedule || []).filter(s => s.date === targetDate);
             if (todayEntries.length === 0) return null;
-            
-            // Group by name and sum visit counts
             const visitMap = {};
             todayEntries.forEach(entry => {
                 const name = entry.name;
                 if (!visitMap[name]) visitMap[name] = 0;
                 visitMap[name] += (entry.VisitCount || 0);
             });
-            
-            // Find the name with the highest visits
-            let maxVisits = 0;
-            let trendingName = null;
+            let maxVisits = 0, trendingName = null;
             for (const [name, visits] of Object.entries(visitMap)) {
-                if (visits > maxVisits) {
-                    maxVisits = visits;
-                    trendingName = name;
-                }
+                if (visits > maxVisits) { maxVisits = visits; trendingName = name; }
             }
-            
             if (!trendingName || maxVisits === 0) return null;
-            
             const resident = db.names.find(n => n.name === trendingName);
             const specCode = todayEntries.find(e => e.name === trendingName)?.specCode || "NS";
             const specName = getSpecName(specCode);
             const icon = getSpecIcon(specCode);
-            return { 
-                name: trendingName, 
-                phone: resident?.phone || "رقم غير متوفر", 
-                specName, 
-                icon, 
-                VisitCount: maxVisits 
-            };
+            return { name: trendingName, phone: resident?.phone || "رقم غير متوفر", specName, icon, VisitCount: maxVisits };
         }
 
-        // ================================================================
-        // LEADERBOARD
-        // ================================================================
         function getLeaderboardData(filter='today') {
             let entries = db.schedule.filter(s => s.VisitCount && s.VisitCount > 0);
             const now = new Date();
@@ -1556,13 +1417,8 @@
             return Object.values(leaderboard).sort((a,b) => b.totalVisits - a.totalVisits);
         }
 
-        function getSpecNameForLeaderboard(code) {
-            return specNames[code] || code;
-        }
-
-        function getSpecIconForLeaderboard(code) {
-            return specIcons[code] || "🏥";
-        }
+        function getSpecNameForLeaderboard(code) { return specNames[code] || code; }
+        function getSpecIconForLeaderboard(code) { return specIcons[code] || "🏥"; }
 
         // ================================================================
         // THEME
@@ -1581,7 +1437,6 @@
         // TOAST
         // ================================================================
         let toastTimeout = null;
-
         function showToast(message, type = 'info', duration = 3000) {
             if (toastTimeout) { clearTimeout(toastTimeout); document.getElementById('toast-container').querySelectorAll('.toast').forEach(t=>t.remove()); }
             const container = document.getElementById('toast-container');
@@ -1719,15 +1574,8 @@
         function startAutoUpdate() {
             if (updateInterval) clearInterval(updateInterval);
             if (countdownInterval) clearInterval(countdownInterval);
-            
-            updateInterval = setInterval(() => {
-                renderRoster();
-                renderTrending();
-            }, 30000);
-            
-            countdownInterval = setInterval(() => {
-                updateCountdowns();
-            }, 1000);
+            updateInterval = setInterval(() => { renderRoster(); renderTrending(); }, 30000);
+            countdownInterval = setInterval(() => { updateCountdowns(); }, 1000);
         }
 
         // ================================================================
@@ -1736,15 +1584,12 @@
         function updateCountdowns() {
             const currentMin = getCurrentMinutes();
             const cards = document.querySelectorAll('.roster-card');
-            
             cards.forEach(card => {
                 const endMin = parseInt(card.dataset.endMin || '0');
                 if (!endMin) return;
-                
                 let remaining = endMin - currentMin;
                 if (remaining < 0) remaining = 0;
                 if (remaining > TOTAL_MINUTES) remaining = TOTAL_MINUTES;
-
                 card.querySelectorAll('.countdown-timer').forEach(timerEl => {
                     const timerEndMin = parseInt(timerEl.dataset.endMin || '0');
                     let timerRemaining = timerEndMin - currentMin;
@@ -1754,17 +1599,10 @@
                     const minutes = Math.floor(timerRemaining % 60);
                     timerEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
                 });
-                
                 const isCrimson = remaining < 60 && remaining > 0;
                 const wrapper = card.closest('.roster-card-wrapper');
-                if (wrapper) {
-                    // Only toggle crimson, don't touch trending class
-                    wrapper.classList.toggle('crimson', isCrimson);
-                }
-                
-                if (remaining === 0) {
-                    setTimeout(() => { renderRoster(); renderTrending(); }, 2000);
-                }
+                if (wrapper) wrapper.classList.toggle('crimson', isCrimson);
+                if (remaining === 0) setTimeout(() => { renderRoster(); renderTrending(); }, 2000);
             });
         }
 
@@ -1782,7 +1620,6 @@
             const back = button.querySelector('.specialty-back');
             if (!front || !back) return;
             clearTimeout(Number(button.dataset.flipTimeout));
-
             const currentWidth = button.getBoundingClientRect().width;
             const targetWidth = measureSpecialtyFace(flipped ? back : front);
             button.style.height = front.getBoundingClientRect().height + 'px';
@@ -1791,7 +1628,6 @@
                 button.classList.toggle('flipped', flipped);
                 button.style.width = targetWidth + 'px';
             });
-
             if (flipped) {
                 button.dataset.flipTimeout = String(setTimeout(() => setSpecialtyTimerState(button, false), 2000));
             } else {
@@ -1855,13 +1691,12 @@
         }
 
         // ================================================================
-        // RENDER TRENDING CARD
+        // RENDER TRENDING
         // ================================================================
         function renderTrending() {
             const tc = document.getElementById('trending-container');
             const trending = getTrendingResidentForToday();
             const handHtml = `<span class="trending-hand ${!trendingHandVisible ? 'hidden' : ''}">👆</span>`;
-            
             if (trending) {
                 tc.innerHTML = `
                     <div class="trending-fire-border" onclick="handleTrendingClick()">
@@ -1880,11 +1715,7 @@
                     </div>
                 `;
             } else {
-                tc.innerHTML = `
-                    <div class="glass-card p-3 text-center text-secondary/40 text-sm">
-                        <i class="fas fa-chart-line mr-1"></i> No trending resident yet. Interactions will appear here.
-                    </div>
-                `;
+                tc.innerHTML = `<div class="glass-card p-3 text-center text-secondary/40 text-sm"><i class="fas fa-chart-line mr-1"></i> No trending resident yet. Interactions will appear here.</div>`;
             }
         }
 
@@ -1896,33 +1727,22 @@
         }
 
         // ================================================================
-        // RENDER ROSTER - Complete design with badges inside card body
+        // RENDER ROSTER
         // ================================================================
         function renderRoster() {
             const container = document.getElementById('roster-container');
             const currentTime = getCurrentTimeString();
             document.getElementById('current-time-display').textContent = `⏰ الوقت الحالي: ${currentTime}`;
-
             const currentResidents = getAllCurrentResidents();
             const totalResidents = db.names.length;
             const activeCount = db.names.filter(n => n.spec !== "RESERVE").length;
             document.getElementById('count-tag').innerHTML = `<i class="fas fa-users mr-1"></i> ${totalResidents} مسجل · ${activeCount} نشط · ${currentResidents.length} في الخدمة`;
-
             if (currentResidents.length === 0) {
-                container.innerHTML = `
-                    <div class="glass-card p-8 text-center no-resident-card">
-                        <div class="icon">🕐</div>
-                        <div class="text-secondary/30 font-bold">لا يوجد مقيمين في الخدمة حالياً</div>
-                        <div class="text-secondary/20 text-sm mt-2">الوقت الحالي: ${currentTime}</div>
-                    </div>
-                `;
+                container.innerHTML = `<div class="glass-card p-8 text-center no-resident-card"><div class="icon">🕐</div><div class="text-secondary/30 font-bold">لا يوجد مقيمين في الخدمة حالياً</div><div class="text-secondary/20 text-sm mt-2">الوقت الحالي: ${currentTime}</div></div>`;
                 return;
             }
-
-            // Get trending resident for today
             const trending = getTrendingResidentForToday();
             const trendingName = trending?.name || null;
-
             container.innerHTML = currentResidents.map(resident => {
                 const isPhoneValid = resident.phone && resident.phone !== "رقم غير متوفر" && resident.phone.length > 5;
                 const phoneClean = isPhoneValid ? resident.phone.replace(/[^0-9]/g,'') : '';
@@ -1930,15 +1750,8 @@
                 const isCrimson = resident.remainingMinutes < 60 && resident.remainingMinutes > 0;
                 const isMultiple = resident.specs.length > 1;
                 const isTrending = resident.name === trendingName && resident.visitCount > 0;
-
-                // Format remaining time
                 const hours = Math.floor(resident.remainingMinutes / 60);
                 const minutes = Math.floor(resident.remainingMinutes % 60);
-                const timerDisplay = resident.remainingMinutes > 0 
-                    ? `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
-                    : '00:00';
-
-                // Generate specialty bubbles - LARGER. The earliest-ending specialty glows only during its final hour.
                 const specialtyBubbles = resident.specs.map(spec => {
                     const flipClasses = ['specialty-flip'];
                     if (isMultiple) flipClasses.push('multiple');
@@ -1951,7 +1764,6 @@
                         <span class="specialty-bubble specialty-back"><span class="specialty-timer-label">الوقت المتبقي</span><span class="countdown-timer" data-end-min="${spec.endMin}">${specTimer}</span></span>
                     </button>`;
                 }).join('');
-
                 let cardStatusHtml = '';
                 if (isTrending) {
                     cardStatusHtml = `<span class="card-status"><span class="status-trending"><i class="fas fa-fire"></i></span><span class="status-separator">|</span><span><i class="fas fa-eye"></i> ${resident.visitCount}</span></span>`;
@@ -1960,41 +1772,30 @@
                 } else {
                     cardStatusHtml = `<span class="card-status muted"><i class="fas fa-eye"></i><span>0</span></span>`;
                 }
-
-                // Determine card wrapper classes
                 let wrapperClasses = 'roster-card-wrapper';
                 if (isTrending) wrapperClasses += ' trending';
                 if (isCrimson) wrapperClasses += ' crimson';
-
                 return `
                     <div class="${wrapperClasses}">
                         <div class="roster-card" data-end-min="${resident.endMin}"
                              onmousemove="handleCardTilt(event, this)"
                              onmouseleave="resetCardTilt(this)">
-                            <!-- Card Body -->
                             <div class="card-body">
                                 ${cardStatusHtml}
-                                <!-- Specialty Bubbles (LARGER) -->
                                 <div class="specialty-bubbles">${specialtyBubbles}</div>
-                                
                                 <div class="resident-name">${resident.name}</div>
-                                
                                 <div class="resident-phone">${resident.phone}</div>
-                                
                                 <div class="divider"></div>
-                                
                                 <div class="card-actions">
                                     <a href="${isPhoneValid ? 'whatsapp://send?phone='+phoneClean : '#'}" 
                                        class="action-btn-sm wa ${!isPhoneValid ? 'opacity-40' : ''}"
                                        onclick="${isPhoneValid ? `trackContact('${today}','${resident.name}'); event.preventDefault(); window.location.href=this.href;` : 'event.preventDefault();'}">
-                                        <i class="fab fa-whatsapp"></i>
-                                        WhatsApp
+                                        <i class="fab fa-whatsapp"></i> WhatsApp
                                     </a>
                                     <a href="${isPhoneValid ? 'tel:'+phoneClean : '#'}" 
                                        class="action-btn-sm call ${!isPhoneValid ? 'opacity-40' : ''}"
                                        onclick="${isPhoneValid ? `trackContact('${today}','${resident.name}');` : 'event.preventDefault();'}">
-                                        <i class="fas fa-phone"></i>
-                                        Call
+                                        <i class="fas fa-phone"></i> Call
                                     </a>
                                 </div>
                             </div>
@@ -2005,7 +1806,7 @@
         }
 
         // ================================================================
-        // 3D TILT EFFECT
+        // 3D TILT
         // ================================================================
         function handleCardTilt(e, card) {
             const rect = card.getBoundingClientRect();
@@ -2017,10 +1818,7 @@
             const rotateY = (centerX - x) / 16;
             card.style.transform = `perspective(600px) translateY(-4px) scale(1.01) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         }
-
-        function resetCardTilt(card) {
-            card.style.transform = '';
-        }
+        function resetCardTilt(card) { card.style.transform = ''; }
 
         // ================================================================
         // LEADERBOARD MODAL
@@ -2029,59 +1827,35 @@
             document.getElementById('trending-modal').classList.add('active');
             switchLeaderboardFilter(currentLeaderboardFilter);
         }
-
-        function closeTrendingModal() {
-            document.getElementById('trending-modal').classList.remove('active');
-        }
-
+        function closeTrendingModal() { document.getElementById('trending-modal').classList.remove('active'); }
         function switchLeaderboardFilter(filter) {
             currentLeaderboardFilter = filter;
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.toggle('active', tab.dataset.filter === filter);
-            });
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.filter === filter));
             const content = document.getElementById('trending-content');
             const leaderboard = getLeaderboardData(filter);
             const topThree = leaderboard.slice(0,3);
             const others = leaderboard.slice(3);
-            
             if (leaderboard.length === 0) {
                 content.innerHTML = `<div class="text-center py-6 text-secondary/30"><div class="text-4xl mb-2">🏆</div><div>No interactions recorded yet.</div></div>`;
                 return;
             }
-            
             let html = '';
-            
             if (topThree.length > 0) {
                 const maxVisits = topThree[0]?.totalVisits || 1;
                 const ordered = [ topThree[1] || topThree[0], topThree[0], topThree[2] || topThree[0] ];
                 const medals = ['silver','gold','bronze'];
                 const medalIcons = ['🥈', '🥇', '🥉'];
-                
-                html += `
-                    <div class="step-chart-wrapper">
-                        <div class="step-chart-title">✦ TOP PERFORMERS ✦</div>
-                        <div class="step-chart">
-                `;
+                html += `<div class="step-chart-wrapper"><div class="step-chart-title">✦ TOP PERFORMERS ✦</div><div class="step-chart">`;
                 ordered.forEach((item, index) => {
                     const maxHeight = 60;
                     const ratio = item.totalVisits / maxVisits;
                     const heightPx = Math.max(ratio * maxHeight, 4);
                     const specName = getSpecNameForLeaderboard(item.specCode);
                     const icon = getSpecIconForLeaderboard(item.specCode);
-                    html += `
-                        <div class="step-bar">
-                            <div class="bar-value">${item.totalVisits}</div>
-                            <div class="bar-wrap">
-                                <div class="bar ${medals[index]}" style="height: ${heightPx}px;"></div>
-                            </div>
-                            <div class="bar-label">${icon} ${item.name}</div>
-                            <div class="step-medal-icon">${medalIcons[index]}</div>
-                        </div>
-                    `;
+                    html += `<div class="step-bar"><div class="bar-value">${item.totalVisits}</div><div class="bar-wrap"><div class="bar ${medals[index]}" style="height: ${heightPx}px;"></div></div><div class="bar-label">${icon} ${item.name}</div><div class="step-medal-icon">${medalIcons[index]}</div></div>`;
                 });
                 html += `</div></div>`;
             }
-            
             if (others.length > 0) {
                 html += `<div class="mt-2 space-y-1">`;
                 others.forEach((item, index) => {
@@ -2091,16 +1865,10 @@
                 });
                 html += `</div>`;
             }
-            
             const filterLabels = { 'today':'Today', 'month':'This Month', 'all':'All Time' };
             html += `<div class="mt-3 text-center text-[0.5rem] text-secondary/30 border-t border-white/5 pt-2">${leaderboard.length} residents · ${filterLabels[filter]||''}</div>`;
             content.innerHTML = html;
-            
-            setTimeout(() => {
-                document.querySelectorAll('.step-bar .bar').forEach(bar => {
-                    void bar.offsetHeight;
-                });
-            }, 50);
+            setTimeout(() => { document.querySelectorAll('.step-bar .bar').forEach(bar => { void bar.offsetHeight; }); }, 50);
         }
 
         // ================================================================
@@ -2109,9 +1877,7 @@
         function triggerConfetti() {
             const count = 150;
             const defaults = { origin: { y: 0.6 } };
-            function fire(particleRatio, opts) {
-                confetti({ ...defaults, ...opts, particleCount: Math.floor(count * particleRatio) });
-            }
+            function fire(particleRatio, opts) { confetti({ ...defaults, ...opts, particleCount: Math.floor(count * particleRatio) }); }
             fire(0.25, { spread: 26, startVelocity: 55 });
             fire(0.2, { spread: 60 });
             fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
@@ -2126,20 +1892,15 @@
             if (userRole !== 'admin') { showToast('غير مصرح لك بهذا الإجراء','error'); return; }
             document.getElementById('reset-modal').classList.add('active');
         }
-        function closeResetModal() {
-            document.getElementById('reset-modal').classList.remove('active');
-        }
-
+        function closeResetModal() { document.getElementById('reset-modal').classList.remove('active'); }
         function executeReset() {
             const selected = document.querySelector('input[name="reset-range"]:checked');
             if (!selected) { showToast('يرجى اختيار نطاق لإعادة الضبط','error'); return; }
             const range = selected.value;
             if (!confirm(`⚠️ هل أنت متأكد من إعادة ضبط إحصائيات ${range === 'today' ? 'اليوم' : range === 'month' ? 'الشهر الحالي' : 'جميع الإحصائيات'}؟`)) return;
-
             const now = new Date();
             const todayStr = getMedicalDate();
             const monthStr = `${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
-
             let resetCount = 0;
             db.schedule.forEach(entry => {
                 let shouldReset = false;
@@ -2148,13 +1909,11 @@
                     const parts = entry.date.split('/');
                     if (parts.length === 3 && `${parts[1]}/${parts[2]}` === monthStr) shouldReset = true;
                 } else if (range === 'all') shouldReset = true;
-
                 if (shouldReset && entry.VisitCount && entry.VisitCount > 0) {
                     entry.VisitCount = 0;
                     resetCount++;
                 }
             });
-
             saveToGithub().then(() => {
                 renderRoster();
                 renderTrending();
@@ -2164,58 +1923,32 @@
         }
 
         // ================================================================
-        // REPORT GENERATOR
+        // REPORT
         // ================================================================
         function generateAndCopyReport() {
             const currentResidents = getAllCurrentResidents();
-            
-            if (currentResidents.length === 0) {
-                showToast('لا يوجد مقيمين في الخدمة حالياً', 'error');
-                return;
-            }
-
+            if (currentResidents.length === 0) { showToast('لا يوجد مقيمين في الخدمة حالياً', 'error'); return; }
             const formattedDate = getFormattedDate();
-            
-            let report = `🏥 *المقيمين في الخدمة*\n`;
-            report += `📅 *${formattedDate}*\n`;
-            report += `⏰ *${getCurrentTimeString()}*\n`;
-            report += `📍 مستشفى البصرة التعليمي — البصرة\n\n`;
-            
+            let report = `🏥 *المقيمين في الخدمة*\n📅 *${formattedDate}*\n⏰ *${getCurrentTimeString()}*\n📍 مستشفى البصرة التعليمي — البصرة\n\n`;
             currentResidents.forEach(res => {
                 const hours = Math.floor(res.remainingMinutes / 60);
                 const minutes = Math.floor(res.remainingMinutes % 60);
                 const timeLeft = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-                
-                let timeSlot = "طوال اليوم";
-                let dayIndicator = "";
+                let timeSlot = "طوال اليوم", dayIndicator = "";
                 if (res.dutyTime) {
                     const parsed = parseDutyTime(res.dutyTime);
                     if (parsed) {
-                        let start = parsed.start;
-                        let end = parsed.end;
+                        let start = parsed.start, end = parsed.end;
                         const isCrossDay = end <= start;
-                        if (isCrossDay) {
-                            end = end + TOTAL_MINUTES;
-                            dayIndicator = "(اليوم - الغد)";
-                        }
+                        if (isCrossDay) { end = end + TOTAL_MINUTES; dayIndicator = "(اليوم - الغد)"; }
                         timeSlot = `${minutesToTimeStr(start)} - ${minutesToTimeStr(end)}`;
                     }
                 }
-                
                 const specs = res.specs.map(s => `${s.icon} ${s.name}`).join(' + ');
                 const visitInfo = res.visitCount > 0 ? `👁️ ${res.visitCount} تفاعل` : '';
-                
-                report += `*${specs}*\n`;
-                report += `👨‍⚕️ *${res.name}*\n`;
-                report += `🕐 ${timeSlot} ${dayIndicator}\n`;
-                report += `⏳ الوقت المتبقي: *${timeLeft}*\n`;
-                if (visitInfo) report += `${visitInfo}\n`;
-                report += `☎️ _${res.phone}_\n`;
-                report += `┈┈┈┈┈┈┈┈┈┈┈┈┈\n\n`;
+                report += `*${specs}*\n👨‍⚕️ *${res.name}*\n🕐 ${timeSlot} ${dayIndicator}\n⏳ الوقت المتبقي: *${timeLeft}*\n${visitInfo ? visitInfo+'\n' : ''}☎️ _${res.phone}_\n┈┈┈┈┈┈┈┈┈┈┈┈┈\n\n`;
             });
-
             report += `\nhttps://mhub96.github.io/BTH/Home`;
-
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(report).then(() => {
                     const btn = document.getElementById('report-btn');
@@ -2223,20 +1956,11 @@
                     btn.innerHTML = '<i class="fas fa-check-circle"></i> Copied!';
                     btn.style.borderColor = '#10b981';
                     btn.style.color = '#10b981';
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.style.borderColor = '';
-                        btn.style.color = '';
-                    }, 3000);
+                    setTimeout(() => { btn.innerHTML = originalText; btn.style.borderColor = ''; btn.style.color = ''; }, 3000);
                     showToast('تم نسخ التقرير إلى الحافظة', 'success');
-                }).catch(() => {
-                    fallbackCopy(report);
-                });
-            } else {
-                fallbackCopy(report);
-            }
+                }).catch(() => fallbackCopy(report));
+            } else { fallbackCopy(report); }
         }
-
         function fallbackCopy(text) {
             const textArea = document.createElement('textarea');
             textArea.value = text;
@@ -2246,16 +1970,7 @@
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showToast('تم نسخ التقرير إلى الحافظة', 'success');
-                } else {
-                    showToast('فشل نسخ التقرير. حاول مرة أخرى.', 'error');
-                }
-            } catch (err) {
-                showToast('فشل نسخ التقرير. حاول مرة أخرى.', 'error');
-            }
+            try { document.execCommand('copy'); showToast('تم نسخ التقرير إلى الحافظة', 'success'); } catch(err) { showToast('فشل نسخ التقرير', 'error'); }
             document.body.removeChild(textArea);
         }
 
@@ -2296,14 +2011,6 @@
                 startAutoUpdate();
             }
         };
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                const lockScreen = document.getElementById('lock-screen');
-                if (lockScreen && lockScreen.style.display !== 'none') { e.preventDefault(); handleLogin(); }
-            }
-            if (e.key === 'Escape') { closeTrendingModal(); closeResetModal(); }
-        });
 
         document.getElementById('remember-me').addEventListener('change', function() {
             if (!this.checked) { localStorage.removeItem(REMEMBER_TOKEN_KEY); localStorage.removeItem(REMEMBER_ENABLED_KEY); }
