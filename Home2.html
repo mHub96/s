@@ -1300,12 +1300,15 @@
 
         let confettiClickCounter = 0;
 
-        // ─── Fireworks Canvas ───
+
+
+
+        // ─── Fireworks Canvas (More Rockets) ───
         let fwCanvas, fwCtx, fwWidth, fwHeight;
-        let fwRockets = [],
-            fwParticles = [];
+        let fwRockets = [], fwParticles = [];
         let fwAnimationId = null;
         let fwRunning = false;
+        let fwFrameSkip = 0;
 
         // ─── Color Palette ───
         function fwRandomColor() {
@@ -1342,7 +1345,7 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
-        // ─── Realistic Firework Particle ───
+        // ─── Particle ───
         class FwParticle {
             constructor(x, y, vx, vy, color, flash = false, palette = null) {
                 this.x = x;
@@ -1373,9 +1376,7 @@
 
             update() {
                 this.trail.push({ x: this.x, y: this.y });
-                if (this.trail.length > this.trailLength) {
-                    this.trail.shift();
-                }
+                if (this.trail.length > this.trailLength) this.trail.shift();
                 const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
                 const drag = speed > 4 ? 0.985 : 0.978;
                 this.vx *= drag;
@@ -1393,7 +1394,6 @@
             draw(ctx) {
                 if (this.life <= 0) return;
                 const alpha = this.life * this.brightness * this.flicker;
-
                 for (let i = 0; i < this.trail.length; i++) {
                     const p = this.trail[i];
                     const progress = i / this.trail.length;
@@ -1406,21 +1406,17 @@
                     ctx.fillStyle = hexToRGBA(trailColor, trailAlpha);
                     ctx.fill();
                 }
-
                 const particleAlpha = this.life * this.brightness * this.flicker;
-
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
                 ctx.fillStyle = hexToRGBA(this.color, particleAlpha * 0.08);
                 ctx.fill();
-
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
                 ctx.shadowBlur = this.flash ? 30 : 7 + this.life * 8;
                 ctx.shadowColor = this.color;
                 ctx.fillStyle = hexToRGBA(this.secondaryColor, particleAlpha);
                 ctx.fill();
-
                 if (!this.flash && this.life > 0.45) {
                     const coreAlpha = Math.min(1, this.life * 1.4) * this.brightness * 0.85;
                     ctx.beginPath();
@@ -1466,8 +1462,8 @@
             }
 
             explode() {
-                // Reduced particle count: 50-110 instead of 80-180
-                const count = 50 + Math.floor(Math.random() * 60);
+                // Particles per rocket: 40-80 (kept light)
+                const count = 100 + Math.floor(Math.random() * 50);
                 const type = this.explosionType;
 
                 for (let i = 0; i < count; i++) {
@@ -1499,7 +1495,6 @@
                     }
 
                     const color = this.palette[Math.floor(Math.random() * this.palette.length)];
-
                     fwParticles.push(new FwParticle(
                         this.x, this.y,
                         Math.cos(angle) * speed,
@@ -1510,8 +1505,8 @@
                     ));
                 }
 
-                // Fewer flash particles
-                for (let i = 0; i < 10 + Math.floor(Math.random() * 8); i++) {
+                // Flash particles: 6-12
+                for (let i = 0; i < 6 + Math.floor(Math.random() * 6); i++) {
                     const angle = Math.random() * Math.PI * 2;
                     const speed = 0.5 + Math.random() * 2;
                     fwParticles.push(new FwParticle(
@@ -1523,8 +1518,8 @@
                     ));
                 }
 
-                // Fewer secondary twinkles
-                for (let i = 0; i < 20 + Math.floor(Math.random() * 15); i++) {
+                // Secondary twinkles: 12-20
+                for (let i = 0; i < 12 + Math.floor(Math.random() * 8); i++) {
                     const angle = Math.random() * Math.PI * 2;
                     const speed = 1 + Math.random() * 2;
                     const color = this.palette[Math.floor(Math.random() * this.palette.length)];
@@ -1601,7 +1596,7 @@
 
         function fwLaunchBurst(count) {
             for (let i = 0; i < count; i++) {
-                const delay = i * (120 + Math.random() * 280);
+                const delay = i * (300 + Math.random() * 600);
                 setTimeout(() => {
                     if (!fwRunning) return;
                     const x = 0.02 + Math.random() * 0.96;
@@ -1636,9 +1631,7 @@
             fwRunning = true;
             fwRockets = [];
             fwParticles = [];
-            if (fwCtx) {
-                fwCtx.clearRect(0, 0, fwWidth, fwHeight);
-            }
+            if (fwCtx) fwCtx.clearRect(0, 0, fwWidth, fwHeight);
             if (fwAnimationId) cancelAnimationFrame(fwAnimationId);
             fwAnimate();
         }
@@ -1649,9 +1642,7 @@
                 cancelAnimationFrame(fwAnimationId);
                 fwAnimationId = null;
             }
-            if (fwCtx) {
-                fwCtx.clearRect(0, 0, fwWidth, fwHeight);
-            }
+            if (fwCtx) fwCtx.clearRect(0, 0, fwWidth, fwHeight);
             fwRockets = [];
             fwParticles = [];
         }
@@ -1659,8 +1650,8 @@
         function triggerFireworks() {
             if (!fwCanvas) initFireworksCanvas();
             startFireworks();
-            // Reduced rocket count: 8-20 instead of 15-40
-            const count = 8 + Math.floor(Math.random() * 13);
+            // More rockets: 12-24 (was 4-12)
+            const count = 30 + Math.floor(Math.random() * 10);
             fwLaunchBurst(count);
             showToast('✨ Light Show!', 'info', 2500);
 
@@ -1674,8 +1665,15 @@
             setTimeout(() => {
                 clearInterval(checkInterval);
                 stopFireworks();
-            }, 10000);
+            }, 20000);
         }
+
+
+
+
+
+
+
 
         // ================================================================
         // SPECIALTY BUBBLE FIX – proper horizontal expansion
