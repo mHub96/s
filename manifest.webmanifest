@@ -2,9 +2,10 @@
   "name": "Iraqi Teaching Hospital",
   "short_name": "Iraqi Hosp.",
   "description": "Hospital duty roster and resident management system.",
-  "start_url": "Home.html",
+  "start_url": "./Home.html",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#0b0e12",
   "theme_color": "#0f766e",
   "icons": [
