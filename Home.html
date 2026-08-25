@@ -519,7 +519,7 @@
             padding: 0.1rem 0;
         }
 
-        /* Fluttering badge – 3D pop-out (not tilted) */
+        /* Fluttering badge – 3D with depth (less floating) */
         .trending-badge-btn {
             display: inline-flex;
             align-items: center;
@@ -568,43 +568,43 @@
             }
         }
 
-        /* Light mode: Dark Gold 3D pop-out (box-shadow for depth) */
+        /* Light mode: Dark Gold 3D (less floating) */
         body.light .trending-badge-btn {
             background: linear-gradient(180deg, #D4A017, #B8860B);
             color: #FFF8E7;
-            box-shadow: 0 3px 0 #8B6508, 0 8px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 3px 0 #8B6508, 0 4px 12px rgba(0, 0, 0, 0.4);
             border: 1px solid #F5D06B;
             text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
-            transform: translateY(-1px); /* lifted */
+            transform: translateY(0);
         }
         body.light .trending-badge-btn:hover {
-            box-shadow: 0 8px 0 #8B6508, 0 12px 32px rgba(0, 0, 0, 0.6);
-            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 4px 0 #8B6508, 0 6px 16px rgba(0, 0, 0, 0.5);
+            transform: translateY(-1px) scale(1.02);
         }
         body.light .trending-badge-btn:active {
-            box-shadow: 0 2px 0 #8B6508;
-            transform: translateY(2px) scale(0.96);
+            box-shadow: 0 1px 0 #8B6508;
+            transform: translateY(1px) scale(0.96);
         }
 
-        /* Dark mode: Bright Gold 3D pop-out */
+        /* Dark mode: Bright Gold 3D (less floating) */
         body.dark .trending-badge-btn {
             background: linear-gradient(180deg, #FDE047, #F59E0B);
             color: #1a2332;
-            box-shadow: 0 3px 0 #B45309, 0 8px 24px rgba(251, 191, 36, 0.4);
+            box-shadow: 0 3px 0 #B45309, 0 4px 16px rgba(251, 191, 36, 0.3);
             border: 1px solid #FEF08A;
             text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
-            transform: translateY(-1px);
+            transform: translateY(0);
         }
         body.dark .trending-badge-btn:hover {
-            box-shadow: 0 8px 0 #B45309, 0 12px 32px rgba(251, 191, 36, 0.5);
-            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 4px 0 #B45309, 0 6px 20px rgba(251, 191, 36, 0.4);
+            transform: translateY(-1px) scale(1.02);
         }
         body.dark .trending-badge-btn:active {
-            box-shadow: 0 2px 0 #B45309;
-            transform: translateY(2px) scale(0.96);
+            box-shadow: 0 1px 0 #B45309;
+            transform: translateY(1px) scale(0.96);
         }
 
-        /* Visit count – 3D pop-out */
+        /* Visit count – 3D with depth (less floating) */
         .trending-stats {
             display: inline-flex;
             align-items: center;
@@ -615,22 +615,20 @@
             border-radius: 100px;
             white-space: nowrap;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+            transform: translateY(0);
         }
-        /* Light mode */
         body.light .trending-stats {
             color: #fcd34d;
             background: rgba(251, 191, 36, 0.08);
             border-color: rgba(251, 191, 36, 0.08);
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(4px);
         }
-        /* Dark mode */
         body.dark .trending-stats {
             color: #b45309;
             background: rgba(251, 191, 36, 0.06);
             border-color: rgba(251, 191, 36, 0.06);
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.08);
             backdrop-filter: blur(4px);
         }
         .trending-stats i {
@@ -1767,7 +1765,7 @@
         }
 
         // ================================================================
-        // CONFETTI & FIREWORKS – LIGHT FX (no confetti)
+        // CONFETTI & FIREWORKS – FULL 360° EXPLOSION
         // ================================================================
         function fireConfettiFromPosition(clientX, clientY) {
             try {
@@ -1831,7 +1829,6 @@
                         const explosionX = Math.min(Math.max(xOrigin + (Math.random() - 0.5) * 0.3, 0.02), 0.98);
 
                         // ── LASER TRAIL (glowing line) ──
-                        // Dense small white/gold particles with high speed and low spread
                         confetti({
                             particleCount: 15,
                             spread: 4,
@@ -1846,14 +1843,14 @@
                             shapes: ['circle']
                         });
 
-                        // ── LIGHT EXPLOSION (no confetti, just sparkles) ──
+                        // ── FULL 360° LIGHT EXPLOSION ──
                         setTimeout(() => {
-                            // Primary burst: bright white/gold/orange/red sparks
+                            // Primary burst: spread 360 (full circle) with many particles
                             confetti({
-                                particleCount: 100 + Math.floor(Math.random() * 80),
-                                spread: 130 + Math.random() * 80,
+                                particleCount: 120 + Math.floor(Math.random() * 80),
+                                spread: 360, // FULL 360°
                                 origin: { x: explosionX, y: explosionY },
-                                startVelocity: 6 + Math.random() * 10, // very slow, floaty
+                                startVelocity: 6 + Math.random() * 10, // slow and floaty
                                 ticks: 200 + Math.floor(Math.random() * 100),
                                 zIndex: 1,
                                 colors: [
@@ -1866,11 +1863,11 @@
                                 shapes: ['circle']
                             });
 
-                            // Secondary glitter burst – very small, sparkly
+                            // Secondary glitter burst – also full spread
                             setTimeout(() => {
                                 confetti({
                                     particleCount: 60 + Math.floor(Math.random() * 50),
-                                    spread: 70 + Math.random() * 50,
+                                    spread: 360,
                                     origin: { x: explosionX + 0.02, y: explosionY - 0.02 },
                                     startVelocity: 4 + Math.random() * 6,
                                     ticks: 150,
