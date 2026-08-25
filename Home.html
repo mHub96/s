@@ -63,7 +63,23 @@
             color: #ffffff;
             background: #0f766e;
             box-shadow: 0 0 0 8px rgba(15,118,110,0.1), 0 12px 26px rgba(15,118,110,0.24);
+            transition: background 0.6s ease, box-shadow 0.6s ease;
+            cursor: pointer;
+            user-select: none;
         }
+        /* Shimmer animation when activated */
+        @keyframes shimmer-golden {
+            0% { box-shadow: 0 0 0 0 rgba(251,191,36,0.4), 0 12px 26px rgba(15,118,110,0.24); transform: scale(1); }
+            50% { box-shadow: 0 0 40px 20px rgba(251,191,36,0.6), 0 12px 30px rgba(251,191,36,0.3); transform: scale(1.08); }
+            100% { box-shadow: 0 0 0 0 rgba(251,191,36,0.4), 0 12px 26px rgba(15,118,110,0.24); transform: scale(1); }
+        }
+        .hospital-mark.shimmer-golden {
+            animation: shimmer-golden 0.8s ease 2;
+        }
+        .hospital-mark i {
+            transition: color 0.6s ease;
+        }
+        
         .hospital-header-content { min-width: 0; }
         .hospital-eyebrow {
             color: #10b981;
@@ -911,6 +927,14 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
         .nav-btn:active { transform: scale(0.96); transition-duration: 0.08s; }
+        /* Locked state for the two hidden buttons */
+        .nav-btn.locked {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(0.3);
+            cursor: default;
+        }
+        /* Disabled state for All Hospitals */
         .nav-btn.disabled {
             opacity: 0.4;
             pointer-events: none;
@@ -1037,7 +1061,7 @@
         </div>
 
         <header class="hospital-header">
-            <div class="hospital-mark" aria-hidden="true"><i class="fas fa-hospital"></i></div>
+            <div class="hospital-mark" id="hospital-symbol" aria-hidden="true"><i class="fas fa-hospital"></i></div>
             <div class="hospital-header-content">
                 <div class="hospital-eyebrow">Basra · Iraq</div>
                 <h1 id="hospital-name" data-hospital-name class="hospital-title">Iraqi Teaching Hospital</h1>
@@ -1060,14 +1084,14 @@
                 <span class="badge disabled-badge">soon</span>
             </a>
             <span class="sep"></span>
-            <!-- Rotation Heroes → same tab -->
-            <a href="https://khafarat-alsadr.netlify.app/" class="nav-btn">
+            <!-- Rotation Heroes → initially locked -->
+            <a href="https://khafarat-alsadr.netlify.app/" class="nav-btn locked" id="btn-rotation-heroes">
                 <i class="fas fa-user-md"></i>
                 <span>Rotation Heroes</span>
             </a>
             <span class="sep"></span>
-            <!-- Duty Exchange → same tab -->
-            <a href="https://mhub96.github.io/s/" class="nav-btn">
+            <!-- Duty Exchange → initially locked -->
+            <a href="https://mhub96.github.io/s/" class="nav-btn locked" id="btn-duty-exchange">
                 <i class="fas fa-exchange-alt"></i>
                 <span>Duty Exchange</span>
             </a>
@@ -1163,6 +1187,96 @@
         let countdownInterval = null;
         let currentLeaderboardFilter = 'today';
         let trendingHandVisible = true;
+
+        // ================================================================
+        // SECRET UNLOCK FEATURE — NO TOASTS, 5 CLICKS WITH TIMERS
+        // ================================================================
+        let symbolClickCount = 0;
+        let symbolUnlocked = false;
+        let clickResetTimer = null;          // 200ms timer to reset clicks if too slow
+        let activationConfirmationTimer = null; // 1s timer to confirm activation after 5th click
+
+        const hospitalSymbol = document.getElementById('hospital-symbol');
+        const btnRotation = document.getElementById('btn-rotation-heroes');
+        const btnExchange = document.getElementById('btn-duty-exchange');
+
+        function resetSecretClickCounter() {
+            symbolClickCount = 0;
+            if (clickResetTimer) {
+                clearTimeout(clickResetTimer);
+                clickResetTimer = null;
+            }
+            if (activationConfirmationTimer) {
+                clearTimeout(activationConfirmationTimer);
+                activationConfirmationTimer = null;
+            }
+        }
+
+        function activateSecretButtons() {
+            if (symbolUnlocked) return;
+            symbolUnlocked = true;
+
+            // Shimmer animation + golden transition
+            hospitalSymbol.classList.add('shimmer-golden');
+            hospitalSymbol.addEventListener('animationend', function onAnimationEnd() {
+                hospitalSymbol.classList.remove('shimmer-golden');
+                hospitalSymbol.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
+                hospitalSymbol.style.boxShadow = '0 0 0 8px rgba(251,191,36,0.2), 0 12px 26px rgba(251,191,36,0.3)';
+                const icon = hospitalSymbol.querySelector('i');
+                if (icon) icon.style.color = '#1a2332';
+                hospitalSymbol.removeEventListener('animationend', onAnimationEnd);
+            });
+
+            // Unlock buttons
+            if (btnRotation) btnRotation.classList.remove('locked');
+            if (btnExchange) btnExchange.classList.remove('locked');
+
+            // NO TOAST NOTIFICATION
+        }
+
+        // Click handler on the hospital symbol — completely silent
+        if (hospitalSymbol) {
+            hospitalSymbol.addEventListener('click', function(event) {
+                if (symbolUnlocked) {
+                    // Already unlocked — do nothing
+                    return;
+                }
+
+                // Clear any existing timers
+                if (clickResetTimer) {
+                    clearTimeout(clickResetTimer);
+                    clickResetTimer = null;
+                }
+                if (activationConfirmationTimer) {
+                    clearTimeout(activationConfirmationTimer);
+                    activationConfirmationTimer = null;
+                }
+
+                // Increment click counter
+                symbolClickCount++;
+
+                if (symbolClickCount === 5) {
+                    // Fifth click: start the 1‑second confirmation timer
+                    activationConfirmationTimer = setTimeout(function() {
+                        // No extra click within 1 second → activate
+                        activateSecretButtons();
+                        resetSecretClickCounter();
+                    }, 1000);
+                    // Do NOT start the 200ms reset timer after the 5th click
+                } else if (symbolClickCount > 5) {
+                    // Extra click after the 5th → reset everything
+                    resetSecretClickCounter();
+                } else {
+                    // For clicks 1–4: set a 200ms timer to reset if no further click occurs
+                    clickResetTimer = setTimeout(function() {
+                        resetSecretClickCounter();
+                    }, 200);
+                }
+            });
+        }
+        // ================================================================
+        // END OF SECRET FEATURE
+        // ================================================================
 
         function applyHospitalName() {
             const hospitalName = String(db.hospitalName || 'Iraqi Teaching Hospital').trim() || 'Iraqi Teaching Hospital';
