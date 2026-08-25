@@ -1653,7 +1653,7 @@
             // More rockets: 12-24 (was 4-12)
             const count = 20 + Math.floor(Math.random() * 20);
             fwLaunchBurst(count);
-            showToast('✨ Light Show!', 'info', 2500);
+            showToast('✨ !Fireworks', 'info', 2500);
 
             const checkInterval = setInterval(() => {
                 if (fwRockets.length === 0 && fwParticles.length === 0) {
@@ -1665,7 +1665,7 @@
             setTimeout(() => {
                 clearInterval(checkInterval);
                 stopFireworks();
-            }, 20000);
+            }, 25000);
         }
 
 
@@ -2307,7 +2307,7 @@
                     <div class="trending-panel" id="trendingPanel">
                         <div class="trending-top">
                             <button class="trending-badge-btn" id="trendingBadgeBtn" title="اضغط لعرض لوحة المتصدرين">
-                                <i class="fas fa-crown"></i> TRENDING!
+                                <i class="fas fa-crown"></i> !TRENDING
                             </button>
                             <span class="trending-stats">
                                 <i class="fas fa-eye"></i> ${trending.VisitCount || 0}
