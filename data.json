@@ -15653,14 +15653,6 @@
       "dutySlot": 0
     },
     {
-      "date": "25/08/2026",
-      "specCode": "D",
-      "name": "د. عبدالرحمن صفاء صالح",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "26/08/2026",
       "specCode": "D",
       "name": "د. سعيد جندي لهمود",
@@ -16809,6 +16801,13 @@
       "specCode": "NS",
       "name": "د. علي مهدي منصور",
       "timestamp": "08:49",
+      "VisitCount": 0
+    },
+    {
+      "date": "25/08/2026",
+      "specCode": "D",
+      "name": "د. علي مهدي منصور",
+      "timestamp": "09:45",
       "VisitCount": 0
     }
   ],
