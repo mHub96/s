@@ -14477,14 +14477,6 @@
       "dutySlot": 0
     },
     {
-      "date": "26/08/2026",
-      "specCode": "NS",
-      "name": "د. اسعد حسن فرحان",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "27/08/2026",
       "specCode": "NS",
       "name": "د. ليث انور",
@@ -16807,6 +16799,13 @@
       "specCode": "R",
       "name": "د. ايات سلمان قاسم",
       "timestamp": "07:54",
+      "VisitCount": 0
+    },
+    {
+      "date": "26/08/2026",
+      "specCode": "NS",
+      "name": "د. ليث انور",
+      "timestamp": "10:04",
       "VisitCount": 0
     }
   ],
