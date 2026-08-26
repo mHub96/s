@@ -16301,14 +16301,6 @@
       "dutySlot": 0
     },
     {
-      "date": "25/08/2026",
-      "specCode": "R",
-      "name": "د. الحسين عبدالرحمن خويط",
-      "VisitCount": 1,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "26/08/2026",
       "specCode": "R",
       "name": "د. منتظر توفيق عبدالكريم",
@@ -16808,6 +16800,13 @@
       "specCode": "D",
       "name": "د. علي مهدي منصور",
       "timestamp": "09:45",
+      "VisitCount": 0
+    },
+    {
+      "date": "25/08/2026",
+      "specCode": "R",
+      "name": "د. ايات سلمان قاسم",
+      "timestamp": "07:54",
       "VisitCount": 0
     }
   ],
