@@ -16517,14 +16517,6 @@
       "dutySlot": 0
     },
     {
-      "date": "27/08/2026",
-      "specCode": "ON",
-      "name": "د. مريم مشرق ياسين",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "28/08/2026",
       "specCode": "ON",
       "name": "د. علي محمد احمد",
@@ -16803,6 +16795,13 @@
       "specCode": "R",
       "name": "د. زينب جبار محسن",
       "timestamp": "10:22"
+    },
+    {
+      "date": "27/08/2026",
+      "specCode": "ON",
+      "name": "د. مروة ليث شاكر",
+      "timestamp": "20:03",
+      "VisitCount": 0
     }
   ],
   "passwords": {
