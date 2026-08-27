@@ -16285,14 +16285,6 @@
       "dutySlot": 0
     },
     {
-      "date": "27/08/2026",
-      "specCode": "R",
-      "name": "د. عذراء محمد عبدالحي",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "28/08/2026",
       "specCode": "R",
       "name": "د. محمد رائد محمد",
@@ -16804,6 +16796,13 @@
       "specCode": "NS",
       "name": "د. اسعد حسن فرحان",
       "timestamp": "08:42",
+      "VisitCount": 0
+    },
+    {
+      "date": "27/08/2026",
+      "specCode": "R",
+      "name": "د. ايات سلمان قاسم",
+      "timestamp": "09:31",
       "VisitCount": 0
     }
   ],
