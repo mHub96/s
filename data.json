@@ -16501,14 +16501,6 @@
       "dutySlot": 0
     },
     {
-      "date": "29/08/2026",
-      "specCode": "ON",
-      "name": "د. زهراء سهيل نجم",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "30/08/2026",
       "specCode": "ON",
       "name": "د. مروة ليث شاكر",
@@ -17053,6 +17045,13 @@
       "specCode": "R",
       "name": "د. طيف كريم خضير",
       "timestamp": "08:06",
+      "VisitCount": 0
+    },
+    {
+      "date": "29/08/2026",
+      "specCode": "ON",
+      "name": "د. حميدة حبيب عباس",
+      "timestamp": "08:38",
       "VisitCount": 0
     }
   ],
