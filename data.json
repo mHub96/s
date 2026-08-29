@@ -14485,14 +14485,6 @@
       "dutySlot": 0
     },
     {
-      "date": "29/08/2026",
-      "specCode": "NS",
-      "name": "د. اسعد حسن فرحان",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "30/08/2026",
       "specCode": "NS",
       "name": "د. فاطمة خليل",
@@ -17282,6 +17274,13 @@
       "specCode": "ICU",
       "name": "د. نور عبد المطلب",
       "timestamp": "21:28",
+      "VisitCount": 0
+    },
+    {
+      "date": "29/08/2026",
+      "specCode": "NS",
+      "name": "د. فاطمة خليل",
+      "timestamp": "22:34",
       "VisitCount": 0
     }
   ],
