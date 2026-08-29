@@ -16117,14 +16117,6 @@
       "dutySlot": 0
     },
     {
-      "date": "29/08/2026",
-      "specCode": "ICU",
-      "name": "د. نور عبد المطلب",
-      "VisitCount": 0,
-      "dutyTime": "08:00AM - 08:00PM",
-      "dutySlot": 0
-    },
-    {
       "date": "30/08/2026",
       "specCode": "ICU",
       "name": "د. علياء عباس",
@@ -16653,14 +16645,6 @@
       "dutySlot": 1
     },
     {
-      "date": "29/08/2026",
-      "specCode": "ICU",
-      "name": "د. ايناس عدنان",
-      "VisitCount": 0,
-      "dutyTime": "08:00PM - 08:00AM",
-      "dutySlot": 1
-    },
-    {
       "date": "22/08/2026",
       "specCode": "R",
       "name": "د. منار رحيم عبد",
@@ -17052,6 +17036,13 @@
       "specCode": "ON",
       "name": "د. حميدة حبيب عباس",
       "timestamp": "08:38",
+      "VisitCount": 0
+    },
+    {
+      "date": "29/08/2026",
+      "specCode": "ICU",
+      "name": "د. شهد عبد الله",
+      "timestamp": "08:41",
       "VisitCount": 0
     }
   ],
