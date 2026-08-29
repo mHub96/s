@@ -16277,14 +16277,6 @@
       "dutySlot": 0
     },
     {
-      "date": "29/08/2026",
-      "specCode": "R",
-      "name": "د. رسل علي عبدالباقي",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "30/08/2026",
       "specCode": "R",
       "name": "د. زينب جبار محسن",
@@ -17055,6 +17047,13 @@
       "VisitCount": 0,
       "dutyTime": "",
       "dutySlot": 0
+    },
+    {
+      "date": "29/08/2026",
+      "specCode": "R",
+      "name": "د. طيف كريم خضير",
+      "timestamp": "08:06",
+      "VisitCount": 0
     }
   ],
   "passwords": {
