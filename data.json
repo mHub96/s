@@ -16949,16 +16949,8 @@
       "specCode": "ON",
       "name": "د. زهراء سهيل نجم",
       "VisitCount": 0,
-      "dutyTime": "08:00PM - 02:00AM",
+      "dutyTime": "08:00PM - 08:00AM",
       "dutySlot": 1
-    },
-    {
-      "date": "24/09/2026",
-      "specCode": "ON",
-      "name": "د. زهراء سهيل نجم",
-      "VisitCount": 0,
-      "dutyTime": "02:00AM - 08:00AM",
-      "dutySlot": 2
     },
     {
       "date": "25/09/2026",
