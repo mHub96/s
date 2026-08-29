@@ -15653,14 +15653,6 @@
       "dutySlot": 0
     },
     {
-      "date": "29/08/2026",
-      "specCode": "D",
-      "name": "د. منتظر صفاء ماجد",
-      "VisitCount": 1,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "30/08/2026",
       "specCode": "D",
       "name": "د. فاطمة خليل",
@@ -17044,6 +17036,12 @@
       "name": "د. شهد عبد الله",
       "timestamp": "08:41",
       "VisitCount": 0
+    },
+    {
+      "date": "29/08/2026",
+      "specCode": "D",
+      "name": "د. محمد فتحي عبدالرزاق",
+      "timestamp": "09:08"
     }
   ],
   "passwords": {
