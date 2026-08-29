@@ -17032,13 +17032,6 @@
     },
     {
       "date": "29/08/2026",
-      "specCode": "ICU",
-      "name": "د. شهد عبد الله",
-      "timestamp": "08:41",
-      "VisitCount": 3
-    },
-    {
-      "date": "29/08/2026",
       "specCode": "D",
       "name": "د. مرتضى امين عبدالخضر",
       "timestamp": "10:00",
@@ -17283,6 +17276,13 @@
       "VisitCount": 0,
       "dutyTime": "",
       "dutySlot": 0
+    },
+    {
+      "date": "29/08/2026",
+      "specCode": "ICU",
+      "name": "د. نور عبد المطلب",
+      "timestamp": "21:28",
+      "VisitCount": 0
     }
   ],
   "passwords": {
