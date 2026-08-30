@@ -16253,14 +16253,6 @@
       "dutySlot": 0
     },
     {
-      "date": "30/08/2026",
-      "specCode": "R",
-      "name": "د. زينب جبار محسن",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "31/08/2026",
       "specCode": "R",
       "name": "د. طيف كريم خضير",
@@ -17274,6 +17266,13 @@
       "name": "د. فاطمة خليل",
       "timestamp": "22:34",
       "VisitCount": 1
+    },
+    {
+      "date": "30/08/2026",
+      "specCode": "R",
+      "name": "د. زينب سلمان سعيد",
+      "timestamp": "09:12",
+      "VisitCount": 0
     }
   ],
   "passwords": {
