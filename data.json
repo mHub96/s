@@ -15429,14 +15429,6 @@
       "dutySlot": 0
     },
     {
-      "date": "30/08/2026",
-      "specCode": "ENT",
-      "name": "د. مصطفى عبدالصاحب",
-      "VisitCount": 1,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "31/08/2026",
       "specCode": "ENT",
       "name": "د. مصطفى عبدالصاحب",
@@ -17988,6 +17980,13 @@
       "VisitCount": 0,
       "dutyTime": "",
       "dutySlot": 0
+    },
+    {
+      "date": "30/08/2026",
+      "specCode": "ENT",
+      "name": "د. ام البنين عيدان كاظم",
+      "timestamp": "20:29",
+      "VisitCount": 0
     }
   ],
   "passwords": {
