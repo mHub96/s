@@ -14485,14 +14485,6 @@
       "dutySlot": 0
     },
     {
-      "date": "30/08/2026",
-      "specCode": "NS",
-      "name": "د. فاطمة خليل",
-      "VisitCount": 1,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "31/08/2026",
       "specCode": "NS",
       "name": "د. عبدالرحمن صفاء صالح",
@@ -17271,6 +17263,13 @@
       "specCode": "ON",
       "name": "د. زهراء سهيل نجم",
       "timestamp": "11:31",
+      "VisitCount": 0
+    },
+    {
+      "date": "30/08/2026",
+      "specCode": "NS",
+      "name": "د. عبدالرحمن صفاء صالح",
+      "timestamp": "13:46",
       "VisitCount": 0
     }
   ],
