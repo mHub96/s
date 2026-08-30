@@ -14717,14 +14717,6 @@
       "dutySlot": 0
     },
     {
-      "date": "30/08/2026",
-      "specCode": "CT",
-      "name": "د. ايهاب عبدالكريم غالب",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "31/08/2026",
       "specCode": "CT",
       "name": "د. منتظر صفاء ماجد",
@@ -17271,6 +17263,13 @@
       "name": "د. عبدالرحمن صفاء صالح",
       "timestamp": "13:46",
       "VisitCount": 1
+    },
+    {
+      "date": "30/08/2026",
+      "specCode": "CT",
+      "name": "د. عماد سمير عبدالرضا",
+      "timestamp": "16:44",
+      "VisitCount": 0
     }
   ],
   "passwords": {
