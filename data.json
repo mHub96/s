@@ -17979,18 +17979,10 @@
     {
       "date": "01/09/2026",
       "specCode": "ENT",
-      "name": "",
-      "VisitCount": 0,
-      "dutyTime": "08:00AM - 08:00PM",
-      "dutySlot": 0
-    },
-    {
-      "date": "01/09/2026",
-      "specCode": "ENT",
       "name": "د. مصطفى عبدالصاحب",
       "VisitCount": 0,
-      "dutyTime": "08:00PM - 08:00AM",
-      "dutySlot": 1
+      "dutyTime": "",
+      "dutySlot": 0
     },
     {
       "date": "02/09/2026",
