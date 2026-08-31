@@ -17957,13 +17957,6 @@
     },
     {
       "date": "31/08/2026",
-      "specCode": "CT",
-      "name": "د. علي عبدالرحمن عبدالصمد",
-      "timestamp": "08:02",
-      "VisitCount": 1
-    },
-    {
-      "date": "31/08/2026",
       "specCode": "D",
       "name": "د. محمد فتحي عبدالرزاق",
       "timestamp": "08:02",
@@ -17974,6 +17967,13 @@
       "specCode": "R",
       "name": "د. زينب سلمان سعيد",
       "timestamp": "08:43",
+      "VisitCount": 0
+    },
+    {
+      "date": "31/08/2026",
+      "specCode": "CT",
+      "name": "د. حسين يحيى صبار",
+      "timestamp": "19:14",
       "VisitCount": 0
     }
   ],
