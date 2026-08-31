@@ -16197,14 +16197,6 @@
       "dutySlot": 0
     },
     {
-      "date": "31/08/2026",
-      "specCode": "R",
-      "name": "د. طيف كريم خضير",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "01/08/2026",
       "specCode": "ON",
       "name": "د. مروة ليث شاكر",
@@ -17975,6 +17967,13 @@
       "specCode": "D",
       "name": "د. محمد فتحي عبدالرزاق",
       "timestamp": "08:02",
+      "VisitCount": 0
+    },
+    {
+      "date": "31/08/2026",
+      "specCode": "R",
+      "name": "د. سارة عبدالحكيم",
+      "timestamp": "08:08",
       "VisitCount": 0
     }
   ],
