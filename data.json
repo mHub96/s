@@ -18681,14 +18681,6 @@
       "dutySlot": 0
     },
     {
-      "date": "02/09/2026",
-      "specCode": "ICU",
-      "name": "د. ايناس عدنان",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "03/09/2026",
       "specCode": "ICU",
       "name": "د. سماء علي",
@@ -18948,6 +18940,13 @@
       "name": "د. علي عبدالرحمن عبدالصمد",
       "timestamp": "09:19",
       "VisitCount": 2
+    },
+    {
+      "date": "02/09/2026",
+      "specCode": "ICU",
+      "name": "د. فاطمة عباس",
+      "timestamp": "13:04",
+      "VisitCount": 0
     }
   ],
   "passwords": {
