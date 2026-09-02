@@ -17702,14 +17702,6 @@
       "dutySlot": 0
     },
     {
-      "date": "02/09/2026",
-      "specCode": "NS",
-      "name": "د. فاطمة خليل",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "03/09/2026",
       "specCode": "NS",
       "name": "د. محمد رياض جعفر",
@@ -18949,6 +18941,13 @@
       "specCode": "R",
       "name": "د. نازك احمد ماجد",
       "timestamp": "12:01",
+      "VisitCount": 0
+    },
+    {
+      "date": "02/09/2026",
+      "specCode": "NS",
+      "name": "د. اسعد حسن فرحان",
+      "timestamp": "08:06",
       "VisitCount": 0
     }
   ],
