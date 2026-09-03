@@ -18924,13 +18924,6 @@
     },
     {
       "date": "03/09/2026",
-      "specCode": "ON",
-      "name": "د. زهراء سهيل نجم",
-      "timestamp": "08:13",
-      "VisitCount": 0
-    },
-    {
-      "date": "03/09/2026",
       "specCode": "CT",
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "08:17",
@@ -18941,6 +18934,13 @@
       "specCode": "D",
       "name": "د. نجم هدو راضي",
       "timestamp": "08:25",
+      "VisitCount": 0
+    },
+    {
+      "date": "03/09/2026",
+      "specCode": "ON",
+      "name": "د. زهراء سهيل نجم",
+      "timestamp": "08:33",
       "VisitCount": 0
     }
   ],
