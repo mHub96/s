@@ -17224,14 +17224,6 @@
       "dutySlot": 0
     },
     {
-      "date": "03/09/2026",
-      "specCode": "R",
-      "name": "د. نازك احمد ماجد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "04/09/2026",
       "specCode": "R",
       "name": "د. سنا احسان علوان",
@@ -18947,6 +18939,13 @@
       "name": "د. فاطمة عباس",
       "timestamp": "13:04",
       "VisitCount": 5
+    },
+    {
+      "date": "03/09/2026",
+      "specCode": "R",
+      "name": "د. سارة عبدالحكيم",
+      "timestamp": "08:05",
+      "VisitCount": 0
     }
   ],
   "passwords": {
