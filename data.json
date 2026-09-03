@@ -17446,14 +17446,6 @@
       "dutySlot": 0
     },
     {
-      "date": "03/09/2026",
-      "specCode": "CT",
-      "name": "د. علي عبدالرحمن عبدالصمد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "04/09/2026",
       "specCode": "CT",
       "name": "د. ايهاب عبدالكريم غالب",
@@ -18943,6 +18935,13 @@
       "specCode": "ON",
       "name": "د. زهراء سهيل نجم",
       "timestamp": "08:13",
+      "VisitCount": 0
+    },
+    {
+      "date": "03/09/2026",
+      "specCode": "CT",
+      "name": "د. منتظر صفاء ماجد",
+      "timestamp": "08:17",
       "VisitCount": 0
     }
   ],
