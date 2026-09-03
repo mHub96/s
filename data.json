@@ -18185,14 +18185,6 @@
       "dutySlot": 0
     },
     {
-      "date": "03/09/2026",
-      "specCode": "D",
-      "name": "د. عبدالله عبدالمجيد ماضي",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "04/09/2026",
       "specCode": "D",
       "name": "د. علي عبدالرحمن عبدالصمد",
@@ -18942,6 +18934,13 @@
       "specCode": "CT",
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "08:17",
+      "VisitCount": 0
+    },
+    {
+      "date": "03/09/2026",
+      "specCode": "D",
+      "name": "د. نجم هدو راضي",
+      "timestamp": "08:25",
       "VisitCount": 0
     }
   ],
