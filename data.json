@@ -18424,14 +18424,6 @@
       "dutySlot": 0
     },
     {
-      "date": "03/09/2026",
-      "specCode": "OP",
-      "name": "د. ايات فلاح",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "04/09/2026",
       "specCode": "OP",
       "name": "د. زينب عبد الرزاق",
@@ -18948,6 +18940,13 @@
       "specCode": "D",
       "name": "د. علي حسين عبدالرضا",
       "timestamp": "09:10",
+      "VisitCount": 0
+    },
+    {
+      "date": "03/09/2026",
+      "specCode": "OP",
+      "name": "د. عبدالله نادر",
+      "timestamp": "12:39",
       "VisitCount": 0
     }
   ],
