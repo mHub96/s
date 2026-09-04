@@ -18927,13 +18927,6 @@
     },
     {
       "date": "04/09/2026",
-      "specCode": "CT",
-      "name": "د. منتظر صفاء ماجد",
-      "timestamp": "08:05",
-      "VisitCount": 5
-    },
-    {
-      "date": "04/09/2026",
       "specCode": "D",
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "14:55",
@@ -18944,6 +18937,13 @@
       "specCode": "NS",
       "name": "د. محمد رياض جعفر",
       "timestamp": "17:52",
+      "VisitCount": 0
+    },
+    {
+      "date": "04/09/2026",
+      "specCode": "CT",
+      "name": "د. همام حبيب عبدالله",
+      "timestamp": "18:41",
       "VisitCount": 0
     }
   ],
