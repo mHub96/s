@@ -17677,14 +17677,6 @@
       "dutySlot": 0
     },
     {
-      "date": "04/09/2026",
-      "specCode": "NS",
-      "name": "د. محمد عبدالحسين محسن",
-      "VisitCount": 1,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "05/09/2026",
       "specCode": "NS",
       "name": "د. محمد رياض جعفر",
@@ -18945,6 +18937,13 @@
       "specCode": "D",
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "14:55",
+      "VisitCount": 0
+    },
+    {
+      "date": "04/09/2026",
+      "specCode": "NS",
+      "name": "د. محمد رياض جعفر",
+      "timestamp": "17:52",
       "VisitCount": 0
     }
   ],
