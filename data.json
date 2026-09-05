@@ -17231,14 +17231,6 @@
       "dutySlot": 0
     },
     {
-      "date": "05/09/2026",
-      "specCode": "R",
-      "name": "د. منار رحيم عبد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "06/09/2026",
       "specCode": "R",
       "name": "د. نجوان براق كاظم",
@@ -18944,6 +18936,13 @@
       "name": "د. فاطمة عباس",
       "timestamp": "21:30",
       "VisitCount": 2
+    },
+    {
+      "date": "05/09/2026",
+      "specCode": "R",
+      "name": "د. محمد رائد محمد",
+      "timestamp": "08:35",
+      "VisitCount": 0
     }
   ],
   "passwords": {
