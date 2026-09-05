@@ -1,0 +1,26 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2026-09-05T10:16:11.667Z",
+  "globalPasswords": {
+    "admin": "MrjBth1996*",
+    "user": "1234"
+  },
+  "activeHospitalId": "iraqi",
+  "hospitals": {
+    "ith": {
+      "id": "ith",
+      "hospitalName": "Iraqi Teaching Hospital",
+      "name_ar": "مستشفى الصدر التعليمي",
+      "location": "Basra · Iraq",
+      "icon": "fa-hospital",
+      "color": "#0f766e",
+      "passwords": {
+        "user": "1234",
+        "admin": "MrjBth1996*"
+      },
+      "specialties": [],
+      "names": [],
+      "schedule": []
+    }
+  }
+}
