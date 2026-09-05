@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-09-05T10:16:35.937Z",
+  "lastUpdated": "2026-09-05T10:16:44.958Z",
   "globalPasswords": {
     "admin": "MrjBth1996*",
     "user": "1234"
@@ -21,6 +21,15 @@
       "specialties": [
         {
           "id": "DS",
+          "name_ar": "asd",
+          "name_en": "asd",
+          "icon": "🏥",
+          "color": "#0f766e",
+          "acceptPool": [],
+          "enabled": true
+        },
+        {
+          "id": "ASD",
           "name_ar": "asd",
           "name_en": "asd",
           "icon": "🏥",
