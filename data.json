@@ -18160,14 +18160,6 @@
       "dutySlot": 0
     },
     {
-      "date": "05/09/2026",
-      "specCode": "D",
-      "name": "د. عماد سمير عبدالرضا",
-      "VisitCount": 1,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "06/09/2026",
       "specCode": "D",
       "name": "د. عذراء صبيح بدر",
@@ -18941,6 +18933,13 @@
       "specCode": "CT",
       "name": "د. علي عبدالرحمن عبدالصمد",
       "timestamp": "09:50",
+      "VisitCount": 0
+    },
+    {
+      "date": "05/09/2026",
+      "specCode": "D",
+      "name": "د. علي عبدالرحمن عبدالصمد",
+      "timestamp": "09:53",
       "VisitCount": 0
     }
   ],
