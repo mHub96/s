@@ -16704,14 +16704,6 @@
       "dutySlot": 0
     },
     {
-      "date": "06/09/2026",
-      "specCode": "ON",
-      "name": "د. فاطمة مضر علي",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "07/09/2026",
       "specCode": "ON",
       "name": "د. مروة ليث شاكر",
@@ -18939,6 +18931,13 @@
       "specCode": "CT",
       "name": "د. عماد سمير عبدالرضا",
       "timestamp": "08:17",
+      "VisitCount": 0
+    },
+    {
+      "date": "06/09/2026",
+      "specCode": "ON",
+      "name": "د. نور الهدى عادل عبدالله",
+      "timestamp": "08:38",
       "VisitCount": 0
     }
   ],
