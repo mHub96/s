@@ -18144,14 +18144,6 @@
       "dutySlot": 0
     },
     {
-      "date": "06/09/2026",
-      "specCode": "D",
-      "name": "د. عذراء صبيح بدر",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "07/09/2026",
       "specCode": "D",
       "name": "د. حسين يحيى صبار",
@@ -18938,6 +18930,13 @@
       "specCode": "ON",
       "name": "د. نور الهدى عادل عبدالله",
       "timestamp": "08:38",
+      "VisitCount": 0
+    },
+    {
+      "date": "06/09/2026",
+      "specCode": "D",
+      "name": "د. احمد حارث عبدالمحسن",
+      "timestamp": "08:51",
       "VisitCount": 0
     }
   ],
