@@ -18920,16 +18920,16 @@
     },
     {
       "date": "08/09/2026",
-      "specCode": "CT",
-      "name": "د. عماد سمير عبدالرضا",
-      "timestamp": "14:42",
-      "VisitCount": 1
-    },
-    {
-      "date": "08/09/2026",
       "specCode": "ON",
       "name": "د. فاطمة مضر علي",
       "timestamp": "16:47",
+      "VisitCount": 0
+    },
+    {
+      "date": "08/09/2026",
+      "specCode": "CT",
+      "name": "د. حسين يحيى صبار",
+      "timestamp": "18:57",
       "VisitCount": 0
     }
   ],
