@@ -17223,14 +17223,6 @@
       "dutySlot": 0
     },
     {
-      "date": "09/09/2026",
-      "specCode": "R",
-      "name": "د. منتظر توفيق عبدالكريم",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "10/09/2026",
       "specCode": "R",
       "name": "د. عذراء محمد عبدالحي",
@@ -18929,6 +18921,13 @@
       "specCode": "CT",
       "name": "د. عماد سمير عبدالرضا",
       "timestamp": "08:08",
+      "VisitCount": 0
+    },
+    {
+      "date": "09/09/2026",
+      "specCode": "R",
+      "name": "د. طيف كريم خضير",
+      "timestamp": "08:12",
       "VisitCount": 0
     }
   ],
