@@ -18915,17 +18915,17 @@
     },
     {
       "date": "10/09/2026",
-      "specCode": "D",
-      "name": "د. احمد حارث عبدالمحسن",
-      "timestamp": "08:55",
-      "VisitCount": 0
-    },
-    {
-      "date": "10/09/2026",
       "specCode": "CT",
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "09:48",
       "VisitCount": 7
+    },
+    {
+      "date": "10/09/2026",
+      "specCode": "D",
+      "name": "د. منتظر صفاء ماجد",
+      "timestamp": "21:18",
+      "VisitCount": 0
     }
   ],
   "passwords": {
