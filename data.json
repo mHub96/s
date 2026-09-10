@@ -17629,14 +17629,6 @@
       "dutySlot": 0
     },
     {
-      "date": "10/09/2026",
-      "specCode": "NS",
-      "name": "د. اسعد حسن فرحان",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "11/09/2026",
       "specCode": "NS",
       "name": "د. محمد رياض جعفر",
@@ -18929,6 +18921,13 @@
       "name": "د. طيف كريم خضير",
       "timestamp": "08:12",
       "VisitCount": 1
+    },
+    {
+      "date": "10/09/2026",
+      "specCode": "NS",
+      "name": "د. فاطمة خليل",
+      "timestamp": "08:48",
+      "VisitCount": 0
     }
   ],
   "passwords": {
