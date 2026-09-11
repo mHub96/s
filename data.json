@@ -17231,14 +17231,6 @@
       "dutySlot": 0
     },
     {
-      "date": "11/09/2026",
-      "specCode": "R",
-      "name": "د. محمد رائد محمد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "12/09/2026",
       "specCode": "R",
       "name": "د. رسل علي عبدالباقي",
@@ -18925,6 +18917,13 @@
       "specCode": "D",
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "21:18",
+      "VisitCount": 0
+    },
+    {
+      "date": "11/09/2026",
+      "specCode": "R",
+      "name": "د. رسل علي عبدالباقي",
+      "timestamp": "08:24",
       "VisitCount": 0
     }
   ],
