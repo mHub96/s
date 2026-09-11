@@ -17397,14 +17397,6 @@
       "dutySlot": 0
     },
     {
-      "date": "11/09/2026",
-      "specCode": "CT",
-      "name": "د. شهد كريم عبدالكاظم",
-      "VisitCount": 2,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "12/09/2026",
       "specCode": "CT",
       "name": "د. علي عبدالرحمن عبدالصمد",
@@ -18923,6 +18915,13 @@
       "specCode": "ICU",
       "name": "د. فاطمة عباس",
       "timestamp": "08:42",
+      "VisitCount": 0
+    },
+    {
+      "date": "11/09/2026",
+      "specCode": "CT",
+      "name": "د. عماد سمير عبدالرضا",
+      "timestamp": "09:10",
       "VisitCount": 0
     }
   ],
