@@ -16752,14 +16752,6 @@
       "dutySlot": 0
     },
     {
-      "date": "15/09/2026",
-      "specCode": "ON",
-      "name": "د. نور الهدى عادل عبدالله",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "16/09/2026",
       "specCode": "ON",
       "name": "د. احمد مرتضى جواد",
@@ -18916,6 +18908,13 @@
       "name": "د. علي عبدالرحمن عبدالصمد",
       "timestamp": "10:07",
       "VisitCount": 4
+    },
+    {
+      "date": "15/09/2026",
+      "specCode": "ON",
+      "name": "د. زهراء سهيل نجم",
+      "timestamp": "20:27",
+      "VisitCount": 0
     }
   ],
   "passwords": {
