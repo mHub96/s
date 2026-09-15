@@ -17381,14 +17381,6 @@
       "dutySlot": 0
     },
     {
-      "date": "15/09/2026",
-      "specCode": "CT",
-      "name": "د. عماد سمير عبدالرضا",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "16/09/2026",
       "specCode": "CT",
       "name": "د. حسين يحيى صبار",
@@ -18917,6 +18909,13 @@
       "name": "د. عماد سمير عبدالرضا",
       "timestamp": "14:00",
       "VisitCount": 3
+    },
+    {
+      "date": "15/09/2026",
+      "specCode": "CT",
+      "name": "د. علي عبدالرحمن عبدالصمد",
+      "timestamp": "10:07",
+      "VisitCount": 0
     }
   ],
   "passwords": {
