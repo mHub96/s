@@ -16752,14 +16752,6 @@
       "dutySlot": 0
     },
     {
-      "date": "16/09/2026",
-      "specCode": "ON",
-      "name": "د. احمد مرتضى جواد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "17/09/2026",
       "specCode": "ON",
       "name": "د. مريم مشرق ياسين",
@@ -18992,6 +18984,13 @@
       "specCode": "D",
       "name": "د. علي حسين عبدالرضا",
       "timestamp": "08:16",
+      "VisitCount": 0
+    },
+    {
+      "date": "16/09/2026",
+      "specCode": "ON",
+      "name": "د. مروة ليث شاكر",
+      "timestamp": "09:14",
       "VisitCount": 0
     }
   ],
