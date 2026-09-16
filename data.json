@@ -17223,14 +17223,6 @@
       "dutySlot": 0
     },
     {
-      "date": "16/09/2026",
-      "specCode": "R",
-      "name": "د. ايات سلمان قاسم",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "17/09/2026",
       "specCode": "R",
       "name": "د. سنا احسان علوان",
@@ -18991,6 +18983,13 @@
       "specCode": "ON",
       "name": "د. مروة ليث شاكر",
       "timestamp": "09:14",
+      "VisitCount": 0
+    },
+    {
+      "date": "16/09/2026",
+      "specCode": "R",
+      "name": "د. الحسين عبدالرحمن خويط",
+      "timestamp": "14:46",
       "VisitCount": 0
     }
   ],
