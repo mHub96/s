@@ -18448,14 +18448,6 @@
       "dutySlot": 0
     },
     {
-      "date": "16/09/2026",
-      "specCode": "ICU",
-      "name": "د. علياء عباس",
-      "VisitCount": 6,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "17/09/2026",
       "specCode": "ICU",
       "name": "د. صفا كاظم",
@@ -18990,6 +18982,13 @@
       "specCode": "R",
       "name": "د. الحسين عبدالرحمن خويط",
       "timestamp": "14:46",
+      "VisitCount": 0
+    },
+    {
+      "date": "16/09/2026",
+      "specCode": "ICU",
+      "name": "د. فاطمة عباس",
+      "timestamp": "19:38",
       "VisitCount": 0
     }
   ],
