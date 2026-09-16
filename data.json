@@ -18056,14 +18056,6 @@
       "dutySlot": 0
     },
     {
-      "date": "16/09/2026",
-      "specCode": "D",
-      "name": "د. عبدالله عبدالمجيد ماضي",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "17/09/2026",
       "specCode": "D",
       "name": "د. احمد الراوي",
@@ -18994,6 +18986,13 @@
       "VisitCount": 0,
       "dutySlot": 0,
       "dutyTime": ""
+    },
+    {
+      "date": "16/09/2026",
+      "specCode": "D",
+      "name": "د. علي حسين عبدالرضا",
+      "timestamp": "08:16",
+      "VisitCount": 0
     }
   ],
   "passwords": {
