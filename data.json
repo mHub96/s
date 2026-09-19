@@ -17231,14 +17231,6 @@
       "dutySlot": 0
     },
     {
-      "date": "19/09/2026",
-      "specCode": "R",
-      "name": "د. زينب سلمان سعيد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "20/09/2026",
       "specCode": "R",
       "name": "د. نازك احمد ماجد",
@@ -18987,6 +18979,12 @@
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "09:31",
       "VisitCount": 8
+    },
+    {
+      "date": "19/09/2026",
+      "specCode": "R",
+      "name": "د. زينب جبار محسن",
+      "timestamp": "08:13"
     }
   ],
   "passwords": {
