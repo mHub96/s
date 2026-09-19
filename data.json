@@ -18016,14 +18016,6 @@
       "dutySlot": 0
     },
     {
-      "date": "19/09/2026",
-      "specCode": "D",
-      "name": "د. منتظر صفاء ماجد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "20/09/2026",
       "specCode": "D",
       "name": "د. ايهاب عبدالكريم غالب",
@@ -18985,6 +18977,13 @@
       "name": "د. علي عبدالرحمن عبدالصمد",
       "timestamp": "08:33",
       "VisitCount": 8
+    },
+    {
+      "date": "19/09/2026",
+      "specCode": "D",
+      "name": "د. علي عبدالرحمن عبدالصمد",
+      "timestamp": "12:56",
+      "VisitCount": 0
     }
   ],
   "passwords": {
