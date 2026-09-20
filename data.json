@@ -16768,14 +16768,6 @@
       "dutySlot": 0
     },
     {
-      "date": "20/09/2026",
-      "specCode": "ON",
-      "name": "د. احمد مرتضى جواد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "21/09/2026",
       "specCode": "ON",
       "name": "د. علي محمد احمد",
@@ -18983,6 +18975,13 @@
       "name": "د. محمد عبدالحسين محسن",
       "timestamp": "08:51",
       "VisitCount": 1
+    },
+    {
+      "date": "20/09/2026",
+      "specCode": "ON",
+      "name": "د. علي اسعد يحيى",
+      "timestamp": "08:59",
+      "VisitCount": 0
     }
   ],
   "passwords": {
