@@ -17984,14 +17984,6 @@
       "dutySlot": 0
     },
     {
-      "date": "20/09/2026",
-      "specCode": "D",
-      "name": "د. ايهاب عبدالكريم غالب",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "21/09/2026",
       "specCode": "D",
       "name": "د. مرتضى امين عبدالخضر",
@@ -18979,6 +18971,13 @@
       "specCode": "CT",
       "name": "د. حسين يحيى صبار",
       "timestamp": "15:19",
+      "VisitCount": 0
+    },
+    {
+      "date": "20/09/2026",
+      "specCode": "D",
+      "name": "د. حسين يحيى صبار",
+      "timestamp": "16:57",
       "VisitCount": 0
     }
   ],
