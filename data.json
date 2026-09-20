@@ -17223,14 +17223,6 @@
       "dutySlot": 0
     },
     {
-      "date": "20/09/2026",
-      "specCode": "R",
-      "name": "د. نازك احمد ماجد",
-      "VisitCount": 2,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "21/09/2026",
       "specCode": "R",
       "name": "د. نجوان براق كاظم",
@@ -18981,6 +18973,13 @@
       "specCode": "ON",
       "name": "د. علي اسعد يحيى",
       "timestamp": "08:59",
+      "VisitCount": 0
+    },
+    {
+      "date": "20/09/2026",
+      "specCode": "R",
+      "name": "د. الحسين عبدالرحمن خويط",
+      "timestamp": "09:22",
       "VisitCount": 0
     }
   ],
