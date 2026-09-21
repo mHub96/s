@@ -16768,14 +16768,6 @@
       "dutySlot": 0
     },
     {
-      "date": "21/09/2026",
-      "specCode": "ON",
-      "name": "د. علي محمد احمد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "22/09/2026",
       "specCode": "ON",
       "name": "د. مروة ليث شاكر",
@@ -18975,6 +18967,13 @@
       "specCode": "ICU",
       "name": "د. فاطمة عباس",
       "timestamp": "12:43",
+      "VisitCount": 0
+    },
+    {
+      "date": "21/09/2026",
+      "specCode": "ON",
+      "name": "د. فاطمة مضر علي",
+      "timestamp": "14:20",
       "VisitCount": 0
     }
   ],
