@@ -18946,13 +18946,6 @@
     },
     {
       "date": "22/09/2026",
-      "specCode": "ON",
-      "name": "د. مريم مشرق ياسين",
-      "timestamp": "08:05",
-      "VisitCount": 1
-    },
-    {
-      "date": "22/09/2026",
       "specCode": "D",
       "name": "د. ايهاب عبدالكريم غالب",
       "timestamp": "08:06",
@@ -18970,6 +18963,13 @@
       "specCode": "R",
       "name": "د. طيف كريم خضير",
       "timestamp": "09:34",
+      "VisitCount": 0
+    },
+    {
+      "date": "22/09/2026",
+      "specCode": "ON",
+      "name": "د. احمد مرتضى جواد",
+      "timestamp": "20:06",
       "VisitCount": 0
     }
   ],
