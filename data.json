@@ -17207,14 +17207,6 @@
       "dutySlot": 0
     },
     {
-      "date": "22/09/2026",
-      "specCode": "R",
-      "name": "د. منار رحيم عبد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "23/09/2026",
       "specCode": "R",
       "name": "د. منتظر توفيق عبدالكريم",
@@ -18971,6 +18963,13 @@
       "specCode": "CT",
       "name": "د. ايهاب عبدالكريم غالب",
       "timestamp": "08:50",
+      "VisitCount": 0
+    },
+    {
+      "date": "22/09/2026",
+      "specCode": "R",
+      "name": "د. طيف كريم خضير",
+      "timestamp": "09:34",
       "VisitCount": 0
     }
   ],
