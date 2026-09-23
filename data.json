@@ -18152,14 +18152,6 @@
       "dutySlot": 0
     },
     {
-      "date": "23/09/2026",
-      "specCode": "OP",
-      "name": "د. مصطفى عبد الله",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "24/09/2026",
       "specCode": "OP",
       "name": "د. زينب عبد الرزاق",
@@ -18968,6 +18960,13 @@
       "name": "د. ايات سلمان قاسم",
       "timestamp": "08:47",
       "VisitCount": 1
+    },
+    {
+      "date": "23/09/2026",
+      "specCode": "OP",
+      "name": "د. صفا كاظم",
+      "timestamp": "12:01",
+      "VisitCount": 0
     }
   ],
   "passwords": {
