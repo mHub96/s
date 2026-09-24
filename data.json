@@ -16768,22 +16768,6 @@
       "dutySlot": 0
     },
     {
-      "date": "24/09/2026",
-      "specCode": "ON",
-      "name": "د. حميدة حبيب عباس",
-      "VisitCount": 0,
-      "dutyTime": "08:00AM - 08:00PM",
-      "dutySlot": 0
-    },
-    {
-      "date": "24/09/2026",
-      "specCode": "ON",
-      "name": "د. زهراء سهيل نجم",
-      "VisitCount": 0,
-      "dutyTime": "08:00PM - 08:00AM",
-      "dutySlot": 1
-    },
-    {
       "date": "25/09/2026",
       "specCode": "ON",
       "name": "د. علي محمد احمد",
@@ -18966,6 +18950,13 @@
       "name": "د. علي محمد احمد",
       "timestamp": "21:32",
       "VisitCount": 1
+    },
+    {
+      "date": "24/09/2026",
+      "specCode": "ON",
+      "name": "د. زهراء سهيل نجم",
+      "timestamp": "08:01",
+      "VisitCount": 0
     }
   ],
   "passwords": {
