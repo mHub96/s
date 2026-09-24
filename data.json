@@ -18304,14 +18304,6 @@
       "dutySlot": 0
     },
     {
-      "date": "24/09/2026",
-      "specCode": "ICU",
-      "name": "د. مريم عبد الحميد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "25/09/2026",
       "specCode": "ICU",
       "name": "د. صفا كاظم",
@@ -18956,6 +18948,13 @@
       "specCode": "ON",
       "name": "د. زهراء سهيل نجم",
       "timestamp": "08:01",
+      "VisitCount": 0
+    },
+    {
+      "date": "24/09/2026",
+      "specCode": "ICU",
+      "name": "د. سماء علي",
+      "timestamp": "08:05",
       "VisitCount": 0
     }
   ],
