@@ -17479,7 +17479,7 @@
     {
       "date": "25/09/2026",
       "specCode": "NS",
-      "name": "د. محمد عبدالحسين محسن",
+      "name": "د. اسعد حسن فرحان",
       "VisitCount": 0,
       "dutyTime": "",
       "dutySlot": 0
@@ -18736,224 +18736,288 @@
       "specCode": "D",
       "name": "د. علي حسين عبدالرضا",
       "timestamp": "08:16",
-      "VisitCount": 1
+      "VisitCount": 1,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "16/09/2026",
       "specCode": "ON",
       "name": "د. مروة ليث شاكر",
       "timestamp": "09:14",
-      "VisitCount": 1
+      "VisitCount": 1,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "16/09/2026",
       "specCode": "R",
       "name": "د. الحسين عبدالرحمن خويط",
       "timestamp": "14:46",
-      "VisitCount": 4
+      "VisitCount": 4,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "16/09/2026",
       "specCode": "ICU",
       "name": "د. فاطمة عباس",
       "timestamp": "19:38",
-      "VisitCount": 0
+      "VisitCount": 0,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "17/09/2026",
       "specCode": "ON",
       "name": "د. حميدة حبيب عباس",
       "timestamp": "09:57",
-      "VisitCount": 1
+      "VisitCount": 1,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "17/09/2026",
       "specCode": "CT",
       "name": "د. ايهاب عبدالكريم غالب",
       "timestamp": "10:13",
-      "VisitCount": 11
+      "VisitCount": 11,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "18/09/2026",
       "specCode": "CT",
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "09:31",
-      "VisitCount": 8
+      "VisitCount": 8,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "19/09/2026",
       "specCode": "R",
       "name": "د. زينب جبار محسن",
       "timestamp": "08:13",
-      "VisitCount": 5
+      "VisitCount": 5,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "19/09/2026",
       "specCode": "CT",
       "name": "د. علي عبدالرحمن عبدالصمد",
       "timestamp": "08:33",
-      "VisitCount": 18
+      "VisitCount": 18,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "19/09/2026",
       "specCode": "D",
       "name": "د. علي عبدالرحمن عبدالصمد",
       "timestamp": "12:56",
-      "VisitCount": 0
+      "VisitCount": 0,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "20/09/2026",
       "specCode": "NS",
       "name": "د. محمد عبدالحسين محسن",
       "timestamp": "08:51",
-      "VisitCount": 9
+      "VisitCount": 9,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "20/09/2026",
       "specCode": "R",
       "name": "د. نازك احمد ماجد",
       "timestamp": "09:28",
-      "VisitCount": 5
+      "VisitCount": 5,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "20/09/2026",
       "specCode": "CT",
       "name": "د. حسين يحيى صبار",
       "timestamp": "15:19",
-      "VisitCount": 5
+      "VisitCount": 5,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "20/09/2026",
       "specCode": "D",
       "name": "د. حسين يحيى صبار",
       "timestamp": "16:57",
-      "VisitCount": 0
+      "VisitCount": 0,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "20/09/2026",
       "specCode": "ON",
       "name": "د. مروة ليث شاكر",
       "timestamp": "23:27",
-      "VisitCount": 0
+      "VisitCount": 0,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "21/09/2026",
       "specCode": "R",
       "name": "د. سارة عبدالحكيم",
       "timestamp": "08:53",
-      "VisitCount": 3
+      "VisitCount": 3,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "21/09/2026",
       "specCode": "CT",
       "name": "د. حسين يحيى صبار",
       "timestamp": "09:18",
-      "VisitCount": 17
+      "VisitCount": 17,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "21/09/2026",
       "specCode": "ICU",
       "name": "د. فاطمة عباس",
       "timestamp": "12:43",
-      "VisitCount": 2
+      "VisitCount": 2,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "21/09/2026",
       "specCode": "ON",
       "name": "د. نور الهدى عادل عبدالله",
       "timestamp": "20:26",
-      "VisitCount": 0
+      "VisitCount": 0,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "22/09/2026",
       "specCode": "D",
       "name": "د. ايهاب عبدالكريم غالب",
       "timestamp": "08:06",
-      "VisitCount": 7
+      "VisitCount": 7,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "22/09/2026",
       "specCode": "CT",
       "name": "د. ايهاب عبدالكريم غالب",
       "timestamp": "08:50",
-      "VisitCount": 0
+      "VisitCount": 0,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "22/09/2026",
       "specCode": "R",
       "name": "د. طيف كريم خضير",
       "timestamp": "09:34",
-      "VisitCount": 0
+      "VisitCount": 0,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "22/09/2026",
       "specCode": "ON",
       "name": "د. احمد مرتضى جواد",
       "timestamp": "20:06",
-      "VisitCount": 2
+      "VisitCount": 2,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "23/09/2026",
       "specCode": "CT",
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "08:11",
-      "VisitCount": 9
+      "VisitCount": 9,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "23/09/2026",
       "specCode": "D",
       "name": "د. منتظر صفاء ماجد",
       "timestamp": "08:11",
-      "VisitCount": 0
+      "VisitCount": 0,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "23/09/2026",
       "specCode": "R",
       "name": "د. ايات سلمان قاسم",
       "timestamp": "08:47",
-      "VisitCount": 4
+      "VisitCount": 4,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "23/09/2026",
       "specCode": "OP",
       "name": "د. صفا كاظم",
       "timestamp": "12:01",
-      "VisitCount": 1
+      "VisitCount": 1,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "23/09/2026",
       "specCode": "ON",
       "name": "د. علي محمد احمد",
       "timestamp": "21:32",
-      "VisitCount": 1
+      "VisitCount": 1,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "24/09/2026",
       "specCode": "ON",
       "name": "د. زهراء سهيل نجم",
       "timestamp": "08:01",
-      "VisitCount": 1
+      "VisitCount": 1,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "24/09/2026",
       "specCode": "ICU",
       "name": "د. سماء علي",
       "timestamp": "08:05",
-      "VisitCount": 2
+      "VisitCount": 2,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "24/09/2026",
       "specCode": "OP",
       "name": "د. ايات فيصل",
       "timestamp": "08:08",
-      "VisitCount": 0
+      "VisitCount": 0,
+      "dutySlot": 0,
+      "dutyTime": ""
     },
     {
       "date": "24/09/2026",
       "specCode": "R",
       "name": "د. سارة عبدالحكيم",
       "timestamp": "12:22",
-      "VisitCount": 0
+      "VisitCount": 0,
+      "dutySlot": 0,
+      "dutyTime": ""
     }
   ],
   "passwords": {
