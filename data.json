@@ -17191,14 +17191,6 @@
       "dutySlot": 0
     },
     {
-      "date": "26/09/2026",
-      "specCode": "R",
-      "name": "د. طيف كريم خضير",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "27/09/2026",
       "specCode": "R",
       "name": "د. رسل علي عبدالباقي",
@@ -19017,6 +19009,13 @@
       "name": "د. اسعد حسن فرحان",
       "timestamp": "08:23",
       "VisitCount": 4
+    },
+    {
+      "date": "26/09/2026",
+      "specCode": "R",
+      "name": "د. سارة عبدالحكيم",
+      "timestamp": "08:00",
+      "VisitCount": 0
     }
   ],
   "passwords": {
