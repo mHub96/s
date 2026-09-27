@@ -16784,14 +16784,6 @@
       "dutySlot": 0
     },
     {
-      "date": "27/09/2026",
-      "specCode": "ON",
-      "name": "د. علي اسعد يحيى",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "28/09/2026",
       "specCode": "ON",
       "name": "د. زهراء سهيل نجم",
@@ -19012,6 +19004,13 @@
       "name": "د. زينب سلمان سعيد",
       "timestamp": "08:56",
       "VisitCount": 1
+    },
+    {
+      "date": "27/09/2026",
+      "specCode": "ON",
+      "name": "د. احمد مرتضى جواد",
+      "timestamp": "12:24",
+      "VisitCount": 0
     }
   ],
   "passwords": {
