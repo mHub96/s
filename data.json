@@ -17191,14 +17191,6 @@
       "dutySlot": 0
     },
     {
-      "date": "27/09/2026",
-      "specCode": "R",
-      "name": "د. رسل علي عبدالباقي",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "28/09/2026",
       "specCode": "R",
       "name": "د. زينب جبار محسن",
@@ -19012,6 +19004,13 @@
       "specCode": "CT",
       "name": "د. ايهاب عبدالكريم غالب",
       "timestamp": "08:51",
+      "VisitCount": 0
+    },
+    {
+      "date": "27/09/2026",
+      "specCode": "R",
+      "name": "د. زينب سلمان سعيد",
+      "timestamp": "08:56",
       "VisitCount": 0
     }
   ],
