@@ -884,10 +884,10 @@
     },
     {
       "name": "د. زين العابدين مصطفى محمد",
-      "spec": "GS",
       "phone": "+9647703100283",
+      "spec": "RESERVE",
       "tag": "GS",
-      "active": true
+      "active": false
     },
     {
       "name": "د. سعيد جندي لهمود",
