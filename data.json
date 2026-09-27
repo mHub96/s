@@ -1605,10 +1605,10 @@
     },
     {
       "name": "د. علي حسين عبدالرضا",
-      "spec": "CT",
       "phone": "+9647849000964",
+      "spec": "RESERVE",
       "tag": "CT",
-      "active": true
+      "active": false
     }
   ],
   "schedule": [
