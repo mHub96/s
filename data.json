@@ -1556,10 +1556,10 @@
     },
     {
       "name": "د. عبدالرحمن صفاء صالح",
-      "spec": "NS",
       "phone": "+9647841917643",
+      "spec": "RESERVE",
       "tag": "NS",
-      "active": true
+      "active": false
     },
     {
       "name": "د. ايثار عدنان",
