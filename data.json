@@ -17175,14 +17175,6 @@
       "dutySlot": 0
     },
     {
-      "date": "28/09/2026",
-      "specCode": "R",
-      "name": "د. زينب جبار محسن",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "29/09/2026",
       "specCode": "R",
       "name": "د. سارة عبدالحكيم",
@@ -19009,6 +19001,13 @@
       "specCode": "ON",
       "name": "د. علي اسعد يحيى",
       "timestamp": "08:10",
+      "VisitCount": 0
+    },
+    {
+      "date": "28/09/2026",
+      "specCode": "R",
+      "name": "د. الحسين عبدالرحمن خويط",
+      "timestamp": "08:21",
       "VisitCount": 0
     }
   ],
