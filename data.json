@@ -17221,14 +17221,6 @@
       "dutySlot": 0
     },
     {
-      "date": "29/09/2026",
-      "specCode": "CT",
-      "name": "د. منتظر صفاء ماجد",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "30/09/2026",
       "specCode": "CT",
       "name": "د. حسين يحيى صبار",
@@ -19213,6 +19205,13 @@
       "name": "د. طيف كريم خضير",
       "timestamp": "08:57",
       "VisitCount": 1
+    },
+    {
+      "date": "29/09/2026",
+      "specCode": "CT",
+      "name": "د. حسين يحيى صبار",
+      "timestamp": "10:30",
+      "VisitCount": 0
     }
   ],
   "passwords": {
