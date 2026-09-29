@@ -19205,8 +19205,16 @@
       "specCode": "ON",
       "name": "د. علي اسعد يحيى",
       "VisitCount": 0,
-      "dutyTime": "",
+      "dutyTime": "08:00AM - 08:00PM",
       "dutySlot": 0
+    },
+    {
+      "date": "31/10/2026",
+      "specCode": "ON",
+      "name": "د. احمد مرتضى جواد",
+      "VisitCount": 0,
+      "dutyTime": "08:00PM - 08:00AM",
+      "dutySlot": 1
     }
   ],
   "passwords": {
