@@ -19186,13 +19186,6 @@
     },
     {
       "date": "29/09/2026",
-      "specCode": "ON",
-      "name": "د. مروة ليث شاكر",
-      "timestamp": "08:27",
-      "VisitCount": 2
-    },
-    {
-      "date": "29/09/2026",
       "specCode": "R",
       "name": "د. طيف كريم خضير",
       "timestamp": "08:57",
@@ -19210,6 +19203,13 @@
       "specCode": "D",
       "name": "د. حسين يحيى صبار",
       "timestamp": "14:40",
+      "VisitCount": 0
+    },
+    {
+      "date": "29/09/2026",
+      "specCode": "ON",
+      "name": "د. مريم مشرق ياسين",
+      "timestamp": "19:52",
       "VisitCount": 0
     }
   ],
