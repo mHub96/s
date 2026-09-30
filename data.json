@@ -19208,6 +19208,486 @@
       "name": "د. ايهاب عبدالكريم غالب",
       "timestamp": "11:42",
       "VisitCount": 0
+    },
+    {
+      "date": "01/10/2026",
+      "specCode": "OP",
+      "name": "د. مريم عبد الحميد",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "02/10/2026",
+      "specCode": "OP",
+      "name": "د. صفا كاظم",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "03/10/2026",
+      "specCode": "OP",
+      "name": "د. ايناس عدنان",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "04/10/2026",
+      "specCode": "OP",
+      "name": "د. نور عبد المطلب",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "05/10/2026",
+      "specCode": "OP",
+      "name": "د. عبدالله نادر",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "06/10/2026",
+      "specCode": "OP",
+      "name": "د. علياء عباس",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "07/10/2026",
+      "specCode": "OP",
+      "name": "د. زينب عبد الرزاق",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "08/10/2026",
+      "specCode": "OP",
+      "name": "د. علياء عباس",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "09/10/2026",
+      "specCode": "OP",
+      "name": "د. عبدالله نادر",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "10/10/2026",
+      "specCode": "OP",
+      "name": "د. سماء علي",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "11/10/2026",
+      "specCode": "OP",
+      "name": "د. عبدالله نادر",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "12/10/2026",
+      "specCode": "OP",
+      "name": "د. زينب عبد الرزاق",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "13/10/2026",
+      "specCode": "OP",
+      "name": "د. ايناس عدنان",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "14/10/2026",
+      "specCode": "OP",
+      "name": "د. مصطفى عبد الله",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "15/10/2026",
+      "specCode": "OP",
+      "name": "د. ايات فلاح",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "16/10/2026",
+      "specCode": "OP",
+      "name": "د. مريم عبد الحميد",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "17/10/2026",
+      "specCode": "OP",
+      "name": "د. علياء عباس",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "18/10/2026",
+      "specCode": "OP",
+      "name": "د. عبدالله نادر",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "19/10/2026",
+      "specCode": "OP",
+      "name": "د. صفا كاظم",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "20/10/2026",
+      "specCode": "OP",
+      "name": "د. ايات فلاح",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "21/10/2026",
+      "specCode": "OP",
+      "name": "د. زينب عبد الرزاق",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "22/10/2026",
+      "specCode": "OP",
+      "name": "د. نور عبد المطلب",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "23/10/2026",
+      "specCode": "OP",
+      "name": "د. ايات فلاح",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "24/10/2026",
+      "specCode": "OP",
+      "name": "د. ايناس عدنان",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "25/10/2026",
+      "specCode": "OP",
+      "name": "د. مصطفى عبد الله",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "26/10/2026",
+      "specCode": "OP",
+      "name": "د. زينب عبد الرزاق",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "27/10/2026",
+      "specCode": "OP",
+      "name": "د. سماء علي",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "28/10/2026",
+      "specCode": "OP",
+      "name": "د. علياء عباس",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "29/10/2026",
+      "specCode": "OP",
+      "name": "د. ايناس عدنان",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "30/10/2026",
+      "specCode": "OP",
+      "name": "د. مريم عبد الحميد",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "31/10/2026",
+      "specCode": "OP",
+      "name": "د. صفا كاظم",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "01/10/2026",
+      "specCode": "ICU",
+      "name": "د. سماء علي",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "02/10/2026",
+      "specCode": "ICU",
+      "name": "د. نور عبد المطلب",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "03/10/2026",
+      "specCode": "ICU",
+      "name": "د. مريم عبد الحميد",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "04/10/2026",
+      "specCode": "ICU",
+      "name": "د. صفا كاظم",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "05/10/2026",
+      "specCode": "ICU",
+      "name": "د. سماء علي",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "06/10/2026",
+      "specCode": "ICU",
+      "name": "د. ايناس عدنان",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "07/10/2026",
+      "specCode": "ICU",
+      "name": "د. عبدالله نادر",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "08/10/2026",
+      "specCode": "ICU",
+      "name": "د. سماء علي",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "09/10/2026",
+      "specCode": "ICU",
+      "name": "د. ايناس عدنان",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "10/10/2026",
+      "specCode": "ICU",
+      "name": "د. زينب عبد الرزاق",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "11/10/2026",
+      "specCode": "ICU",
+      "name": "د. ايناس عدنان",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "12/10/2026",
+      "specCode": "ICU",
+      "name": "د. علياء عباس",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "13/10/2026",
+      "specCode": "ICU",
+      "name": "د. صفا كاظم",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "14/10/2026",
+      "specCode": "ICU",
+      "name": "د. مريم عبد الحميد",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "15/10/2026",
+      "specCode": "ICU",
+      "name": "د. نور عبد المطلب",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "16/10/2026",
+      "specCode": "ICU",
+      "name": "د. صفا كاظم",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "17/10/2026",
+      "specCode": "ICU",
+      "name": "د. ايات فلاح",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "18/10/2026",
+      "specCode": "ICU",
+      "name": "د. مصطفى عبد الله",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "19/10/2026",
+      "specCode": "ICU",
+      "name": "د. نور عبد المطلب",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "20/10/2026",
+      "specCode": "ICU",
+      "name": "د. مريم عبد الحميد",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "21/10/2026",
+      "specCode": "ICU",
+      "name": "د. مصطفى عبد الله",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "22/10/2026",
+      "specCode": "ICU",
+      "name": "د. صفا كاظم",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "23/10/2026",
+      "specCode": "ICU",
+      "name": "د. سماء علي",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "24/10/2026",
+      "specCode": "ICU",
+      "name": "د. نور عبد المطلب",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "25/10/2026",
+      "specCode": "ICU",
+      "name": "د. ايات فلاح",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "26/10/2026",
+      "specCode": "ICU",
+      "name": "د. ايناس عدنان",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "27/10/2026",
+      "specCode": "ICU",
+      "name": "د. نور عبد المطلب",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "28/10/2026",
+      "specCode": "ICU",
+      "name": "د. مريم عبد الحميد",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
+    },
+    {
+      "date": "29/10/2026",
+      "specCode": "ICU",
+      "name": "د. مصطفى عبد الله",
+      "VisitCount": 0,
+      "dutyTime": "",
+      "dutySlot": 0
     }
   ],
   "passwords": {
