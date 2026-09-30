@@ -1339,10 +1339,10 @@
     },
     {
       "name": "د. ماهر محمود عبدالله",
-      "spec": "RESERVE",
       "phone": "+9647707481437",
-      "tag": "RESERVE",
-      "active": false
+      "spec": "GS",
+      "tag": "GS",
+      "active": true
     },
     {
       "name": "د. علا طالب عبدالامير",
