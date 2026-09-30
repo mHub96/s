@@ -17159,14 +17159,6 @@
       "dutySlot": 0
     },
     {
-      "date": "30/09/2026",
-      "specCode": "R",
-      "name": "د. ايات سلمان قاسم",
-      "VisitCount": 0,
-      "dutyTime": "",
-      "dutySlot": 0
-    },
-    {
       "date": "30/08/2026",
       "specCode": "D",
       "name": "د. احمد حارث عبدالمحسن",
@@ -19209,6 +19201,13 @@
       "specCode": "ON",
       "name": "د. احمد مرتضى جواد",
       "timestamp": "08:22",
+      "VisitCount": 0
+    },
+    {
+      "date": "30/09/2026",
+      "specCode": "R",
+      "name": "د. منتظر توفيق عبدالكريم",
+      "timestamp": "08:53",
       "VisitCount": 0
     }
   ],
